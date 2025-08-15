@@ -8,6 +8,7 @@ GlyphsGPT turns your plain-language requests into ready-to-run Python macros ins
 - **Chat to edit:** say “make it only affect uppercase” or “add an undo group” and the code updates.
 - **One-click run:** execute right in the panel; no switching tools or saving files.
 - **Cost-free option:** works with **local LLMs** (e.g., LM Studio), so you can use it with **no API cost**.
+   - Works with **GPT-5** or any **gpt-oss**.
 - **Optional citations (RAG):** plug in your own docs/specs to get grounded, cited answers when needed.
 
 **Great for**
@@ -21,7 +22,7 @@ Keep designing. Let the assistant handle the code.
 
 This script adds a compact chat window inside Glyphs. Type a request in plain English, get a ready-to-run Python snippet, edit it inline, and execute without leaving the app.
 
-- Works with **GPT-5** or any **gpt-oss**.
+
 
 ---
 
