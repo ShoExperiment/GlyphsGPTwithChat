@@ -1,0 +1,1712 @@
+# GSFont — the current font/document model
+**Use when:** you need the current font context, selected layers, glyph list, masters, etc.
+**Key APIs:** `selectedLayers`, `glyphs`, `masters`
+**Do:** read current context via `font.selectedLayers`; get glyphs by name from `font.glyphs`.
+**Don’t:** call any font-level undo like `beginUndoGroup`/`endUndoGroup` (not for this API); don’t mutate selection while iterating it.
+**Keywords:** GSFont, selectedLayers, glyphs, masters, currentDocument, undoManager
+
+
+## Attributes
+
+- `GSFont.appVersion`  *(type: property)*
+- `GSFont.appVersion`  *(type: property)*
+- `GSFont.axes`  *(type: property)*
+- `GSFont.axes`  *(type: property)*
+- `GSFont.classes`  *(type: property)*
+- `GSFont.classes`  *(type: property)*
+- `GSFont.compatibleFullName`  *(type: property)*
+- `GSFont.compatibleFullNames`  *(type: property)*
+- `GSFont.copyright`  *(type: property)*
+- `GSFont.copyrights`  *(type: property)*
+- `GSFont.currentTab`  *(type: property)*
+- `GSFont.currentText`  *(type: property)*
+- `GSFont.customParameters`  *(type: property)*
+- `GSFont.customParameters`  *(type: property)*
+- `GSFont.date`  *(type: property)*
+- `GSFont.date`  *(type: property)*
+- `GSFont.descriptions`  *(type: property)*
+- `GSFont.designer`  *(type: property)*
+- `GSFont.designerURL`  *(type: property)*
+- `GSFont.designers`  *(type: property)*
+- `GSFont.disablesAutomaticAlignment`  *(type: property)*
+- `GSFont.disablesAutomaticAlignment`  *(type: property)*
+- `GSFont.disablesNiceNames`  *(type: property)*
+- `GSFont.disablesNiceNames`  *(type: property)*
+- `GSFont.displayStrings`  *(type: property)*
+- `GSFont.displayStrings`  *(type: property)*
+- `GSFont.familyName`  *(type: property)*
+- `GSFont.familyNames`  *(type: property)*
+- `GSFont.featurePrefixes`  *(type: property)*
+- `GSFont.featurePrefixes`  *(type: property)*
+- `GSFont.features`  *(type: property)*
+- `GSFont.features`  *(type: property)*
+- `GSFont.filepath`  *(type: property)*
+- `GSFont.fontName`  *(type: property)*
+- `GSFont.fontName`  *(type: property)*
+- `GSFont.fontView`  *(type: property)*
+- `GSFont.formatVersion`  *(type: property)*
+- `GSFont.formatVersion`  *(type: property)*
+- `GSFont.glyphs`  *(type: property)*
+- `GSFont.glyphs`  *(type: property)*
+- `GSFont.grid`  *(type: property)*
+- `GSFont.gridLength`  *(type: property)*
+- `GSFont.gridLength`  *(type: property)*
+- `GSFont.gridSubDivision`  *(type: property)*
+- `GSFont.gridSubDivision`  *(type: property)*
+- `GSFont.gridSubDivisions`  *(type: property)*
+- `GSFont.instances`  *(type: property)*
+- `GSFont.instances`  *(type: property)*
+- `GSFont.kerning`  *(type: property)*
+- `GSFont.kerningLTR`  *(type: property)*
+- `GSFont.kerningLTR`  *(type: property)*
+- `GSFont.kerningRTL`  *(type: property)*
+- `GSFont.kerningRTL`  *(type: property)*
+- `GSFont.kerningVertical`  *(type: property)*
+- `GSFont.kerningVertical`  *(type: property)*
+- `GSFont.keyboardIncrement`  *(type: property)*
+- `GSFont.keyboardIncrement`  *(type: property)*
+- `GSFont.keyboardIncrementBig`  *(type: property)*
+- `GSFont.keyboardIncrementBig`  *(type: property)*
+- `GSFont.keyboardIncrementHuge`  *(type: property)*
+- `GSFont.keyboardIncrementHuge`  *(type: property)*
+- `GSFont.license`  *(type: property)*
+- `GSFont.licenses`  *(type: property)*
+- `GSFont.manufacturer`  *(type: property)*
+- `GSFont.manufacturerURL`  *(type: property)*
+- `GSFont.manufacturers`  *(type: property)*
+- `GSFont.masterIndex`  *(type: property)*
+- `GSFont.masters`  *(type: property)*
+- `GSFont.metrics`  *(type: property)*
+- `GSFont.metrics`  *(type: property)*
+- `GSFont.note`  *(type: property)*
+- `GSFont.note`  *(type: property)*
+- `GSFont.numbers`  *(type: property)*
+- `GSFont.numbers`  *(type: property)*
+- `GSFont.parent`  *(type: property)*
+- `GSFont.parent`  *(type: property)*
+- `GSFont.previewRemoveOverlap`  *(type: property)*
+- `GSFont.previewRemoveOverlap`  *(type: property)*
+- `GSFont.properties`  *(type: property)*
+- `GSFont.properties`  *(type: property)*
+- `GSFont.sampleText`  *(type: property)*
+- `GSFont.sampleTexts`  *(type: property)*
+- `GSFont.selectedFontMaster`  *(type: property)*
+- `GSFont.selectedLayers`  *(type: property)*
+- `GSFont.selection`  *(type: property)*
+- `GSFont.snapToObjects`  *(type: property)*
+- `GSFont.snapToObjects`  *(type: property)*
+- `GSFont.stems`  *(type: property)*
+- `GSFont.stems`  *(type: property)*
+- `GSFont.tabs`  *(type: property)*
+- `GSFont.tempData`  *(type: property)*
+- `GSFont.tempData`  *(type: property)*
+- `GSFont.tool`  *(type: property)*
+- `GSFont.toolIndex`  *(type: property)*
+- `GSFont.tools`  *(type: property)*
+- `GSFont.trademark`  *(type: property)*
+- `GSFont.trademarks`  *(type: property)*
+- `GSFont.upm`  *(type: property)*
+- `GSFont.userData`  *(type: property)*
+- `GSFont.userData`  *(type: property)*
+- `GSFont.versionMajor`  *(type: property)*
+- `GSFont.versionMajor`  *(type: property)*
+- `GSFont.versionMinor`  *(type: property)*
+- `GSFont.versionMinor`  *(type: property)*
+- `GSFont (instance).appVersion`  *(type: NoneType)*
+- `GSFont (instance).axes`  *(type: FontAxesProxy)*
+- `GSFont (instance).classes`  *(type: FontClassesProxy)*
+- `GSFont (instance).compatibleFullName`  *(type: NoneType)*
+- `GSFont (instance).compatibleFullNames`  *(type: FontInfoPropertyProxy)*
+- `GSFont (instance).copyright`  *(type: NoneType)*
+- `GSFont (instance).copyrights`  *(type: FontInfoPropertyProxy)*
+- `GSFont (instance).currentTab`  *(type: NoneType)*
+- `GSFont (instance).currentText`  *(type: NoneType)*
+- `GSFont (instance).customParameters`  *(type: CustomParametersProxy)*
+- `GSFont (instance).date`  *(type: datetime)*
+- `GSFont (instance).description`  *(type: NoneType)*
+- `GSFont (instance).descriptions`  *(type: FontInfoPropertyProxy)*
+- `GSFont (instance).designer`  *(type: NoneType)*
+- `GSFont (instance).designerURL`  *(type: NoneType)*
+- `GSFont (instance).designers`  *(type: FontInfoPropertyProxy)*
+- `GSFont (instance).disablesAutomaticAlignment`  *(type: bool)*
+- `GSFont (instance).disablesNiceNames`  *(type: bool)*
+- `GSFont (instance).familyName`  *(type: pyobjc_unicode)*
+- `GSFont (instance).familyNames`  *(type: FontInfoPropertyProxy)*
+- `GSFont (instance).featurePrefixes`  *(type: FontFeaturePrefixesProxy)*
+- `GSFont (instance).features`  *(type: FontFeaturesProxy)*
+- `GSFont (instance).filepath`  *(type: NoneType)*
+- `GSFont (instance).fontName`  *(type: pyobjc_unicode)*
+- `GSFont (instance).formatVersion`  *(type: int)*
+- `GSFont (instance).glyphs`  *(type: FontGlyphsProxy)*
+- `GSFont (instance).grid`  *(type: int)*
+- `GSFont (instance).gridLength`  *(type: float)*
+- `GSFont (instance).gridSubDivision`  *(type: int)*
+- `GSFont (instance).gridSubDivisions`  *(type: int)*
+- `GSFont (instance).instances`  *(type: FontInstancesProxy)*
+- `GSFont (instance).kerning`  *(type: MGOrderedDictionary)*
+- `GSFont (instance).kerningLTR`  *(type: MGOrderedDictionary)*
+- `GSFont (instance).kerningRTL`  *(type: MGOrderedDictionary)*
+- `GSFont (instance).kerningVertical`  *(type: MGOrderedDictionary)*
+- `GSFont (instance).keyboardIncrement`  *(type: float)*
+- `GSFont (instance).keyboardIncrementBig`  *(type: float)*
+- `GSFont (instance).keyboardIncrementHuge`  *(type: float)*
+- `GSFont (instance).license`  *(type: NoneType)*
+- `GSFont (instance).licenses`  *(type: FontInfoPropertyProxy)*
+- `GSFont (instance).manufacturer`  *(type: NoneType)*
+- `GSFont (instance).manufacturerURL`  *(type: NoneType)*
+- `GSFont (instance).manufacturers`  *(type: FontInfoPropertyProxy)*
+- `GSFont (instance).masters`  *(type: FontFontMasterProxy)*
+- `GSFont (instance).metrics`  *(type: __NSArrayM)*
+- `GSFont (instance).note`  *(type: NoneType)*
+- `GSFont (instance).numbers`  *(type: FontNumbersProxy)*
+- `GSFont (instance).parent`  *(type: NoneType)*
+- `GSFont (instance).previewRemoveOverlap`  *(type: bool)*
+- `GSFont (instance).properties`  *(type: PropertiesProxy)*
+- `GSFont (instance).sampleText`  *(type: NoneType)*
+- `GSFont (instance).sampleTexts`  *(type: FontInfoPropertyProxy)*
+- `GSFont (instance).selection`  *(type: NoneType)*
+- `GSFont (instance).snapToObjects`  *(type: bool)*
+- `GSFont (instance).stems`  *(type: FontStemsProxy)*
+- `GSFont (instance).tabs`  *(type: FontTabsProxy)*
+- `GSFont (instance).tempData`  *(type: TempDataProxy)*
+- `GSFont (instance).trademark`  *(type: NoneType)*
+- `GSFont (instance).trademarks`  *(type: FontInfoPropertyProxy)*
+- `GSFont (instance).upm`  *(type: int)*
+- `GSFont (instance).userData`  *(type: UserDataProxy)*
+- `GSFont (instance).versionMajor`  *(type: int)*
+- `GSFont (instance).versionMinor`  *(type: int)*
+
+## Methods
+
+- `GSFont..cxx_destruct()`
+- `GSFont.CAMLType()`
+- `GSFont.CAMLTypeForKey_(arg0, /)`
+- `GSFont.CAMLTypeSupportedForKey_(arg0, /)`
+- `GSFont.CA_addValue_multipliedBy_(arg0, arg1, /)`
+- `GSFont.CA_archivingValueForKey_(arg0, /)`
+- `GSFont.CA_copyNumericValue_(arg0, /)`
+- `GSFont.CA_copyRenderValue()`
+- `GSFont.CA_copyRenderValueWithColorspace_(arg0, /)`
+- `GSFont.CA_distanceToValue_(arg0, /)`
+- `GSFont.CA_interpolateValue_byFraction_(arg0, arg1, /)`
+- `GSFont.CA_interpolateValues___interpolator_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.CA_numericValueCount()`
+- `GSFont.CA_prepareRenderValue()`
+- `GSFont.CA_roundToIntegerFromValue_(arg0, /)`
+- `GSFont.CA_validateValue_forKey_(arg0, arg1, /)`
+- `GSFont.CKAssignToContainerWithID_(arg0, /)`
+- `GSFont.CKDescription()`
+- `GSFont.CKDescriptionPropertiesWithPublic_private_shouldExpand_(arg0, arg1, arg2, /)`
+- `GSFont.CKDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSFont.CKExpandedDescription()`
+- `GSFont.CKHashedDescription()`
+- `GSFont.CKObjectDescriptionRedact_(arg0, /)`
+- `GSFont.CKObjectDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSFont.CKPropertiesDescription()`
+- `GSFont.CKPropertiesDescriptionStringFromProperties_(arg0, /)`
+- `GSFont.CKRedactedDescription()`
+- `GSFont.CKSingleLineDescription()`
+- `GSFont.CKUnredactedDescription()`
+- `GSFont.IKImageRepresentationWithType_(arg0, /)`
+- `GSFont.NSLifeguard_autorelease()`
+- `GSFont.NSRepresentation()`
+- `GSFont.NSRepresentation()`
+- `GSFont.NS_addTiledLayerDescendent_(arg0, /)`
+- `GSFont.NS_observationForKeyPath_options_block_(arg0, arg1, arg2, /)`
+- `GSFont.NS_observationForKeyPaths_options_block_(arg0, arg1, arg2, /)`
+- `GSFont.NS_removeTiledLayerDescendent_(arg0, /)`
+- `GSFont.NS_tiledLayerVisibleRect()`
+- `GSFont.RBSIsXPCObject()`
+- `GSFont.SCNUI_name()`
+- `GSFont.SCN_setupDisplayLinkWithQueue_screen_policy_(arg0, arg1, arg2, /)`
+- `GSFont.abCaseInsensitiveIsEqual_(arg0, /)`
+- `GSFont.abDictionaryWithValuesForKeyPaths_(arg0, /)`
+- `GSFont.abRemoveObserverIgnoringExceptions_forKeyPath_(arg0, arg1, /)`
+- `GSFont.accessibilityAddTemporaryChild_(arg0, /)`
+- `GSFont.accessibilityAllowsOverriddenAttributesWhenIgnored()`
+- `GSFont.accessibilityArrayAttributeCount_(arg0, /)`
+- `GSFont.accessibilityArrayAttributeValues_index_maxCount_(arg0, arg1, arg2, /)`
+- `GSFont.accessibilityAttributeValue_forParameter_(arg0, arg1, /)`
+- `GSFont.accessibilityAttributedValueForStringAttributeAttributeForParameter_(arg0, /)`
+- `GSFont.accessibilityBrailleMapRenderRegion()`
+- `GSFont.accessibilityBrailleMapRenderer()`
+- `GSFont.accessibilityDecodeOverriddenAttributes_(arg0, /)`
+- `GSFont.accessibilityEncodeOverriddenAttributes_(arg0, /)`
+- `GSFont.accessibilityIndexForChildUIElementAttributeForParameter_(arg0, /)`
+- `GSFont.accessibilityIndexOfChild_(arg0, /)`
+- `GSFont.accessibilityOverriddenAttributes()`
+- `GSFont.accessibilityParameterizedAttributeNames()`
+- `GSFont.accessibilityPerformShowMenuOfChild_(arg0, /)`
+- `GSFont.accessibilityPresenterProcessIdentifier()`
+- `GSFont.accessibilityRemoveTemporaryChild_(arg0, /)`
+- `GSFont.accessibilityReplaceRange_withText_(arg0, arg1, /)`
+- `GSFont.accessibilitySetOverrideValue_forAttribute_(arg0, arg1, /)`
+- `GSFont.accessibilitySetPresenterProcessIdentifier_(arg0, /)`
+- `GSFont.accessibilityShouldSendNotification_(arg0, /)`
+- `GSFont.accessibilityShouldUseUniqueId()`
+- `GSFont.accessibilitySupportsCustomElementData()`
+- `GSFont.accessibilitySupportsNotifications()`
+- `GSFont.accessibilitySupportsOverriddenAttributes()`
+- `GSFont.accessibilityTemporaryChildren()`
+- `GSFont.accessibilityVisibleArea()`
+- `GSFont.addAxis_(arg0, /)`
+- `GSFont.addChainedObservers_(arg0, /)`
+- `GSFont.addClassFromCode_(arg0, /)`
+- `GSFont.addClass_(arg0, /)`
+- `GSFont.addCustomParameter_(arg0, /)`
+- `GSFont.addFeaturePrefix_(arg0, /)`
+- `GSFont.addFeature_(arg0, /)`
+- `GSFont.addFontAsNewMaster_(arg0, /)`
+- `GSFont.addFontMasterAndContent_(arg0, /)`
+- `GSFont.addFontMaster_(arg0, /)`
+- `GSFont.addGlyphCopy_(arg0, /)`
+- `GSFont.addGlyphFast_(arg0, /)`
+- `GSFont.addGlyph_(arg0, /)`
+- `GSFont.addGlyphsFromArray_(arg0, /)`
+- `GSFont.addInstance_(arg0, /)`
+- `GSFont.addKerning_forMaster_direction_(arg0, arg1, arg2, /)`
+- `GSFont.addMetric_(arg0, /)`
+- `GSFont.addNumber_(arg0, /)`
+- `GSFont.addObject_toBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSFont.addObject_toPropertyWithKey_(arg0, arg1, /)`
+- `GSFont.addObservationTransformer_(arg0, /)`
+- `GSFont.addObserverBlock_(arg0, /)`
+- `GSFont.addObserver_(arg0, /)`
+- `GSFont.addObserver_forKeyPath_options_context_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.addObserver_forObservableKeyPath_(arg0, arg1, /)`
+- `GSFont.addProperty_(arg0, /)`
+- `GSFont.addStem_(arg0, /)`
+- `GSFont.addToGlyphDict_(arg0, /)`
+- `GSFont.addUserData_(arg0, /)`
+- `GSFont.akToolbarButtonItemType()`
+- `GSFont.allGlyphs()`
+- `GSFont.allLocalizedParameters_forKey_(arg0, arg1, /)`
+- `GSFont.allMasterAtIndex_(arg0, /)`
+- `GSFont.allMasters()`
+- `GSFont.allPropertyKeys()`
+- `GSFont.allTags()`
+- `GSFont.allowsWeakReference()`
+- `GSFont.applyGlyphSetParameters_error_(arg0, arg1, /)`
+- `GSFont.associatedObject()`
+- `GSFont.attemptRecoveryFromError_optionIndex_(arg0, arg1, /)`
+- `GSFont.attemptRecoveryFromError_optionIndex_delegate_didRecoverSelector_contextInfo_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont.attributeKeys()`
+- `GSFont.autoContentAccessingProxy()`
+- `GSFont.automaticFeatureForTag_(arg0, /)`
+- `GSFont.autorelease()`
+- `GSFont.awakeAfterUsingCoder_(arg0, /)`
+- `GSFont.awakeFromNib()`
+- `GSFont.axesValueSteps_(arg0, /)`
+- `GSFont.axesValueSteps_glyph_(arg0, arg1, /)`
+- `GSFont.axisForId_(arg0, /)`
+- `GSFont.axisForName_(arg0, /)`
+- `GSFont.axisForTag_(arg0, /)`
+- `GSFont.backportRTLKerning()`
+- `GSFont.baseName_forWildCard_(arg0, arg1, /)`
+- `GSFont.bind_toObject_withKeyPath_options_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.boolValueSafe()`
+- `GSFont.boolValueSafe_(arg0, /)`
+- `GSFont.bs_isPlistableType()`
+- `GSFont.bs_secureEncoded()`
+- `GSFont.calculateDefaultWidth_(arg0, /)`
+- `GSFont.canRenderWithCGLContext_(arg0, /)`
+- `GSFont.changeName_to_(arg0, arg1, /)`
+- `GSFont.charStringFromDisplayString_(arg0, /)`
+- `GSFont.characterForGlyph(arg0, /)`
+- `GSFont.characterForGlyph_(arg0, /)`
+- `GSFont.characterForGlyph_(arg0, /)`
+- `GSFont.charsCache()`
+- `GSFont.ck_bindInStatement_atIndex_(arg0, arg1, /)`
+- `GSFont.cksqlcs_appendSQLConstantValueToString_(arg0, /)`
+- `GSFont.cksqlcs_archivedObjectBindingValue_(arg0, /)`
+- `GSFont.cksqlcs_bindArchivedObject_index_db_(arg0, arg1, arg2, /)`
+- `GSFont.cksqlcs_bindBlob_index_db_(arg0, arg1, arg2, /)`
+- `GSFont.cksqlcs_bindDouble_index_db_(arg0, arg1, arg2, /)`
+- `GSFont.cksqlcs_bindInt64_index_db_(arg0, arg1, arg2, /)`
+- `GSFont.cksqlcs_bindText_index_db_(arg0, arg1, arg2, /)`
+- `GSFont.cksqlcs_blobBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSFont.cksqlcs_doubleBindingValue_(arg0, /)`
+- `GSFont.cksqlcs_int64BindingValue_(arg0, /)`
+- `GSFont.cksqlcs_textBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSFont.classCode()`
+- `GSFont.classDescription()`
+- `GSFont.classDescriptionForDestinationKey_(arg0, /)`
+- `GSFont.classForArchiver()`
+- `GSFont.classForCoder()`
+- `GSFont.classForKeyedArchiver()`
+- `GSFont.classForPortCoder()`
+- `GSFont.classForTag_(arg0, /)`
+- `GSFont.className()`
+- `GSFont.class__()`
+- `GSFont.cleanUpKerningForDirection_(arg0, /)`
+- `GSFont.clearProperties()`
+- `GSFont.close(self, ignoreChanges=True)`
+- `GSFont.coalescedPerformSelector_(arg0, /)`
+- `GSFont.coerceValueForScriptingProperties_(arg0, /)`
+- `GSFont.coerceValue_forKey_(arg0, arg1, /)`
+- `GSFont.compileFeatures(self)`
+- `GSFont.compileTempFontError_(arg0, /)`
+- `GSFont.componentGlyphNamesForGlyph_(arg0, /)`
+- `GSFont.compositionParameterView_didChangeParameterWithKey_(arg0, arg1, /)`
+- `GSFont.compositionParameterView_shouldDisplayParameterWithKey_attributes_(arg0, arg1, arg2, /)`
+- `GSFont.compositionPickerViewDidStartAnimating_(arg0, /)`
+- `GSFont.compositionPickerViewWillStopAnimating_(arg0, /)`
+- `GSFont.compositionPickerView_didLoadComposition_(arg0, arg1, /)`
+- `GSFont.compositionPickerView_didSelectComposition_(arg0, arg1, /)`
+- `GSFont.compositionPickerView_draggingEnteredComposition_sender_(arg0, arg1, arg2, /)`
+- `GSFont.compositionPickerView_keyDown_(arg0, arg1, /)`
+- `GSFont.compositionPickerView_performDragOperationOnComposition_sender_(arg0, arg1, arg2, /)`
+- `GSFont.compositionPickerView_willSelectComposition_(arg0, arg1, /)`
+- `GSFont.compositorFont()`
+- `GSFont.compressKerningForDirection_(arg0, /)`
+- `GSFont.conformsToProtocol_(arg0, /)`
+- `GSFont.contextKerningForFontMasterID_leftKey_rightKey_before_after_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont.convertKerning_(arg0, /)`
+- `GSFont.copy()`
+- `GSFont.copyConvertKerning_(arg0, /)`
+- `GSFont.copyGlyphs_sourceFontMasterID_targetFontMasterID_addMissing_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.copyInfoFrom_sourceFontMasterID_targetFontMasterID_(arg0, arg1, arg2, /)`
+- `GSFont.copyKerningFromFont_sourceFontMasterID_targetFontMasterID_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.copyRenderedTextureForCGLContext_pixelFormat_bounds_isFlipped_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.copyScriptingValue_forKey_withProperties_(arg0, arg1, arg2, /)`
+- `GSFont.copyWithZone_(arg0, /)`
+- `GSFont.count()`
+- `GSFont.countOfAllGlyphs()`
+- `GSFont.countOfAllMasters()`
+- `GSFont.countOfAxes()`
+- `GSFont.countOfClasses()`
+- `GSFont.countOfCustomParameters()`
+- `GSFont.countOfFeaturePrefixes()`
+- `GSFont.countOfFeatures()`
+- `GSFont.countOfFontMasters()`
+- `GSFont.countOfGlyphs()`
+- `GSFont.countOfInstances()`
+- `GSFont.countOfMetrics()`
+- `GSFont.countOfNumbers()`
+- `GSFont.countOfProperties()`
+- `GSFont.countOfStems()`
+- `GSFont.countOfUserData()`
+- `GSFont.createImageWithOptions_(arg0, /)`
+- `GSFont.createKeyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSFont.createOptimizedProviderWithTransformation_cropping_(arg0, arg1, /)`
+- `GSFont.customBoolValueForKey_(arg0, /)`
+- `GSFont.customColorValueForKey_(arg0, /)`
+- `GSFont.customParameterActiveForKey_(arg0, /)`
+- `GSFont.customParameterForKey_(arg0, /)`
+- `GSFont.customParameterFrom_toFont_(arg0, arg1, /)`
+- `GSFont.customValueForKey_(arg0, /)`
+- `GSFont.dealloc()`
+- `GSFont.dealloc()`
+- `GSFont.debugDescription()`
+- `GSFont.defaultFontMaster()`
+- `GSFont.defaultFontMaster_(arg0, /)`
+- `GSFont.defaultPropertyForName_(arg0, /)`
+- `GSFont.deleteGlyphs_completionHandler_error_(arg0, arg1, arg2, /)`
+- `GSFont.description()`
+- `GSFont.description()`
+- `GSFont.description()`
+- `GSFont.description()`
+- `GSFont.descriptionAtIndent_(arg0, /)`
+- `GSFont.dictionaryWithValuesForKeys_(arg0, /)`
+- `GSFont.didChangeValueForKey_(arg0, /)`
+- `GSFont.didChangeValueForKey_(arg0, /)`
+- `GSFont.didChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSFont.didChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSFont.disableUndo()`
+- `GSFont.disableUpdateInterface()`
+- `GSFont.disabledChangeKeys()`
+- `GSFont.doesContain_(arg0, /)`
+- `GSFont.doesNotRecognizeSelector_(arg0, /)`
+- `GSFont.doesNotRecognizeSelector_(arg0, /)`
+- `GSFont.doubleValueSafe()`
+- `GSFont.doubleValueSafe_(arg0, /)`
+- `GSFont.elementDidChange_(arg0, /)`
+- `GSFont.enableFutureUpdates()`
+- `GSFont.enableUndo()`
+- `GSFont.enableUpdateInterface()`
+- `GSFont.encodeWithCAMLWriter_(arg0, /)`
+- `GSFont.encodeWithCoder_(arg0, /)`
+- `GSFont.entityName()`
+- `GSFont.expandWildcardsInNameList_contextLabel_error_(arg0, arg1, arg2, /)`
+- `GSFont.export(self, format='OTF', instances=None, fontPath=None, autoHint=True, removeOverlap=None, useSubroutines=True, useProductionNames=True, containers=None, decomposeSmartStuff=True)`
+- `GSFont.exportingGlyphNames()`
+- `GSFont.exposedBindings()`
+- `GSFont.extractLanguageSystemsPrefixText_(arg0, /)`
+- `GSFont.featureForTag_(arg0, /)`
+- `GSFont.featurePrefixForTag_(arg0, /)`
+- `GSFont.filterGlyphsWithInfos_(arg0, /)`
+- `GSFont.filterGlyphs_(arg0, /)`
+- `GSFont.filterKeepGlyphsCodes_(arg0, /)`
+- `GSFont.filterKeepGlyphs_(arg0, /)`
+- `GSFont.finalize()`
+- `GSFont.finishObserving()`
+- `GSFont.flushKeyBindings()`
+- `GSFont.font()`
+- `GSFont.fontMasterAtIndex_(arg0, /)`
+- `GSFont.fontMasterForId_(arg0, /)`
+- `GSFont.fontMasterForName_(arg0, /)`
+- `GSFont.fontMasters()`
+- `GSFont.fontType()`
+- `GSFont.forwardInvocation_(arg0, /)`
+- `GSFont.forwardingTargetForSelector_(arg0, /)`
+- `GSFont.fp__ivarDescriptionForClass_(arg0, /)`
+- `GSFont.fp__methodDescriptionForClass_(arg0, /)`
+- `GSFont.fp_ivarDescription()`
+- `GSFont.fp_methodDescription()`
+- `GSFont.fp_shortMethodDescription()`
+- `GSFont.generateGlyphs_callback_(arg0, arg1, /)`
+- `GSFont.generateInstance_error_(arg0, arg1, /)`
+- `GSFont.generateMetrics_(arg0, /)`
+- `GSFont.generateVariable_error_(arg0, arg1, /)`
+- `GSFont.getGlyphs_range_(arg0, arg1, /)`
+- `GSFont.glyphAtIndex_(arg0, /)`
+- `GSFont.glyphDictOperation_(arg0, /)`
+- `GSFont.glyphForCharacter_(arg0, /)`
+- `GSFont.glyphForId_(arg0, /)`
+- `GSFont.glyphForNameFast_(arg0, /)`
+- `GSFont.glyphForName_(arg0, /)`
+- `GSFont.glyphForUnicodeFast_(arg0, /)`
+- `GSFont.glyphForUnicode_(arg0, /)`
+- `GSFont.glyphForUnicodes_(arg0, /)`
+- `GSFont.glyphFromCharsCacheForCharFast_(arg0, /)`
+- `GSFont.glyphFromCharsCacheForChar_(arg0, /)`
+- `GSFont.glyphFromCharsCacheForUnicode_(arg0, /)`
+- `GSFont.glyphHasChangedName_oldName_(arg0, arg1, /)`
+- `GSFont.glyphNames()`
+- `GSFont.glyphNamesForWildcard_contextLabel_error_(arg0, arg1, arg2, /)`
+- `GSFont.glyphOrder()`
+- `GSFont.glyphsAtIndexes_(arg0, /)`
+- `GSFont.glyphsContainingComponentWithName_masterId_(arg0, arg1, /)`
+- `GSFont.glyphsForNames_(arg0, /)`
+- `GSFont.glyphsInfo()`
+- `GSFont.gridMain()`
+- `GSFont.handleQueryWithUnboundKey_(arg0, /)`
+- `GSFont.handleTakeValue_forUnboundKey_(arg0, arg1, /)`
+- `GSFont.hash()`
+- `GSFont.if_setValueIfNonNil_forKey_(arg0, arg1, /)`
+- `GSFont.if_setValueIfYES_forKey_(arg0, arg1, /)`
+- `GSFont.ignoreCompatibilityWarning()`
+- `GSFont.ikInMainLoopWait_(arg0, /)`
+- `GSFont.imageBrowser_didValidateVisibleCellsAtIndexes_(arg0, arg1, /)`
+- `GSFont.imageBrowser_willDisplayCellsAtIndexes_(arg0, arg1, /)`
+- `GSFont.imageSubtitle()`
+- `GSFont.imageTitle()`
+- `GSFont.imageToDrawForCell_(arg0, /)`
+- `GSFont.implementsSelector_(arg0, /)`
+- `GSFont.importAFM_fontMaster_verticalMetrics_metrics_kerning_error_(arg0, arg1, arg2, arg3, arg4, arg5, /)`
+- `GSFont.importFeatures_error_(arg0, arg1, /)`
+- `GSFont.importedFontMasters()`
+- `GSFont.importedFonts()`
+- `GSFont.importedGlyphs()`
+- `GSFont.indexOfFeature_(arg0, /)`
+- `GSFont.indexOfFontMaster_(arg0, /)`
+- `GSFont.indexOfGlyph_(arg0, /)`
+- `GSFont.indexOfObjectInAxes_(arg0, /)`
+- `GSFont.indexOfObjectInProperties_(arg0, /)`
+- `GSFont.infoForBinding_(arg0, /)`
+- `GSFont.init()`
+- `GSFont.init()`
+- `GSFont.initWithCoder_(arg0, /)`
+- `GSFont.initWithDict_error_(arg0, arg1, /)`
+- `GSFont.initWithGlyphsFileAtPath_error_(arg0, arg1, /)`
+- `GSFont.initWithURL_error_(arg0, arg1, /)`
+- `GSFont.insertFontMaster_atIndex_(arg0, arg1, /)`
+- `GSFont.insertInstance_atIndex_(arg0, arg1, /)`
+- `GSFont.insertObject_inAllGlyphsAtIndex_(arg0, arg1, /)`
+- `GSFont.insertObject_inAxesAtIndex_(arg0, arg1, /)`
+- `GSFont.insertObject_inClassesAtIndex_(arg0, arg1, /)`
+- `GSFont.insertObject_inCustomParametersAtIndex_(arg0, arg1, /)`
+- `GSFont.insertObject_inFeaturePrefixesAtIndex_(arg0, arg1, /)`
+- `GSFont.insertObject_inFeaturesAtIndex_(arg0, arg1, /)`
+- `GSFont.insertObject_inFontMastersAtIndex_(arg0, arg1, /)`
+- `GSFont.insertObject_inGlyphsAtIndex_(arg0, arg1, /)`
+- `GSFont.insertObject_inInstancesAtIndex_(arg0, arg1, /)`
+- `GSFont.insertObject_inMetricsAtIndex_(arg0, arg1, /)`
+- `GSFont.insertObject_inNumbersAtIndex_(arg0, arg1, /)`
+- `GSFont.insertObject_inPropertiesAtIndex_(arg0, arg1, /)`
+- `GSFont.insertObject_inStemsAtIndex_(arg0, arg1, /)`
+- `GSFont.insertValue_atIndex_inPropertyWithKey_(arg0, arg1, arg2, /)`
+- `GSFont.insertValue_inPropertyWithKey_(arg0, arg1, /)`
+- `GSFont.instanceNearestToPosition_distance_(arg0, arg1, /)`
+- `GSFont.instancesUnique()`
+- `GSFont.int64ValueSafe()`
+- `GSFont.int64ValueSafe_(arg0, /)`
+- `GSFont.interpolateFontMaster_scale_thin_error_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.interpolateLocalizable_valueForKey_intoMaster_(arg0, arg1, arg2, /)`
+- `GSFont.interpolateStems_scale_error_stemsForMaster_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.interpolateZones_zones_scale_key_error_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont.interpolate_valueForKey_defaults_(arg0, arg1, arg2, /)`
+- `GSFont.invalidateCustomParameterCache()`
+- `GSFont.inverseForRelationshipKey_(arg0, /)`
+- `GSFont.isCaseInsensitiveLike_(arg0, /)`
+- `GSFont.isEqualTo_(arg0, /)`
+- `GSFont.isEqual_(arg0, /)`
+- `GSFont.isFault()`
+- `GSFont.isGreaterThanOrEqualTo_(arg0, /)`
+- `GSFont.isGreaterThan_(arg0, /)`
+- `GSFont.isKindOfClass_(arg0, /)`
+- `GSFont.isLessThanOrEqualTo_(arg0, /)`
+- `GSFont.isLessThan_(arg0, /)`
+- `GSFont.isLike_(arg0, /)`
+- `GSFont.isMemberOfClass_(arg0, /)`
+- `GSFont.isNSArray__()`
+- `GSFont.isNSCFConstantString__()`
+- `GSFont.isNSData__()`
+- `GSFont.isNSDate__()`
+- `GSFont.isNSDictionary__()`
+- `GSFont.isNSNumber__()`
+- `GSFont.isNSObject__()`
+- `GSFont.isNSOrderedSet__()`
+- `GSFont.isNSSet__()`
+- `GSFont.isNSString__()`
+- `GSFont.isNSTimeZone__()`
+- `GSFont.isNSValue__()`
+- `GSFont.isNotEqualTo_(arg0, /)`
+- `GSFont.isNull()`
+- `GSFont.isProxy()`
+- `GSFont.isToManyKey_(arg0, /)`
+- `GSFont.isUpdateInterfaceEnabled()`
+- `GSFont.keepAlternatesTogether()`
+- `GSFont.keepsGlyphsCode_(arg0, /)`
+- `GSFont.keepsGlyphs_(arg0, /)`
+- `GSFont.kerningContext()`
+- `GSFont.kerningDictForDirection_(arg0, /)`
+- `GSFont.kerningFirstLayer_secondLayer_(arg0, arg1, /)`
+- `GSFont.kerningForDirection_(arg0, /)`
+- `GSFont.kerningForFontMasterDict_firstGlyph_secondGlyph_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.kerningForFontMasterID_LeftKey_RightKey_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.kerningForFontMasterID_firstGlyph_secondGlyph_(arg0, arg1, arg2, /)`
+- `GSFont.kerningForFontMasterID_firstGlyph_secondGlyph_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.kerningForFontMasterID_leftKey_rightKey_(arg0, arg1, arg2, /)`
+- `GSFont.kerningForFontMasterID_leftKey_rightKey_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.kerningForPair(self, FontMasterID, LeftKerningId, RightKerningId, direction=0)`
+- `GSFont.keyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSFont.legacyAxes()`
+- `GSFont.localGlyphForId_(arg0, /)`
+- `GSFont.localGlyphForName_(arg0, /)`
+- `GSFont.localGlyphForUnicodeFast_(arg0, /)`
+- `GSFont.localGlyphForUnicode_(arg0, /)`
+- `GSFont.localGlyphForUnicodes_(arg0, /)`
+- `GSFont.lockReadGlyphs()`
+- `GSFont.lockWriteGlyphs()`
+- `GSFont.makeComponentGlyph_(arg0, /)`
+- `GSFont.makeOTFCompatibleFeatureCode()`
+- `GSFont.makeSaveGlyphInfo_(arg0, /)`
+- `GSFont.masterCount()`
+- `GSFont.masterIDforHints_(arg0, /)`
+- `GSFont.masterIDforMetrics_(arg0, /)`
+- `GSFont.masterIDforMetrics_hasLink_(arg0, arg1, /)`
+- `GSFont.masterKerning_direction_(arg0, arg1, /)`
+- `GSFont.masterNearestToPosition_(arg0, /)`
+- `GSFont.masterNearestToPosition_glyph_(arg0, arg1, /)`
+- `GSFont.masterRangesInternMin_internDefault_internMax_externMin_externDefault_externMax_mastersIntern_mastersExtern_defaultMaster_error_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, /)`
+- `GSFont.mergedLinkedKerningForDirection_(arg0, /)`
+- `GSFont.methodDescriptionForSelector_(arg0, /)`
+- `GSFont.methodForSelector_(arg0, /)`
+- `GSFont.methodSignatureForSelector_(arg0, /)`
+- `GSFont.methodSignatureForSelector_(arg0, /)`
+- `GSFont.metricsContent()`
+- `GSFont.migrateRTLKerning()`
+- `GSFont.migrateRTLKerningDict_doClasses_(arg0, arg1, /)`
+- `GSFont.mr_formattedDebugDescription()`
+- `GSFont.mutableArrayValueForKeyPath_(arg0, /)`
+- `GSFont.mutableArrayValueForKey_(arg0, /)`
+- `GSFont.mutableClasses()`
+- `GSFont.mutableCopy()`
+- `GSFont.mutableCopyWithZone_(arg0, /)`
+- `GSFont.mutableCopyWithZone_(arg0, /)`
+- `GSFont.mutableFeaturePrefixes()`
+- `GSFont.mutableOrderedSetValueForKeyPath_(arg0, /)`
+- `GSFont.mutableOrderedSetValueForKey_(arg0, /)`
+- `GSFont.mutableSetValueForKeyPath_(arg0, /)`
+- `GSFont.mutableSetValueForKey_(arg0, /)`
+- `GSFont.my_compactDescription()`
+- `GSFont.nameUI()`
+- `GSFont.newGlyphWithName_(arg0, /)`
+- `GSFont.newGlyphWithName_changeName_(arg0, arg1, /)`
+- `GSFont.newScriptingObjectOfClass_forValueForKey_withContentsValue_properties_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.newTab(self, tabText='')`
+- `GSFont.newTaggedNSStringWithASCIIBytes__length__(arg0, arg1, /)`
+- `GSFont.numberForId_(arg0, /)`
+- `GSFont.numberForName_(arg0, /)`
+- `GSFont.objectInAllGlyphsAtIndex_(arg0, /)`
+- `GSFont.objectInAxesAtIndex_(arg0, /)`
+- `GSFont.objectInClassesAtIndex_(arg0, /)`
+- `GSFont.objectInCustomParametersAtIndex_(arg0, /)`
+- `GSFont.objectInFeaturePrefixesAtIndex_(arg0, /)`
+- `GSFont.objectInFeaturesAtIndex_(arg0, /)`
+- `GSFont.objectInFontMastersAtIndex_(arg0, /)`
+- `GSFont.objectInGlyphsAtIndex_(arg0, /)`
+- `GSFont.objectInInstancesAtIndex_(arg0, /)`
+- `GSFont.objectInMetricsAtIndex_(arg0, /)`
+- `GSFont.objectInMetricsWithName_(arg0, /)`
+- `GSFont.objectInMetricsWithType_withName_(arg0, arg1, /)`
+- `GSFont.objectInMetricsWithType_withName_filter_(arg0, arg1, arg2, /)`
+- `GSFont.objectInNumbersAtIndex_(arg0, /)`
+- `GSFont.objectInPropertiesAtIndex_(arg0, /)`
+- `GSFont.objectInStemsAtIndex_(arg0, /)`
+- `GSFont.objectSpecifier()`
+- `GSFont.objectSpecifier()`
+- `GSFont.observationInfo()`
+- `GSFont.observeValueForKeyPath_ofObject_change_context_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.optionDescriptionsForBinding_(arg0, /)`
+- `GSFont.ownsDestinationObjectsForRelationshipKey_(arg0, /)`
+- `GSFont.panose()`
+- `GSFont.pep_afterDelay_(arg0, /)`
+- `GSFont.pep_getInvocation_(arg0, /)`
+- `GSFont.pep_onMainThread()`
+- `GSFont.pep_onMainThreadIfNecessary()`
+- `GSFont.pep_onOperationQueue_(arg0, /)`
+- `GSFont.pep_onOperationQueue_priority_(arg0, arg1, /)`
+- `GSFont.pep_onThread_(arg0, /)`
+- `GSFont.pep_onThread_immediateForMatchingThread_(arg0, arg1, /)`
+- `GSFont.performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSFont.performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSFont.performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.performSelector_(arg0, /)`
+- `GSFont.performSelector_object_afterDelay_(arg0, arg1, arg2, /)`
+- `GSFont.performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont.performSelector_withObject_(arg0, arg1, /)`
+- `GSFont.performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSFont.performSelector_withObject_afterDelay_ignoreMenuTracking_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.performSelector_withObject_withObject_(arg0, arg1, arg2, /)`
+- `GSFont.pkaxRespondsToSelector_fromExtrasProtocol_(arg0, arg1, /)`
+- `GSFont.pkaxValueForKey_(arg0, /)`
+- `GSFont.postProcess()`
+- `GSFont.postRead_(arg0, /)`
+- `GSFont.preWrite_(arg0, /)`
+- `GSFont.preferredFamilyNames_(arg0, /)`
+- `GSFont.preloadCharCache()`
+- `GSFont.prepareForInterfaceBuilder()`
+- `GSFont.prepareName2Glyph()`
+- `GSFont.propertyForName_(arg0, /)`
+- `GSFont.propertyForName_languageTag_(arg0, arg1, /)`
+- `GSFont.propertyListValueFormat_(arg0, /)`
+- `GSFont.pyobjc_performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSFont.pyobjc_performSelectorOnMainThread_withObject_(arg0, arg1, /)`
+- `GSFont.pyobjc_performSelectorOnMainThread_withObject_modes_(arg0, arg1, arg2, /)`
+- `GSFont.pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSFont.pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.pyobjc_performSelector_onThread_withObject_(arg0, arg1, arg2, /)`
+- `GSFont.pyobjc_performSelector_onThread_withObject_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.pyobjc_performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.pyobjc_performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont.pyobjc_performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSFont.pyobjc_performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.readGlyphFiles_format_error_(arg0, arg1, arg2, /)`
+- `GSFont.readKerningFromDict_(arg0, /)`
+- `GSFont.readUIState_format_error_(arg0, arg1, arg2, /)`
+- `GSFont.readWithGlyphsParser_(arg0, /)`
+- `GSFont.receiveObservedError_(arg0, /)`
+- `GSFont.receiveObservedValue_(arg0, /)`
+- `GSFont.release()`
+- `GSFont.releaseRenderedTexture_forCGLContext_(arg0, arg1, /)`
+- `GSFont.reloadLinkedFonts_(arg0, /)`
+- `GSFont.removeAxesAtIndexes_(arg0, /)`
+- `GSFont.removeClass_(arg0, /)`
+- `GSFont.removeContextKerningForFontMasterID_leftKey_rightKey_before_after_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont.removeFeaturePrefix_(arg0, /)`
+- `GSFont.removeFeature_(arg0, /)`
+- `GSFont.removeFontMasterAndContent_(arg0, /)`
+- `GSFont.removeFontMaster_(arg0, /)`
+- `GSFont.removeFontMastersAtIndexes_(arg0, /)`
+- `GSFont.removeGlyph_(arg0, /)`
+- `GSFont.removeGlyphsAtIndexes_(arg0, /)`
+- `GSFont.removeGlyphs_(arg0, /)`
+- `GSFont.removeInstance_(arg0, /)`
+- `GSFont.removeInstances_(arg0, /)`
+- `GSFont.removeKerningForFontMasterID_leftKey_rightKey_(arg0, arg1, arg2, /)`
+- `GSFont.removeKerningForFontMasterID_leftKey_rightKey_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.removeKerningForPair(self, FontMasterID, LeftKerningId, RightKerningId, direction=0)`
+- `GSFont.removeObjectFromAllGlyphsAtIndex_(arg0, /)`
+- `GSFont.removeObjectFromAxesAtIndex_(arg0, /)`
+- `GSFont.removeObjectFromAxes_(arg0, /)`
+- `GSFont.removeObjectFromClassesAtIndex_(arg0, /)`
+- `GSFont.removeObjectFromCustomParametersAtIndex_(arg0, /)`
+- `GSFont.removeObjectFromCustomParametersForKey_(arg0, /)`
+- `GSFont.removeObjectFromCustomParameters_(arg0, /)`
+- `GSFont.removeObjectFromFeaturePrefixesAtIndex_(arg0, /)`
+- `GSFont.removeObjectFromFeaturesAtIndex_(arg0, /)`
+- `GSFont.removeObjectFromFontMastersAtIndex_(arg0, /)`
+- `GSFont.removeObjectFromGlyphsAtIndex_(arg0, /)`
+- `GSFont.removeObjectFromInstancesAtIndex_(arg0, /)`
+- `GSFont.removeObjectFromMetricsAtIndex_(arg0, /)`
+- `GSFont.removeObjectFromMetrics_(arg0, /)`
+- `GSFont.removeObjectFromNumbersAtIndex_(arg0, /)`
+- `GSFont.removeObjectFromNumbers_(arg0, /)`
+- `GSFont.removeObjectFromPropertiesAtIndex_(arg0, /)`
+- `GSFont.removeObjectFromProperties_(arg0, /)`
+- `GSFont.removeObjectFromStemsAtIndex_(arg0, /)`
+- `GSFont.removeObjectFromStems_(arg0, /)`
+- `GSFont.removeObject_fromBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSFont.removeObject_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSFont.removeObservation_(arg0, /)`
+- `GSFont.removeObservation_forObservableKeyPath_(arg0, arg1, /)`
+- `GSFont.removeObserver_forKeyPath_(arg0, arg1, /)`
+- `GSFont.removeObserver_forKeyPath_context_(arg0, arg1, arg2, /)`
+- `GSFont.removePropertiesAtIndexes_(arg0, /)`
+- `GSFont.removeUserDataForKey_(arg0, /)`
+- `GSFont.removeValueAtIndex_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSFont.renderToBuffer_withBytesPerRow_pixelFormat_forBounds_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.renderWithCGLContext_forBounds_(arg0, arg1, /)`
+- `GSFont.replaceFontMasterAtIndex_withFontMaster_(arg0, arg1, /)`
+- `GSFont.replaceMasterID_toID_(arg0, arg1, /)`
+- `GSFont.replaceObjectInAxesAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont.replaceObjectInClassesAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont.replaceObjectInCustomParametersAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont.replaceObjectInFeaturePrefixesAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont.replaceObjectInFeaturesAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont.replaceObjectInGlyphsAtIndex__withObject_(arg0, arg1, /)`
+- `GSFont.replaceObjectInInstancesAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont.replaceObjectInPropertiesAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont.replaceValueAtIndex_inPropertyWithKey_withValue_(arg0, arg1, arg2, /)`
+- `GSFont.replacementObjectForArchiver_(arg0, /)`
+- `GSFont.replacementObjectForCoder_(arg0, /)`
+- `GSFont.replacementObjectForKeyedArchiver_(arg0, /)`
+- `GSFont.replacementObjectForPortCoder_(arg0, /)`
+- `GSFont.resetCache()`
+- `GSFont.resetFeatureErrors()`
+- `GSFont.resolveForwardingConflictWithPreviousMetadata_forKey_(arg0, arg1, /)`
+- `GSFont.respondsToSelector_(arg0, /)`
+- `GSFont.retain()`
+- `GSFont.retainCount()`
+- `GSFont.retainWeakReference()`
+- `GSFont.safari_isNSBoolean()`
+- `GSFont.safari_postKVONotificationsForKey_aroundBlock_(arg0, arg1, /)`
+- `GSFont.safari_removeDeallocationSentinelForObserver_(arg0, /)`
+- `GSFont.safari_setDeallocationSentinelForObserver_(arg0, /)`
+- `GSFont.safari_setDeallocationSentinelForObserver_withContext_(arg0, arg1, /)`
+- `GSFont.save(self, path=None, formatVersion=None, makeCopy=False)`
+- `GSFont.saveNameForGlyph_(arg0, /)`
+- `GSFont.saveNameForName_(arg0, /)`
+- `GSFont.saveSuffixForGlyph_(arg0, /)`
+- `GSFont.saveToFile_format_type_bundlePath_error_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont.saveToURL_error_(arg0, arg1, /)`
+- `GSFont.saveToURL_type_error_(arg0, arg1, arg2, /)`
+- `GSFont.saveToURL_type_format_error_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.scaleBy_(arg0, /)`
+- `GSFont.scaleMetricsKey_scale_(arg0, arg1, /)`
+- `GSFont.scriptingProperties()`
+- `GSFont.scriptingValueForSpecifier_(arg0, /)`
+- `GSFont.selectGlyphs_(arg0, /)`
+- `GSFont.self()`
+- `GSFont.setAccessibilityBrailleMapRenderRegion_(arg0, /)`
+- `GSFont.setAccessibilityBrailleMapRenderer_(arg0, /)`
+- `GSFont.setAllGlyphs_(arg0, /)`
+- `GSFont.setAppVersion_(arg0, /)`
+- `GSFont.setAssociatedObject_(arg0, /)`
+- `GSFont.setAxes_(arg0, /)`
+- `GSFont.setClasses_(arg0, /)`
+- `GSFont.setCompositorFont_(arg0, /)`
+- `GSFont.setContextKerningForFontMasterID_leftKey_rightKey_value_before_after_(arg0, arg1, arg2, arg3, arg4, arg5, /)`
+- `GSFont.setCustomParameters_(arg0, /)`
+- `GSFont.setCustomValue_forKey_(arg0, arg1, /)`
+- `GSFont.setDate_(arg0, /)`
+- `GSFont.setDisabledChangeKeys_(arg0, /)`
+- `GSFont.setDisablesAutomaticAlignment_(arg0, /)`
+- `GSFont.setDisablesNiceNames_(arg0, /)`
+- `GSFont.setDisplayStrings_(arg0, /)`
+- `GSFont.setFeaturePrefixes_(arg0, /)`
+- `GSFont.setFeatures_(arg0, /)`
+- `GSFont.setFontMasters_(arg0, /)`
+- `GSFont.setFontName_(arg0, /)`
+- `GSFont.setFontType_(arg0, /)`
+- `GSFont.setFormatVersion_(arg0, /)`
+- `GSFont.setGlyphOrder_(arg0, /)`
+- `GSFont.setGlyphs_(arg0, /)`
+- `GSFont.setGridMain_(arg0, /)`
+- `GSFont.setGridSubDivision_(arg0, /)`
+- `GSFont.setIgnoreCompatibilityWarning_(arg0, /)`
+- `GSFont.setImportedFontMasters_(arg0, /)`
+- `GSFont.setImportedFonts_(arg0, /)`
+- `GSFont.setImportedGlyphs_(arg0, /)`
+- `GSFont.setInstances_(arg0, /)`
+- `GSFont.setKeepAlternatesTogether_(arg0, /)`
+- `GSFont.setKerningContext_(arg0, /)`
+- `GSFont.setKerningForFontMasterID_LeftKey_RightKey_Value_direction_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont.setKerningForFontMasterID_leftKey_rightKey_value_(arg0, arg1, arg2, arg3, /)`
+- `GSFont.setKerningForFontMasterID_leftKey_rightKey_value_direction_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont.setKerningForPair(self, FontMasterID, LeftKerningId, RightKerningId, Value, direction=0)`
+- `GSFont.setKerningLTR_(arg0, /)`
+- `GSFont.setKerningRTL_(arg0, /)`
+- `GSFont.setKerningVertical_(arg0, /)`
+- `GSFont.setKerning_forMaster_direction_(arg0, arg1, arg2, /)`
+- `GSFont.setKeyboardIncrementBig_(arg0, /)`
+- `GSFont.setKeyboardIncrementHuge_(arg0, /)`
+- `GSFont.setKeyboardIncrement_(arg0, /)`
+- `GSFont.setMetrics_(arg0, /)`
+- `GSFont.setNilValueForKey_(arg0, /)`
+- `GSFont.setNilValueForKey_(arg0, /)`
+- `GSFont.setNote_(arg0, /)`
+- `GSFont.setNumbers_(arg0, /)`
+- `GSFont.setObservationInfo_(arg0, /)`
+- `GSFont.setObservation_forObservingKeyPath_(arg0, arg1, /)`
+- `GSFont.setParent_(arg0, /)`
+- `GSFont.setPreviewRemoveOverlap_(arg0, /)`
+- `GSFont.setProperties_(arg0, /)`
+- `GSFont.setProperty_value_languageTag_(arg0, arg1, arg2, /)`
+- `GSFont.setScriptingProperties_(arg0, /)`
+- `GSFont.setSnapToObjects_(arg0, /)`
+- `GSFont.setStems_(arg0, /)`
+- `GSFont.setStoredFileType_(arg0, /)`
+- `GSFont.setStoredFormatVersion_(arg0, /)`
+- `GSFont.setTempData_(arg0, /)`
+- `GSFont.setTempData_forKey_(arg0, arg1, /)`
+- `GSFont.setTempOTFFont_(arg0, /)`
+- `GSFont.setTempProduction2NiceNames_(arg0, /)`
+- `GSFont.setUndoManager_(arg0, /)`
+- `GSFont.setUndoValue_forKey_(arg0, arg1, /)`
+- `GSFont.setUnitsPerEm_(arg0, /)`
+- `GSFont.setUserData_(arg0, /)`
+- `GSFont.setUserData_forKey_(arg0, arg1, /)`
+- `GSFont.setUserInterfaceItemIdentifier_(arg0, /)`
+- `GSFont.setValue_forKeyPath_(arg0, arg1, /)`
+- `GSFont.setValue_forKey_(arg0, arg1, /)`
+- `GSFont.setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSFont.setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSFont.setValuesForKeysWithDictionary_(arg0, /)`
+- `GSFont.setVersionMajor_(arg0, /)`
+- `GSFont.setVersionMinor_(arg0, /)`
+- `GSFont.setVersion_(arg0, /)`
+- `GSFont.settingsView_clearSettingForKey_(arg0, arg1, /)`
+- `GSFont.settingsView_renameKey_toKey_(arg0, arg1, arg2, /)`
+- `GSFont.settingsView_setSetting_forKey_(arg0, arg1, arg2, /)`
+- `GSFont.settingsView_settingForKey_(arg0, arg1, /)`
+- `GSFont.settingsView_shouldRenameKey_(arg0, arg1, /)`
+- `GSFont.setupCustomParametersCache()`
+- `GSFont.shouldColorMatch()`
+- `GSFont.show(self)`
+- `GSFont.sortGlyphs()`
+- `GSFont.sortGlyphs_withList_(arg0, arg1, /)`
+- `GSFont.sortKerning()`
+- `GSFont.sortMetrics()`
+- `GSFont.stemForId_(arg0, /)`
+- `GSFont.stemForName_(arg0, /)`
+- `GSFont.stopUpdateInterface()`
+- `GSFont.storedFileType()`
+- `GSFont.storedFormatVersion()`
+- `GSFont.storedValueForKey_(arg0, /)`
+- `GSFont.stringValueSafe()`
+- `GSFont.stringValueSafe_(arg0, /)`
+- `GSFont.superclass()`
+- `GSFont.supportedBufferPixelFormats()`
+- `GSFont.supportedRenderedTexturePixelFormats()`
+- `GSFont.supportsBSXPCSecureCoding()`
+- `GSFont.supportsRBSXPCSecureCoding()`
+- `GSFont.takeStoredValue_forKey_(arg0, arg1, /)`
+- `GSFont.takeStoredValuesFromDictionary_(arg0, /)`
+- `GSFont.takeValue_forKeyPath_(arg0, arg1, /)`
+- `GSFont.takeValue_forKey_(arg0, arg1, /)`
+- `GSFont.takeValuesFromDictionary_(arg0, /)`
+- `GSFont.tempDataForKey_(arg0, /)`
+- `GSFont.tempOTFFont()`
+- `GSFont.tempProduction2NiceNames()`
+- `GSFont.toManyRelationshipKeys()`
+- `GSFont.toOneRelationshipKeys()`
+- `GSFont.un_safeBoolValue()`
+- `GSFont.unableToSetNilForKey_(arg0, /)`
+- `GSFont.unbind_(arg0, /)`
+- `GSFont.undoManager()`
+- `GSFont.undoManagerCheck()`
+- `GSFont.unitsPerEm()`
+- `GSFont.unlockReadGlyphs()`
+- `GSFont.unlockWriteGlyphs()`
+- `GSFont.updateCacheForGlyph_(arg0, /)`
+- `GSFont.updateCacheForGlyph_oldName_(arg0, arg1, /)`
+- `GSFont.updateFeatures(self)`
+- `GSFont.updateFeatures_(arg0, /)`
+- `GSFont.updateMetrics()`
+- `GSFont.updateMetrics_(arg0, /)`
+- `GSFont.updateTags()`
+- `GSFont.userDataForKey_(arg0, /)`
+- `GSFont.userInterfaceItemIdentifier()`
+- `GSFont.utf8ValueSafe()`
+- `GSFont.utf8ValueSafe_(arg0, /)`
+- `GSFont.validateFamilyName_error_(arg0, arg1, /)`
+- `GSFont.validateTakeValue_forKeyPath_(arg0, arg1, /)`
+- `GSFont.validateUnitsPerEm_error_(arg0, arg1, /)`
+- `GSFont.validateValue_forKeyPath_error_(arg0, arg1, arg2, /)`
+- `GSFont.validateValue_forKey_(arg0, arg1, /)`
+- `GSFont.validateValue_forKey_error_(arg0, arg1, arg2, /)`
+- `GSFont.validateValue_forKey_error_(arg0, arg1, arg2, /)`
+- `GSFont.validateVersionMajor_error_(arg0, arg1, /)`
+- `GSFont.valueAtIndex_inPropertyWithKey_(arg0, arg1, /)`
+- `GSFont.valueClassForBinding_(arg0, /)`
+- `GSFont.valueForKeyPath_(arg0, /)`
+- `GSFont.valueForKey_(arg0, /)`
+- `GSFont.valueForUndefinedKey_(arg0, /)`
+- `GSFont.valueForUndefinedKey_(arg0, /)`
+- `GSFont.valueWithName_inPropertyWithKey_(arg0, arg1, /)`
+- `GSFont.valueWithUniqueID_inPropertyWithKey_(arg0, arg1, /)`
+- `GSFont.valuesForKeys_(arg0, /)`
+- `GSFont.variationAxesRanges_(arg0, /)`
+- `GSFont.version()`
+- `GSFont.vk_loggingDescription()`
+- `GSFont.vk_loggingIdentifier()`
+- `GSFont.vk_prettyLoggingDescription()`
+- `GSFont.willChangeValueForKey_(arg0, /)`
+- `GSFont.willChangeValueForKey_(arg0, /)`
+- `GSFont.willChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSFont.willChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSFont.writeKerningDict_toFile_GlyphID2Glyph_(arg0, arg1, arg2, /)`
+- `GSFont.writeKerningToFile_formatVersion_error_(arg0, arg1, arg2, /)`
+- `GSFont.zone()`
+- `GSFont (instance)..cxx_destruct()`
+- `GSFont (instance).CAMLType()`
+- `GSFont (instance).CAMLTypeForKey_(arg0, /)`
+- `GSFont (instance).CAMLTypeSupportedForKey_(arg0, /)`
+- `GSFont (instance).CA_addValue_multipliedBy_(arg0, arg1, /)`
+- `GSFont (instance).CA_archivingValueForKey_(arg0, /)`
+- `GSFont (instance).CA_copyNumericValue_(arg0, /)`
+- `GSFont (instance).CA_copyRenderValue()`
+- `GSFont (instance).CA_copyRenderValueWithColorspace_(arg0, /)`
+- `GSFont (instance).CA_distanceToValue_(arg0, /)`
+- `GSFont (instance).CA_interpolateValue_byFraction_(arg0, arg1, /)`
+- `GSFont (instance).CA_interpolateValues___interpolator_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).CA_numericValueCount()`
+- `GSFont (instance).CA_prepareRenderValue()`
+- `GSFont (instance).CA_roundToIntegerFromValue_(arg0, /)`
+- `GSFont (instance).CA_validateValue_forKey_(arg0, arg1, /)`
+- `GSFont (instance).CKAssignToContainerWithID_(arg0, /)`
+- `GSFont (instance).CKDescription()`
+- `GSFont (instance).CKDescriptionPropertiesWithPublic_private_shouldExpand_(arg0, arg1, arg2, /)`
+- `GSFont (instance).CKDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSFont (instance).CKExpandedDescription()`
+- `GSFont (instance).CKHashedDescription()`
+- `GSFont (instance).CKObjectDescriptionRedact_(arg0, /)`
+- `GSFont (instance).CKObjectDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSFont (instance).CKPropertiesDescription()`
+- `GSFont (instance).CKPropertiesDescriptionStringFromProperties_(arg0, /)`
+- `GSFont (instance).CKRedactedDescription()`
+- `GSFont (instance).CKSingleLineDescription()`
+- `GSFont (instance).CKUnredactedDescription()`
+- `GSFont (instance).IKImageRepresentationWithType_(arg0, /)`
+- `GSFont (instance).NSLifeguard_autorelease()`
+- `GSFont (instance).NSRepresentation()`
+- `GSFont (instance).NS_addTiledLayerDescendent_(arg0, /)`
+- `GSFont (instance).NS_observationForKeyPath_options_block_(arg0, arg1, arg2, /)`
+- `GSFont (instance).NS_observationForKeyPaths_options_block_(arg0, arg1, arg2, /)`
+- `GSFont (instance).NS_removeTiledLayerDescendent_(arg0, /)`
+- `GSFont (instance).NS_tiledLayerVisibleRect()`
+- `GSFont (instance).RBSIsXPCObject()`
+- `GSFont (instance).SCNUI_name()`
+- `GSFont (instance).SCN_setupDisplayLinkWithQueue_screen_policy_(arg0, arg1, arg2, /)`
+- `GSFont (instance).abCaseInsensitiveIsEqual_(arg0, /)`
+- `GSFont (instance).abDictionaryWithValuesForKeyPaths_(arg0, /)`
+- `GSFont (instance).abRemoveObserverIgnoringExceptions_forKeyPath_(arg0, arg1, /)`
+- `GSFont (instance).accessibilityAddTemporaryChild_(arg0, /)`
+- `GSFont (instance).accessibilityAllowsOverriddenAttributesWhenIgnored()`
+- `GSFont (instance).accessibilityArrayAttributeCount_(arg0, /)`
+- `GSFont (instance).accessibilityArrayAttributeValues_index_maxCount_(arg0, arg1, arg2, /)`
+- `GSFont (instance).accessibilityAttributeValue_forParameter_(arg0, arg1, /)`
+- `GSFont (instance).accessibilityAttributedValueForStringAttributeAttributeForParameter_(arg0, /)`
+- `GSFont (instance).accessibilityBrailleMapRenderRegion()`
+- `GSFont (instance).accessibilityBrailleMapRenderer()`
+- `GSFont (instance).accessibilityDecodeOverriddenAttributes_(arg0, /)`
+- `GSFont (instance).accessibilityEncodeOverriddenAttributes_(arg0, /)`
+- `GSFont (instance).accessibilityIndexForChildUIElementAttributeForParameter_(arg0, /)`
+- `GSFont (instance).accessibilityIndexOfChild_(arg0, /)`
+- `GSFont (instance).accessibilityOverriddenAttributes()`
+- `GSFont (instance).accessibilityParameterizedAttributeNames()`
+- `GSFont (instance).accessibilityPerformShowMenuOfChild_(arg0, /)`
+- `GSFont (instance).accessibilityPresenterProcessIdentifier()`
+- `GSFont (instance).accessibilityRemoveTemporaryChild_(arg0, /)`
+- `GSFont (instance).accessibilityReplaceRange_withText_(arg0, arg1, /)`
+- `GSFont (instance).accessibilitySetOverrideValue_forAttribute_(arg0, arg1, /)`
+- `GSFont (instance).accessibilitySetPresenterProcessIdentifier_(arg0, /)`
+- `GSFont (instance).accessibilityShouldSendNotification_(arg0, /)`
+- `GSFont (instance).accessibilityShouldUseUniqueId()`
+- `GSFont (instance).accessibilitySupportsCustomElementData()`
+- `GSFont (instance).accessibilitySupportsNotifications()`
+- `GSFont (instance).accessibilitySupportsOverriddenAttributes()`
+- `GSFont (instance).accessibilityTemporaryChildren()`
+- `GSFont (instance).accessibilityVisibleArea()`
+- `GSFont (instance).addAxis_(arg0, /)`
+- `GSFont (instance).addChainedObservers_(arg0, /)`
+- `GSFont (instance).addClassFromCode_(arg0, /)`
+- `GSFont (instance).addClass_(arg0, /)`
+- `GSFont (instance).addCustomParameter_(arg0, /)`
+- `GSFont (instance).addFeaturePrefix_(arg0, /)`
+- `GSFont (instance).addFeature_(arg0, /)`
+- `GSFont (instance).addFontAsNewMaster_(arg0, /)`
+- `GSFont (instance).addFontMasterAndContent_(arg0, /)`
+- `GSFont (instance).addFontMaster_(arg0, /)`
+- `GSFont (instance).addGlyphCopy_(arg0, /)`
+- `GSFont (instance).addGlyphFast_(arg0, /)`
+- `GSFont (instance).addGlyph_(arg0, /)`
+- `GSFont (instance).addGlyphsFromArray_(arg0, /)`
+- `GSFont (instance).addInstance_(arg0, /)`
+- `GSFont (instance).addKerning_forMaster_direction_(arg0, arg1, arg2, /)`
+- `GSFont (instance).addMetric_(arg0, /)`
+- `GSFont (instance).addNumber_(arg0, /)`
+- `GSFont (instance).addObject_toBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSFont (instance).addObject_toPropertyWithKey_(arg0, arg1, /)`
+- `GSFont (instance).addObservationTransformer_(arg0, /)`
+- `GSFont (instance).addObserverBlock_(arg0, /)`
+- `GSFont (instance).addObserver_(arg0, /)`
+- `GSFont (instance).addObserver_forKeyPath_options_context_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).addObserver_forObservableKeyPath_(arg0, arg1, /)`
+- `GSFont (instance).addProperty_(arg0, /)`
+- `GSFont (instance).addStem_(arg0, /)`
+- `GSFont (instance).addToGlyphDict_(arg0, /)`
+- `GSFont (instance).addUserData_(arg0, /)`
+- `GSFont (instance).akToolbarButtonItemType()`
+- `GSFont (instance).allGlyphs()`
+- `GSFont (instance).allLocalizedParameters_forKey_(arg0, arg1, /)`
+- `GSFont (instance).allMasterAtIndex_(arg0, /)`
+- `GSFont (instance).allMasters()`
+- `GSFont (instance).allPropertyKeys()`
+- `GSFont (instance).allTags()`
+- `GSFont (instance).allowsWeakReference()`
+- `GSFont (instance).applyGlyphSetParameters_error_(arg0, arg1, /)`
+- `GSFont (instance).associatedObject()`
+- `GSFont (instance).attemptRecoveryFromError_optionIndex_(arg0, arg1, /)`
+- `GSFont (instance).attemptRecoveryFromError_optionIndex_delegate_didRecoverSelector_contextInfo_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont (instance).attributeKeys()`
+- `GSFont (instance).autoContentAccessingProxy()`
+- `GSFont (instance).automaticFeatureForTag_(arg0, /)`
+- `GSFont (instance).autorelease()`
+- `GSFont (instance).awakeAfterUsingCoder_(arg0, /)`
+- `GSFont (instance).awakeFromNib()`
+- `GSFont (instance).axesValueSteps_(arg0, /)`
+- `GSFont (instance).axesValueSteps_glyph_(arg0, arg1, /)`
+- `GSFont (instance).axisForId_(arg0, /)`
+- `GSFont (instance).axisForName_(arg0, /)`
+- `GSFont (instance).axisForTag_(arg0, /)`
+- `GSFont (instance).backportRTLKerning()`
+- `GSFont (instance).baseName_forWildCard_(arg0, arg1, /)`
+- `GSFont (instance).bind_toObject_withKeyPath_options_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).boolValueSafe()`
+- `GSFont (instance).boolValueSafe_(arg0, /)`
+- `GSFont (instance).bs_isPlistableType()`
+- `GSFont (instance).bs_secureEncoded()`
+- `GSFont (instance).calculateDefaultWidth_(arg0, /)`
+- `GSFont (instance).canRenderWithCGLContext_(arg0, /)`
+- `GSFont (instance).changeName_to_(arg0, arg1, /)`
+- `GSFont (instance).charStringFromDisplayString_(arg0, /)`
+- `GSFont (instance).characterForGlyph(arg0, /)`
+- `GSFont (instance).characterForGlyph_(arg0, /)`
+- `GSFont (instance).charsCache()`
+- `GSFont (instance).ck_bindInStatement_atIndex_(arg0, arg1, /)`
+- `GSFont (instance).cksqlcs_appendSQLConstantValueToString_(arg0, /)`
+- `GSFont (instance).cksqlcs_archivedObjectBindingValue_(arg0, /)`
+- `GSFont (instance).cksqlcs_bindArchivedObject_index_db_(arg0, arg1, arg2, /)`
+- `GSFont (instance).cksqlcs_bindBlob_index_db_(arg0, arg1, arg2, /)`
+- `GSFont (instance).cksqlcs_bindDouble_index_db_(arg0, arg1, arg2, /)`
+- `GSFont (instance).cksqlcs_bindInt64_index_db_(arg0, arg1, arg2, /)`
+- `GSFont (instance).cksqlcs_bindText_index_db_(arg0, arg1, arg2, /)`
+- `GSFont (instance).cksqlcs_blobBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSFont (instance).cksqlcs_doubleBindingValue_(arg0, /)`
+- `GSFont (instance).cksqlcs_int64BindingValue_(arg0, /)`
+- `GSFont (instance).cksqlcs_textBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSFont (instance).classCode()`
+- `GSFont (instance).classDescription()`
+- `GSFont (instance).classDescriptionForDestinationKey_(arg0, /)`
+- `GSFont (instance).classForArchiver()`
+- `GSFont (instance).classForCoder()`
+- `GSFont (instance).classForKeyedArchiver()`
+- `GSFont (instance).classForPortCoder()`
+- `GSFont (instance).classForTag_(arg0, /)`
+- `GSFont (instance).className()`
+- `GSFont (instance).class__()`
+- `GSFont (instance).cleanUpKerningForDirection_(arg0, /)`
+- `GSFont (instance).clearProperties()`
+- `GSFont (instance).close(ignoreChanges=True)`
+- `GSFont (instance).coalescedPerformSelector_(arg0, /)`
+- `GSFont (instance).coerceValueForScriptingProperties_(arg0, /)`
+- `GSFont (instance).coerceValue_forKey_(arg0, arg1, /)`
+- `GSFont (instance).compileFeatures()`
+- `GSFont (instance).compileTempFontError_(arg0, /)`
+- `GSFont (instance).componentGlyphNamesForGlyph_(arg0, /)`
+- `GSFont (instance).compositionParameterView_didChangeParameterWithKey_(arg0, arg1, /)`
+- `GSFont (instance).compositionParameterView_shouldDisplayParameterWithKey_attributes_(arg0, arg1, arg2, /)`
+- `GSFont (instance).compositionPickerViewDidStartAnimating_(arg0, /)`
+- `GSFont (instance).compositionPickerViewWillStopAnimating_(arg0, /)`
+- `GSFont (instance).compositionPickerView_didLoadComposition_(arg0, arg1, /)`
+- `GSFont (instance).compositionPickerView_didSelectComposition_(arg0, arg1, /)`
+- `GSFont (instance).compositionPickerView_draggingEnteredComposition_sender_(arg0, arg1, arg2, /)`
+- `GSFont (instance).compositionPickerView_keyDown_(arg0, arg1, /)`
+- `GSFont (instance).compositionPickerView_performDragOperationOnComposition_sender_(arg0, arg1, arg2, /)`
+- `GSFont (instance).compositionPickerView_willSelectComposition_(arg0, arg1, /)`
+- `GSFont (instance).compositorFont()`
+- `GSFont (instance).compressKerningForDirection_(arg0, /)`
+- `GSFont (instance).conformsToProtocol_(arg0, /)`
+- `GSFont (instance).contextKerningForFontMasterID_leftKey_rightKey_before_after_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont (instance).convertKerning_(arg0, /)`
+- `GSFont (instance).copy()`
+- `GSFont (instance).copyConvertKerning_(arg0, /)`
+- `GSFont (instance).copyGlyphs_sourceFontMasterID_targetFontMasterID_addMissing_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).copyInfoFrom_sourceFontMasterID_targetFontMasterID_(arg0, arg1, arg2, /)`
+- `GSFont (instance).copyKerningFromFont_sourceFontMasterID_targetFontMasterID_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).copyRenderedTextureForCGLContext_pixelFormat_bounds_isFlipped_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).copyScriptingValue_forKey_withProperties_(arg0, arg1, arg2, /)`
+- `GSFont (instance).copyWithZone_(arg0, /)`
+- `GSFont (instance).count()`
+- `GSFont (instance).countOfAllGlyphs()`
+- `GSFont (instance).countOfAllMasters()`
+- `GSFont (instance).countOfAxes()`
+- `GSFont (instance).countOfClasses()`
+- `GSFont (instance).countOfCustomParameters()`
+- `GSFont (instance).countOfFeaturePrefixes()`
+- `GSFont (instance).countOfFeatures()`
+- `GSFont (instance).countOfFontMasters()`
+- `GSFont (instance).countOfGlyphs()`
+- `GSFont (instance).countOfInstances()`
+- `GSFont (instance).countOfMetrics()`
+- `GSFont (instance).countOfNumbers()`
+- `GSFont (instance).countOfProperties()`
+- `GSFont (instance).countOfStems()`
+- `GSFont (instance).countOfUserData()`
+- `GSFont (instance).createImageWithOptions_(arg0, /)`
+- `GSFont (instance).createKeyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSFont (instance).createOptimizedProviderWithTransformation_cropping_(arg0, arg1, /)`
+- `GSFont (instance).customBoolValueForKey_(arg0, /)`
+- `GSFont (instance).customColorValueForKey_(arg0, /)`
+- `GSFont (instance).customParameterActiveForKey_(arg0, /)`
+- `GSFont (instance).customParameterForKey_(arg0, /)`
+- `GSFont (instance).customParameterFrom_toFont_(arg0, arg1, /)`
+- `GSFont (instance).customValueForKey_(arg0, /)`
+- `GSFont (instance).dealloc()`
+- `GSFont (instance).debugDescription()`
+- `GSFont (instance).defaultFontMaster()`
+- `GSFont (instance).defaultFontMaster_(arg0, /)`
+- `GSFont (instance).defaultPropertyForName_(arg0, /)`
+- `GSFont (instance).deleteGlyphs_completionHandler_error_(arg0, arg1, arg2, /)`
+- `GSFont (instance).descriptionAtIndent_(arg0, /)`
+- `GSFont (instance).dictionaryWithValuesForKeys_(arg0, /)`
+- `GSFont (instance).didChangeValueForKey_(arg0, /)`
+- `GSFont (instance).didChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSFont (instance).didChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSFont (instance).disableUndo()`
+- `GSFont (instance).disableUpdateInterface()`
+- `GSFont (instance).disabledChangeKeys()`
+- `GSFont (instance).doesContain_(arg0, /)`
+- `GSFont (instance).doesNotRecognizeSelector_(arg0, /)`
+- `GSFont (instance).doubleValueSafe()`
+- `GSFont (instance).doubleValueSafe_(arg0, /)`
+- `GSFont (instance).elementDidChange_(arg0, /)`
+- `GSFont (instance).enableFutureUpdates()`
+- `GSFont (instance).enableUndo()`
+- `GSFont (instance).enableUpdateInterface()`
+- `GSFont (instance).encodeWithCAMLWriter_(arg0, /)`
+- `GSFont (instance).encodeWithCoder_(arg0, /)`
+- `GSFont (instance).entityName()`
+- `GSFont (instance).expandWildcardsInNameList_contextLabel_error_(arg0, arg1, arg2, /)`
+- `GSFont (instance).export(format='OTF', instances=None, fontPath=None, autoHint=True, removeOverlap=None, useSubroutines=True, useProductionNames=True, containers=None, decomposeSmartStuff=True)`
+- `GSFont (instance).exportingGlyphNames()`
+- `GSFont (instance).exposedBindings()`
+- `GSFont (instance).extractLanguageSystemsPrefixText_(arg0, /)`
+- `GSFont (instance).featureForTag_(arg0, /)`
+- `GSFont (instance).featurePrefixForTag_(arg0, /)`
+- `GSFont (instance).filterGlyphsWithInfos_(arg0, /)`
+- `GSFont (instance).filterGlyphs_(arg0, /)`
+- `GSFont (instance).filterKeepGlyphsCodes_(arg0, /)`
+- `GSFont (instance).filterKeepGlyphs_(arg0, /)`
+- `GSFont (instance).finalize()`
+- `GSFont (instance).finishObserving()`
+- `GSFont (instance).flushKeyBindings()`
+- `GSFont (instance).font()`
+- `GSFont (instance).fontMasterAtIndex_(arg0, /)`
+- `GSFont (instance).fontMasterForId_(arg0, /)`
+- `GSFont (instance).fontMasterForName_(arg0, /)`
+- `GSFont (instance).fontMasters()`
+- `GSFont (instance).fontType()`
+- `GSFont (instance).forwardInvocation_(arg0, /)`
+- `GSFont (instance).forwardingTargetForSelector_(arg0, /)`
+- `GSFont (instance).fp__ivarDescriptionForClass_(arg0, /)`
+- `GSFont (instance).fp__methodDescriptionForClass_(arg0, /)`
+- `GSFont (instance).fp_ivarDescription()`
+- `GSFont (instance).fp_methodDescription()`
+- `GSFont (instance).fp_shortMethodDescription()`
+- `GSFont (instance).generateGlyphs_callback_(arg0, arg1, /)`
+- `GSFont (instance).generateInstance_error_(arg0, arg1, /)`
+- `GSFont (instance).generateMetrics_(arg0, /)`
+- `GSFont (instance).generateVariable_error_(arg0, arg1, /)`
+- `GSFont (instance).getGlyphs_range_(arg0, arg1, /)`
+- `GSFont (instance).glyphAtIndex_(arg0, /)`
+- `GSFont (instance).glyphDictOperation_(arg0, /)`
+- `GSFont (instance).glyphForCharacter_(arg0, /)`
+- `GSFont (instance).glyphForId_(arg0, /)`
+- `GSFont (instance).glyphForNameFast_(arg0, /)`
+- `GSFont (instance).glyphForName_(arg0, /)`
+- `GSFont (instance).glyphForUnicodeFast_(arg0, /)`
+- `GSFont (instance).glyphForUnicode_(arg0, /)`
+- `GSFont (instance).glyphForUnicodes_(arg0, /)`
+- `GSFont (instance).glyphFromCharsCacheForCharFast_(arg0, /)`
+- `GSFont (instance).glyphFromCharsCacheForChar_(arg0, /)`
+- `GSFont (instance).glyphFromCharsCacheForUnicode_(arg0, /)`
+- `GSFont (instance).glyphHasChangedName_oldName_(arg0, arg1, /)`
+- `GSFont (instance).glyphNames()`
+- `GSFont (instance).glyphNamesForWildcard_contextLabel_error_(arg0, arg1, arg2, /)`
+- `GSFont (instance).glyphOrder()`
+- `GSFont (instance).glyphsAtIndexes_(arg0, /)`
+- `GSFont (instance).glyphsContainingComponentWithName_masterId_(arg0, arg1, /)`
+- `GSFont (instance).glyphsForNames_(arg0, /)`
+- `GSFont (instance).glyphsInfo()`
+- `GSFont (instance).gridMain()`
+- `GSFont (instance).handleQueryWithUnboundKey_(arg0, /)`
+- `GSFont (instance).handleTakeValue_forUnboundKey_(arg0, arg1, /)`
+- `GSFont (instance).hash()`
+- `GSFont (instance).if_setValueIfNonNil_forKey_(arg0, arg1, /)`
+- `GSFont (instance).if_setValueIfYES_forKey_(arg0, arg1, /)`
+- `GSFont (instance).ignoreCompatibilityWarning()`
+- `GSFont (instance).ikInMainLoopWait_(arg0, /)`
+- `GSFont (instance).imageBrowser_didValidateVisibleCellsAtIndexes_(arg0, arg1, /)`
+- `GSFont (instance).imageBrowser_willDisplayCellsAtIndexes_(arg0, arg1, /)`
+- `GSFont (instance).imageSubtitle()`
+- `GSFont (instance).imageTitle()`
+- `GSFont (instance).imageToDrawForCell_(arg0, /)`
+- `GSFont (instance).implementsSelector_(arg0, /)`
+- `GSFont (instance).importAFM_fontMaster_verticalMetrics_metrics_kerning_error_(arg0, arg1, arg2, arg3, arg4, arg5, /)`
+- `GSFont (instance).importFeatures_error_(arg0, arg1, /)`
+- `GSFont (instance).importedFontMasters()`
+- `GSFont (instance).importedFonts()`
+- `GSFont (instance).importedGlyphs()`
+- `GSFont (instance).indexOfFeature_(arg0, /)`
+- `GSFont (instance).indexOfFontMaster_(arg0, /)`
+- `GSFont (instance).indexOfGlyph_(arg0, /)`
+- `GSFont (instance).indexOfObjectInAxes_(arg0, /)`
+- `GSFont (instance).indexOfObjectInProperties_(arg0, /)`
+- `GSFont (instance).infoForBinding_(arg0, /)`
+- `GSFont (instance).init()`
+- `GSFont (instance).initWithCoder_(arg0, /)`
+- `GSFont (instance).initWithDict_error_(arg0, arg1, /)`
+- `GSFont (instance).initWithGlyphsFileAtPath_error_(arg0, arg1, /)`
+- `GSFont (instance).initWithURL_error_(arg0, arg1, /)`
+- `GSFont (instance).insertFontMaster_atIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertInstance_atIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertObject_inAllGlyphsAtIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertObject_inAxesAtIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertObject_inClassesAtIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertObject_inCustomParametersAtIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertObject_inFeaturePrefixesAtIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertObject_inFeaturesAtIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertObject_inFontMastersAtIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertObject_inGlyphsAtIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertObject_inInstancesAtIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertObject_inMetricsAtIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertObject_inNumbersAtIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertObject_inPropertiesAtIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertObject_inStemsAtIndex_(arg0, arg1, /)`
+- `GSFont (instance).insertValue_atIndex_inPropertyWithKey_(arg0, arg1, arg2, /)`
+- `GSFont (instance).insertValue_inPropertyWithKey_(arg0, arg1, /)`
+- `GSFont (instance).instanceNearestToPosition_distance_(arg0, arg1, /)`
+- `GSFont (instance).instancesUnique()`
+- `GSFont (instance).int64ValueSafe()`
+- `GSFont (instance).int64ValueSafe_(arg0, /)`
+- `GSFont (instance).interpolateFontMaster_scale_thin_error_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).interpolateLocalizable_valueForKey_intoMaster_(arg0, arg1, arg2, /)`
+- `GSFont (instance).interpolateStems_scale_error_stemsForMaster_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).interpolateZones_zones_scale_key_error_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont (instance).interpolate_valueForKey_defaults_(arg0, arg1, arg2, /)`
+- `GSFont (instance).invalidateCustomParameterCache()`
+- `GSFont (instance).inverseForRelationshipKey_(arg0, /)`
+- `GSFont (instance).isCaseInsensitiveLike_(arg0, /)`
+- `GSFont (instance).isEqualTo_(arg0, /)`
+- `GSFont (instance).isEqual_(arg0, /)`
+- `GSFont (instance).isFault()`
+- `GSFont (instance).isGreaterThanOrEqualTo_(arg0, /)`
+- `GSFont (instance).isGreaterThan_(arg0, /)`
+- `GSFont (instance).isKindOfClass_(arg0, /)`
+- `GSFont (instance).isLessThanOrEqualTo_(arg0, /)`
+- `GSFont (instance).isLessThan_(arg0, /)`
+- `GSFont (instance).isLike_(arg0, /)`
+- `GSFont (instance).isMemberOfClass_(arg0, /)`
+- `GSFont (instance).isNSArray__()`
+- `GSFont (instance).isNSCFConstantString__()`
+- `GSFont (instance).isNSData__()`
+- `GSFont (instance).isNSDate__()`
+- `GSFont (instance).isNSDictionary__()`
+- `GSFont (instance).isNSNumber__()`
+- `GSFont (instance).isNSObject__()`
+- `GSFont (instance).isNSOrderedSet__()`
+- `GSFont (instance).isNSSet__()`
+- `GSFont (instance).isNSString__()`
+- `GSFont (instance).isNSTimeZone__()`
+- `GSFont (instance).isNSValue__()`
+- `GSFont (instance).isNotEqualTo_(arg0, /)`
+- `GSFont (instance).isNull()`
+- `GSFont (instance).isProxy()`
+- `GSFont (instance).isToManyKey_(arg0, /)`
+- `GSFont (instance).isUpdateInterfaceEnabled()`
+- `GSFont (instance).keepAlternatesTogether()`
+- `GSFont (instance).keepsGlyphsCode_(arg0, /)`
+- `GSFont (instance).keepsGlyphs_(arg0, /)`
+- `GSFont (instance).kerningContext()`
+- `GSFont (instance).kerningDictForDirection_(arg0, /)`
+- `GSFont (instance).kerningFirstLayer_secondLayer_(arg0, arg1, /)`
+- `GSFont (instance).kerningForDirection_(arg0, /)`
+- `GSFont (instance).kerningForFontMasterDict_firstGlyph_secondGlyph_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).kerningForFontMasterID_LeftKey_RightKey_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).kerningForFontMasterID_firstGlyph_secondGlyph_(arg0, arg1, arg2, /)`
+- `GSFont (instance).kerningForFontMasterID_firstGlyph_secondGlyph_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).kerningForFontMasterID_leftKey_rightKey_(arg0, arg1, arg2, /)`
+- `GSFont (instance).kerningForFontMasterID_leftKey_rightKey_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).kerningForPair(FontMasterID, LeftKerningId, RightKerningId, direction=0)`
+- `GSFont (instance).keyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSFont (instance).legacyAxes()`
+- `GSFont (instance).localGlyphForId_(arg0, /)`
+- `GSFont (instance).localGlyphForName_(arg0, /)`
+- `GSFont (instance).localGlyphForUnicodeFast_(arg0, /)`
+- `GSFont (instance).localGlyphForUnicode_(arg0, /)`
+- `GSFont (instance).localGlyphForUnicodes_(arg0, /)`
+- `GSFont (instance).lockReadGlyphs()`
+- `GSFont (instance).lockWriteGlyphs()`
+- `GSFont (instance).makeComponentGlyph_(arg0, /)`
+- `GSFont (instance).makeOTFCompatibleFeatureCode()`
+- `GSFont (instance).makeSaveGlyphInfo_(arg0, /)`
+- `GSFont (instance).masterCount()`
+- `GSFont (instance).masterIDforHints_(arg0, /)`
+- `GSFont (instance).masterIDforMetrics_(arg0, /)`
+- `GSFont (instance).masterIDforMetrics_hasLink_(arg0, arg1, /)`
+- `GSFont (instance).masterKerning_direction_(arg0, arg1, /)`
+- `GSFont (instance).masterNearestToPosition_(arg0, /)`
+- `GSFont (instance).masterNearestToPosition_glyph_(arg0, arg1, /)`
+- `GSFont (instance).masterRangesInternMin_internDefault_internMax_externMin_externDefault_externMax_mastersIntern_mastersExtern_defaultMaster_error_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, /)`
+- `GSFont (instance).mergedLinkedKerningForDirection_(arg0, /)`
+- `GSFont (instance).methodDescriptionForSelector_(arg0, /)`
+- `GSFont (instance).methodForSelector_(arg0, /)`
+- `GSFont (instance).methodSignatureForSelector_(arg0, /)`
+- `GSFont (instance).metricsContent()`
+- `GSFont (instance).migrateRTLKerning()`
+- `GSFont (instance).migrateRTLKerningDict_doClasses_(arg0, arg1, /)`
+- `GSFont (instance).mr_formattedDebugDescription()`
+- `GSFont (instance).mutableArrayValueForKeyPath_(arg0, /)`
+- `GSFont (instance).mutableArrayValueForKey_(arg0, /)`
+- `GSFont (instance).mutableClasses()`
+- `GSFont (instance).mutableCopy()`
+- `GSFont (instance).mutableCopyWithZone_(arg0, /)`
+- `GSFont (instance).mutableFeaturePrefixes()`
+- `GSFont (instance).mutableOrderedSetValueForKeyPath_(arg0, /)`
+- `GSFont (instance).mutableOrderedSetValueForKey_(arg0, /)`
+- `GSFont (instance).mutableSetValueForKeyPath_(arg0, /)`
+- `GSFont (instance).mutableSetValueForKey_(arg0, /)`
+- `GSFont (instance).my_compactDescription()`
+- `GSFont (instance).nameUI()`
+- `GSFont (instance).newGlyphWithName_(arg0, /)`
+- `GSFont (instance).newGlyphWithName_changeName_(arg0, arg1, /)`
+- `GSFont (instance).newScriptingObjectOfClass_forValueForKey_withContentsValue_properties_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).newTab(tabText='')`
+- `GSFont (instance).newTaggedNSStringWithASCIIBytes__length__(arg0, arg1, /)`
+- `GSFont (instance).numberForId_(arg0, /)`
+- `GSFont (instance).numberForName_(arg0, /)`
+- `GSFont (instance).objectInAllGlyphsAtIndex_(arg0, /)`
+- `GSFont (instance).objectInAxesAtIndex_(arg0, /)`
+- `GSFont (instance).objectInClassesAtIndex_(arg0, /)`
+- `GSFont (instance).objectInCustomParametersAtIndex_(arg0, /)`
+- `GSFont (instance).objectInFeaturePrefixesAtIndex_(arg0, /)`
+- `GSFont (instance).objectInFeaturesAtIndex_(arg0, /)`
+- `GSFont (instance).objectInFontMastersAtIndex_(arg0, /)`
+- `GSFont (instance).objectInGlyphsAtIndex_(arg0, /)`
+- `GSFont (instance).objectInInstancesAtIndex_(arg0, /)`
+- `GSFont (instance).objectInMetricsAtIndex_(arg0, /)`
+- `GSFont (instance).objectInMetricsWithName_(arg0, /)`
+- `GSFont (instance).objectInMetricsWithType_withName_(arg0, arg1, /)`
+- `GSFont (instance).objectInMetricsWithType_withName_filter_(arg0, arg1, arg2, /)`
+- `GSFont (instance).objectInNumbersAtIndex_(arg0, /)`
+- `GSFont (instance).objectInPropertiesAtIndex_(arg0, /)`
+- `GSFont (instance).objectInStemsAtIndex_(arg0, /)`
+- `GSFont (instance).objectSpecifier()`
+- `GSFont (instance).observationInfo()`
+- `GSFont (instance).observeValueForKeyPath_ofObject_change_context_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).optionDescriptionsForBinding_(arg0, /)`
+- `GSFont (instance).ownsDestinationObjectsForRelationshipKey_(arg0, /)`
+- `GSFont (instance).panose()`
+- `GSFont (instance).pep_afterDelay_(arg0, /)`
+- `GSFont (instance).pep_getInvocation_(arg0, /)`
+- `GSFont (instance).pep_onMainThread()`
+- `GSFont (instance).pep_onMainThreadIfNecessary()`
+- `GSFont (instance).pep_onOperationQueue_(arg0, /)`
+- `GSFont (instance).pep_onOperationQueue_priority_(arg0, arg1, /)`
+- `GSFont (instance).pep_onThread_(arg0, /)`
+- `GSFont (instance).pep_onThread_immediateForMatchingThread_(arg0, arg1, /)`
+- `GSFont (instance).performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSFont (instance).performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSFont (instance).performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).performSelector_(arg0, /)`
+- `GSFont (instance).performSelector_object_afterDelay_(arg0, arg1, arg2, /)`
+- `GSFont (instance).performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont (instance).performSelector_withObject_(arg0, arg1, /)`
+- `GSFont (instance).performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSFont (instance).performSelector_withObject_afterDelay_ignoreMenuTracking_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).performSelector_withObject_withObject_(arg0, arg1, arg2, /)`
+- `GSFont (instance).pkaxRespondsToSelector_fromExtrasProtocol_(arg0, arg1, /)`
+- `GSFont (instance).pkaxValueForKey_(arg0, /)`
+- `GSFont (instance).postProcess()`
+- `GSFont (instance).postRead_(arg0, /)`
+- `GSFont (instance).preWrite_(arg0, /)`
+- `GSFont (instance).preferredFamilyNames_(arg0, /)`
+- `GSFont (instance).preloadCharCache()`
+- `GSFont (instance).prepareForInterfaceBuilder()`
+- `GSFont (instance).prepareName2Glyph()`
+- `GSFont (instance).propertyForName_(arg0, /)`
+- `GSFont (instance).propertyForName_languageTag_(arg0, arg1, /)`
+- `GSFont (instance).propertyListValueFormat_(arg0, /)`
+- `GSFont (instance).pyobjc_performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSFont (instance).pyobjc_performSelectorOnMainThread_withObject_(arg0, arg1, /)`
+- `GSFont (instance).pyobjc_performSelectorOnMainThread_withObject_modes_(arg0, arg1, arg2, /)`
+- `GSFont (instance).pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSFont (instance).pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).pyobjc_performSelector_onThread_withObject_(arg0, arg1, arg2, /)`
+- `GSFont (instance).pyobjc_performSelector_onThread_withObject_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).pyobjc_performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).pyobjc_performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont (instance).pyobjc_performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSFont (instance).pyobjc_performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).readGlyphFiles_format_error_(arg0, arg1, arg2, /)`
+- `GSFont (instance).readKerningFromDict_(arg0, /)`
+- `GSFont (instance).readUIState_format_error_(arg0, arg1, arg2, /)`
+- `GSFont (instance).readWithGlyphsParser_(arg0, /)`
+- `GSFont (instance).receiveObservedError_(arg0, /)`
+- `GSFont (instance).receiveObservedValue_(arg0, /)`
+- `GSFont (instance).release()`
+- `GSFont (instance).releaseRenderedTexture_forCGLContext_(arg0, arg1, /)`
+- `GSFont (instance).reloadLinkedFonts_(arg0, /)`
+- `GSFont (instance).removeAxesAtIndexes_(arg0, /)`
+- `GSFont (instance).removeClass_(arg0, /)`
+- `GSFont (instance).removeContextKerningForFontMasterID_leftKey_rightKey_before_after_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont (instance).removeFeaturePrefix_(arg0, /)`
+- `GSFont (instance).removeFeature_(arg0, /)`
+- `GSFont (instance).removeFontMasterAndContent_(arg0, /)`
+- `GSFont (instance).removeFontMaster_(arg0, /)`
+- `GSFont (instance).removeFontMastersAtIndexes_(arg0, /)`
+- `GSFont (instance).removeGlyph_(arg0, /)`
+- `GSFont (instance).removeGlyphsAtIndexes_(arg0, /)`
+- `GSFont (instance).removeGlyphs_(arg0, /)`
+- `GSFont (instance).removeInstance_(arg0, /)`
+- `GSFont (instance).removeInstances_(arg0, /)`
+- `GSFont (instance).removeKerningForFontMasterID_leftKey_rightKey_(arg0, arg1, arg2, /)`
+- `GSFont (instance).removeKerningForFontMasterID_leftKey_rightKey_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).removeKerningForPair(FontMasterID, LeftKerningId, RightKerningId, direction=0)`
+- `GSFont (instance).removeObjectFromAllGlyphsAtIndex_(arg0, /)`
+- `GSFont (instance).removeObjectFromAxesAtIndex_(arg0, /)`
+- `GSFont (instance).removeObjectFromAxes_(arg0, /)`
+- `GSFont (instance).removeObjectFromClassesAtIndex_(arg0, /)`
+- `GSFont (instance).removeObjectFromCustomParametersAtIndex_(arg0, /)`
+- `GSFont (instance).removeObjectFromCustomParametersForKey_(arg0, /)`
+- `GSFont (instance).removeObjectFromCustomParameters_(arg0, /)`
+- `GSFont (instance).removeObjectFromFeaturePrefixesAtIndex_(arg0, /)`
+- `GSFont (instance).removeObjectFromFeaturesAtIndex_(arg0, /)`
+- `GSFont (instance).removeObjectFromFontMastersAtIndex_(arg0, /)`
+- `GSFont (instance).removeObjectFromGlyphsAtIndex_(arg0, /)`
+- `GSFont (instance).removeObjectFromInstancesAtIndex_(arg0, /)`
+- `GSFont (instance).removeObjectFromMetricsAtIndex_(arg0, /)`
+- `GSFont (instance).removeObjectFromMetrics_(arg0, /)`
+- `GSFont (instance).removeObjectFromNumbersAtIndex_(arg0, /)`
+- `GSFont (instance).removeObjectFromNumbers_(arg0, /)`
+- `GSFont (instance).removeObjectFromPropertiesAtIndex_(arg0, /)`
+- `GSFont (instance).removeObjectFromProperties_(arg0, /)`
+- `GSFont (instance).removeObjectFromStemsAtIndex_(arg0, /)`
+- `GSFont (instance).removeObjectFromStems_(arg0, /)`
+- `GSFont (instance).removeObject_fromBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSFont (instance).removeObject_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSFont (instance).removeObservation_(arg0, /)`
+- `GSFont (instance).removeObservation_forObservableKeyPath_(arg0, arg1, /)`
+- `GSFont (instance).removeObserver_forKeyPath_(arg0, arg1, /)`
+- `GSFont (instance).removeObserver_forKeyPath_context_(arg0, arg1, arg2, /)`
+- `GSFont (instance).removePropertiesAtIndexes_(arg0, /)`
+- `GSFont (instance).removeUserDataForKey_(arg0, /)`
+- `GSFont (instance).removeValueAtIndex_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSFont (instance).renderToBuffer_withBytesPerRow_pixelFormat_forBounds_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).renderWithCGLContext_forBounds_(arg0, arg1, /)`
+- `GSFont (instance).replaceFontMasterAtIndex_withFontMaster_(arg0, arg1, /)`
+- `GSFont (instance).replaceMasterID_toID_(arg0, arg1, /)`
+- `GSFont (instance).replaceObjectInAxesAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont (instance).replaceObjectInClassesAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont (instance).replaceObjectInCustomParametersAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont (instance).replaceObjectInFeaturePrefixesAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont (instance).replaceObjectInFeaturesAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont (instance).replaceObjectInGlyphsAtIndex__withObject_(arg0, arg1, /)`
+- `GSFont (instance).replaceObjectInInstancesAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont (instance).replaceObjectInPropertiesAtIndex_withObject_(arg0, arg1, /)`
+- `GSFont (instance).replaceValueAtIndex_inPropertyWithKey_withValue_(arg0, arg1, arg2, /)`
+- `GSFont (instance).replacementObjectForArchiver_(arg0, /)`
+- `GSFont (instance).replacementObjectForCoder_(arg0, /)`
+- `GSFont (instance).replacementObjectForKeyedArchiver_(arg0, /)`
+- `GSFont (instance).replacementObjectForPortCoder_(arg0, /)`
+- `GSFont (instance).resetCache()`
+- `GSFont (instance).resetFeatureErrors()`
+- `GSFont (instance).resolveForwardingConflictWithPreviousMetadata_forKey_(arg0, arg1, /)`
+- `GSFont (instance).respondsToSelector_(arg0, /)`
+- `GSFont (instance).retain()`
+- `GSFont (instance).retainCount()`
+- `GSFont (instance).retainWeakReference()`
+- `GSFont (instance).safari_isNSBoolean()`
+- `GSFont (instance).safari_postKVONotificationsForKey_aroundBlock_(arg0, arg1, /)`
+- `GSFont (instance).safari_removeDeallocationSentinelForObserver_(arg0, /)`
+- `GSFont (instance).safari_setDeallocationSentinelForObserver_(arg0, /)`
+- `GSFont (instance).safari_setDeallocationSentinelForObserver_withContext_(arg0, arg1, /)`
+- `GSFont (instance).save(path=None, formatVersion=None, makeCopy=False)`
+- `GSFont (instance).saveNameForGlyph_(arg0, /)`
+- `GSFont (instance).saveNameForName_(arg0, /)`
+- `GSFont (instance).saveSuffixForGlyph_(arg0, /)`
+- `GSFont (instance).saveToFile_format_type_bundlePath_error_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont (instance).saveToURL_error_(arg0, arg1, /)`
+- `GSFont (instance).saveToURL_type_error_(arg0, arg1, arg2, /)`
+- `GSFont (instance).saveToURL_type_format_error_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).scaleBy_(arg0, /)`
+- `GSFont (instance).scaleMetricsKey_scale_(arg0, arg1, /)`
+- `GSFont (instance).scriptingProperties()`
+- `GSFont (instance).scriptingValueForSpecifier_(arg0, /)`
+- `GSFont (instance).selectGlyphs_(arg0, /)`
+- `GSFont (instance).self()`
+- `GSFont (instance).setAccessibilityBrailleMapRenderRegion_(arg0, /)`
+- `GSFont (instance).setAccessibilityBrailleMapRenderer_(arg0, /)`
+- `GSFont (instance).setAllGlyphs_(arg0, /)`
+- `GSFont (instance).setAppVersion_(arg0, /)`
+- `GSFont (instance).setAssociatedObject_(arg0, /)`
+- `GSFont (instance).setAxes_(arg0, /)`
+- `GSFont (instance).setClasses_(arg0, /)`
+- `GSFont (instance).setCompositorFont_(arg0, /)`
+- `GSFont (instance).setContextKerningForFontMasterID_leftKey_rightKey_value_before_after_(arg0, arg1, arg2, arg3, arg4, arg5, /)`
+- `GSFont (instance).setCustomParameters_(arg0, /)`
+- `GSFont (instance).setCustomValue_forKey_(arg0, arg1, /)`
+- `GSFont (instance).setDate_(arg0, /)`
+- `GSFont (instance).setDisabledChangeKeys_(arg0, /)`
+- `GSFont (instance).setDisablesAutomaticAlignment_(arg0, /)`
+- `GSFont (instance).setDisablesNiceNames_(arg0, /)`
+- `GSFont (instance).setDisplayStrings_(arg0, /)`
+- `GSFont (instance).setFeaturePrefixes_(arg0, /)`
+- `GSFont (instance).setFeatures_(arg0, /)`
+- `GSFont (instance).setFontMasters_(arg0, /)`
+- `GSFont (instance).setFontName_(arg0, /)`
+- `GSFont (instance).setFontType_(arg0, /)`
+- `GSFont (instance).setFormatVersion_(arg0, /)`
+- `GSFont (instance).setGlyphOrder_(arg0, /)`
+- `GSFont (instance).setGlyphs_(arg0, /)`
+- `GSFont (instance).setGridMain_(arg0, /)`
+- `GSFont (instance).setGridSubDivision_(arg0, /)`
+- `GSFont (instance).setIgnoreCompatibilityWarning_(arg0, /)`
+- `GSFont (instance).setImportedFontMasters_(arg0, /)`
+- `GSFont (instance).setImportedFonts_(arg0, /)`
+- `GSFont (instance).setImportedGlyphs_(arg0, /)`
+- `GSFont (instance).setInstances_(arg0, /)`
+- `GSFont (instance).setKeepAlternatesTogether_(arg0, /)`
+- `GSFont (instance).setKerningContext_(arg0, /)`
+- `GSFont (instance).setKerningForFontMasterID_LeftKey_RightKey_Value_direction_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont (instance).setKerningForFontMasterID_leftKey_rightKey_value_(arg0, arg1, arg2, arg3, /)`
+- `GSFont (instance).setKerningForFontMasterID_leftKey_rightKey_value_direction_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSFont (instance).setKerningForPair(FontMasterID, LeftKerningId, RightKerningId, Value, direction=0)`
+- `GSFont (instance).setKerningLTR_(arg0, /)`
+- `GSFont (instance).setKerningRTL_(arg0, /)`
+- `GSFont (instance).setKerningVertical_(arg0, /)`
+- `GSFont (instance).setKerning_forMaster_direction_(arg0, arg1, arg2, /)`
+- `GSFont (instance).setKeyboardIncrementBig_(arg0, /)`
+- `GSFont (instance).setKeyboardIncrementHuge_(arg0, /)`
+- `GSFont (instance).setKeyboardIncrement_(arg0, /)`
+- `GSFont (instance).setMetrics_(arg0, /)`
+- `GSFont (instance).setNilValueForKey_(arg0, /)`
+- `GSFont (instance).setNote_(arg0, /)`
+- `GSFont (instance).setNumbers_(arg0, /)`
+- `GSFont (instance).setObservationInfo_(arg0, /)`
+- `GSFont (instance).setObservation_forObservingKeyPath_(arg0, arg1, /)`
+- `GSFont (instance).setParent_(arg0, /)`
+- `GSFont (instance).setPreviewRemoveOverlap_(arg0, /)`
+- `GSFont (instance).setProperties_(arg0, /)`
+- `GSFont (instance).setProperty_value_languageTag_(arg0, arg1, arg2, /)`
+- `GSFont (instance).setScriptingProperties_(arg0, /)`
+- `GSFont (instance).setSnapToObjects_(arg0, /)`
+- `GSFont (instance).setStems_(arg0, /)`
+- `GSFont (instance).setStoredFileType_(arg0, /)`
+- `GSFont (instance).setStoredFormatVersion_(arg0, /)`
+- `GSFont (instance).setTempData_(arg0, /)`
+- `GSFont (instance).setTempData_forKey_(arg0, arg1, /)`
+- `GSFont (instance).setTempOTFFont_(arg0, /)`
+- `GSFont (instance).setTempProduction2NiceNames_(arg0, /)`
+- `GSFont (instance).setUndoManager_(arg0, /)`
+- `GSFont (instance).setUndoValue_forKey_(arg0, arg1, /)`
+- `GSFont (instance).setUnitsPerEm_(arg0, /)`
+- `GSFont (instance).setUserData_(arg0, /)`
+- `GSFont (instance).setUserData_forKey_(arg0, arg1, /)`
+- `GSFont (instance).setUserInterfaceItemIdentifier_(arg0, /)`
+- `GSFont (instance).setValue_forKeyPath_(arg0, arg1, /)`
+- `GSFont (instance).setValue_forKey_(arg0, arg1, /)`
+- `GSFont (instance).setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSFont (instance).setValuesForKeysWithDictionary_(arg0, /)`
+- `GSFont (instance).setVersionMajor_(arg0, /)`
+- `GSFont (instance).setVersionMinor_(arg0, /)`
+- `GSFont (instance).setVersion_(arg0, /)`
+- `GSFont (instance).settingsView_clearSettingForKey_(arg0, arg1, /)`
+- `GSFont (instance).settingsView_renameKey_toKey_(arg0, arg1, arg2, /)`
+- `GSFont (instance).settingsView_setSetting_forKey_(arg0, arg1, arg2, /)`
+- `GSFont (instance).settingsView_settingForKey_(arg0, arg1, /)`
+- `GSFont (instance).settingsView_shouldRenameKey_(arg0, arg1, /)`
+- `GSFont (instance).setupCustomParametersCache()`
+- `GSFont (instance).shouldColorMatch()`
+- `GSFont (instance).show()`
+- `GSFont (instance).sortGlyphs()`
+- `GSFont (instance).sortGlyphs_withList_(arg0, arg1, /)`
+- `GSFont (instance).sortKerning()`
+- `GSFont (instance).sortMetrics()`
+- `GSFont (instance).stemForId_(arg0, /)`
+- `GSFont (instance).stemForName_(arg0, /)`
+- `GSFont (instance).stopUpdateInterface()`
+- `GSFont (instance).storedFileType()`
+- `GSFont (instance).storedFormatVersion()`
+- `GSFont (instance).storedValueForKey_(arg0, /)`
+- `GSFont (instance).stringValueSafe()`
+- `GSFont (instance).stringValueSafe_(arg0, /)`
+- `GSFont (instance).superclass()`
+- `GSFont (instance).supportedBufferPixelFormats()`
+- `GSFont (instance).supportedRenderedTexturePixelFormats()`
+- `GSFont (instance).supportsBSXPCSecureCoding()`
+- `GSFont (instance).supportsRBSXPCSecureCoding()`
+- `GSFont (instance).takeStoredValue_forKey_(arg0, arg1, /)`
+- `GSFont (instance).takeStoredValuesFromDictionary_(arg0, /)`
+- `GSFont (instance).takeValue_forKeyPath_(arg0, arg1, /)`
+- `GSFont (instance).takeValue_forKey_(arg0, arg1, /)`
+- `GSFont (instance).takeValuesFromDictionary_(arg0, /)`
+- `GSFont (instance).tempDataForKey_(arg0, /)`
+- `GSFont (instance).tempOTFFont()`
+- `GSFont (instance).tempProduction2NiceNames()`
+- `GSFont (instance).toManyRelationshipKeys()`
+- `GSFont (instance).toOneRelationshipKeys()`
+- `GSFont (instance).un_safeBoolValue()`
+- `GSFont (instance).unableToSetNilForKey_(arg0, /)`
+- `GSFont (instance).unbind_(arg0, /)`
+- `GSFont (instance).undoManager()`
+- `GSFont (instance).undoManagerCheck()`
+- `GSFont (instance).unitsPerEm()`
+- `GSFont (instance).unlockReadGlyphs()`
+- `GSFont (instance).unlockWriteGlyphs()`
+- `GSFont (instance).updateCacheForGlyph_(arg0, /)`
+- `GSFont (instance).updateCacheForGlyph_oldName_(arg0, arg1, /)`
+- `GSFont (instance).updateFeatures()`
+- `GSFont (instance).updateFeatures_(arg0, /)`
+- `GSFont (instance).updateMetrics()`
+- `GSFont (instance).updateMetrics_(arg0, /)`
+- `GSFont (instance).updateTags()`
+- `GSFont (instance).userDataForKey_(arg0, /)`
+- `GSFont (instance).userInterfaceItemIdentifier()`
+- `GSFont (instance).utf8ValueSafe()`
+- `GSFont (instance).utf8ValueSafe_(arg0, /)`
+- `GSFont (instance).validateFamilyName_error_(arg0, arg1, /)`
+- `GSFont (instance).validateTakeValue_forKeyPath_(arg0, arg1, /)`
+- `GSFont (instance).validateUnitsPerEm_error_(arg0, arg1, /)`
+- `GSFont (instance).validateValue_forKeyPath_error_(arg0, arg1, arg2, /)`
+- `GSFont (instance).validateValue_forKey_(arg0, arg1, /)`
+- `GSFont (instance).validateValue_forKey_error_(arg0, arg1, arg2, /)`
+- `GSFont (instance).validateVersionMajor_error_(arg0, arg1, /)`
+- `GSFont (instance).valueAtIndex_inPropertyWithKey_(arg0, arg1, /)`
+- `GSFont (instance).valueClassForBinding_(arg0, /)`
+- `GSFont (instance).valueForKeyPath_(arg0, /)`
+- `GSFont (instance).valueForKey_(arg0, /)`
+- `GSFont (instance).valueForUndefinedKey_(arg0, /)`
+- `GSFont (instance).valueWithName_inPropertyWithKey_(arg0, arg1, /)`
+- `GSFont (instance).valueWithUniqueID_inPropertyWithKey_(arg0, arg1, /)`
+- `GSFont (instance).valuesForKeys_(arg0, /)`
+- `GSFont (instance).variationAxesRanges_(arg0, /)`
+- `GSFont (instance).version()`
+- `GSFont (instance).vk_loggingDescription()`
+- `GSFont (instance).vk_loggingIdentifier()`
+- `GSFont (instance).vk_prettyLoggingDescription()`
+- `GSFont (instance).willChangeValueForKey_(arg0, /)`
+- `GSFont (instance).willChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSFont (instance).willChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSFont (instance).writeKerningDict_toFile_GlyphID2Glyph_(arg0, arg1, arg2, /)`
+- `GSFont (instance).writeKerningToFile_formatVersion_error_(arg0, arg1, arg2, /)`
+- `GSFont (instance).zone()`

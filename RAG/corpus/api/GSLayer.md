@@ -1,0 +1,1909 @@
+# GSLayer — per-glyph, per-master editable layer
+**Use when:** reading or editing outlines, anchors, metrics in the active layer.
+**Key APIs:** `shapes` (preferred), `removeShape_(shape)`, `anchors`, `anchorNamed_`
+**Do:** enumerate outlines with `for s in layer.shapes`; delete by collecting indexes then removing in reverse, or use `removeShape_(shape)`.
+**Don’t:** use `layer.paths` (legacy); don’t modify the list while forward-iterating.
+**Keywords:** GSLayer, shapes, removeShape_, anchors, anchorNamed_, width, metrics
+
+
+## Attributes
+
+- `GSLayer.BSB`  *(type: property)*
+- `GSLayer.BSB`  *(type: property)*
+- `GSLayer.LSB`  *(type: property)*
+- `GSLayer.LSB`  *(type: property)*
+- `GSLayer.RSB`  *(type: property)*
+- `GSLayer.RSB`  *(type: property)*
+- `GSLayer.TSB`  *(type: property)*
+- `GSLayer.TSB`  *(type: property)*
+- `GSLayer.anchors`  *(type: property)*
+- `GSLayer.anchors`  *(type: property)*
+- `GSLayer.annotations`  *(type: property)*
+- `GSLayer.annotations`  *(type: property)*
+- `GSLayer.ascender`  *(type: property)*
+- `GSLayer.ascender`  *(type: property)*
+- `GSLayer.associatedMasterId`  *(type: property)*
+- `GSLayer.associatedMasterId`  *(type: property)*
+- `GSLayer.attributes`  *(type: property)*
+- `GSLayer.attributes`  *(type: property)*
+- `GSLayer.background`  *(type: property)*
+- `GSLayer.background`  *(type: property)*
+- `GSLayer.backgroundImage`  *(type: property)*
+- `GSLayer.backgroundImage`  *(type: property)*
+- `GSLayer.bezierPath`  *(type: property)*
+- `GSLayer.bezierPath`  *(type: property)*
+- `GSLayer.bottomMetricsKey`  *(type: property)*
+- `GSLayer.bottomMetricsKey`  *(type: property)*
+- `GSLayer.bounds`  *(type: property)*
+- `GSLayer.bounds`  *(type: property)*
+- `GSLayer.color`  *(type: property)*
+- `GSLayer.color`  *(type: property)*
+- `GSLayer.colorObject`  *(type: property)*
+- `GSLayer.completeBezierPath`  *(type: property)*
+- `GSLayer.completeOpenBezierPath`  *(type: property)*
+- `GSLayer.components`  *(type: property)*
+- `GSLayer.components`  *(type: property)*
+- `GSLayer.descender`  *(type: property)*
+- `GSLayer.descender`  *(type: property)*
+- `GSLayer.drawBezierPath`  *(type: property)*
+- `GSLayer.drawBezierPath`  *(type: property)*
+- `GSLayer.drawOpenBezierPath`  *(type: property)*
+- `GSLayer.drawOpenBezierPath`  *(type: property)*
+- `GSLayer.guideLines`  *(type: property)*
+- `GSLayer.guides`  *(type: property)*
+- `GSLayer.guides`  *(type: property)*
+- `GSLayer.hints`  *(type: property)*
+- `GSLayer.hints`  *(type: property)*
+- `GSLayer.isAligned`  *(type: property)*
+- `GSLayer.isAligned`  *(type: property)*
+- `GSLayer.isMasterLayer`  *(type: property)*
+- `GSLayer.isMasterLayer`  *(type: property)*
+- `GSLayer.isSpecialLayer`  *(type: property)*
+- `GSLayer.isSpecialLayer`  *(type: property)*
+- `GSLayer.italicAngle`  *(type: property)*
+- `GSLayer.italicAngle`  *(type: property)*
+- `GSLayer.layerId`  *(type: property)*
+- `GSLayer.layerId`  *(type: property)*
+- `GSLayer.leftMetricsKey`  *(type: property)*
+- `GSLayer.leftMetricsKey`  *(type: property)*
+- `GSLayer.master`  *(type: property)*
+- `GSLayer.metrics`  *(type: property)*
+- `GSLayer.metrics`  *(type: property)*
+- `GSLayer.name`  *(type: property)*
+- `GSLayer.name`  *(type: property)*
+- `GSLayer.openBezierPath`  *(type: property)*
+- `GSLayer.openBezierPath`  *(type: property)*
+- `GSLayer.parent`  *(type: property)*
+- `GSLayer.parent`  *(type: property)*
+- `GSLayer.paths`  *(type: property)*
+- `GSLayer.paths`  *(type: property)*
+- `GSLayer.rightMetricsKey`  *(type: property)*
+- `GSLayer.rightMetricsKey`  *(type: property)*
+- `GSLayer.selection`  *(type: property)*
+- `GSLayer.selection`  *(type: property)*
+- `GSLayer.selectionBounds`  *(type: property)*
+- `GSLayer.shapes`  *(type: property)*
+- `GSLayer.shapes`  *(type: property)*
+- `GSLayer.smartComponentPoleMapping`  *(type: property)*
+- `GSLayer.tempData`  *(type: property)*
+- `GSLayer.tempData`  *(type: property)*
+- `GSLayer.topMetricsKey`  *(type: property)*
+- `GSLayer.topMetricsKey`  *(type: property)*
+- `GSLayer.userData`  *(type: property)*
+- `GSLayer.userData`  *(type: property)*
+- `GSLayer.vertOrigin`  *(type: property)*
+- `GSLayer.vertOrigin`  *(type: property)*
+- `GSLayer.vertWidth`  *(type: property)*
+- `GSLayer.vertWidth`  *(type: property)*
+- `GSLayer.visible`  *(type: property)*
+- `GSLayer.visible`  *(type: property)*
+- `GSLayer.width`  *(type: property)*
+- `GSLayer.width`  *(type: property)*
+- `GSLayer.widthMetricsKey`  *(type: property)*
+- `GSLayer.widthMetricsKey`  *(type: property)*
+- `GSLayer (instance).BSB`  *(type: float)*
+- `GSLayer (instance).LSB`  *(type: float)*
+- `GSLayer (instance).RSB`  *(type: float)*
+- `GSLayer (instance).TSB`  *(type: float)*
+- `GSLayer (instance).anchors`  *(type: LayerAnchorsProxy)*
+- `GSLayer (instance).annotations`  *(type: LayerAnnotationProxy)*
+- `GSLayer (instance).ascender`  *(type: float)*
+- `GSLayer (instance).associatedMasterId`  *(type: NoneType)*
+- `GSLayer (instance).attributes`  *(type: AttributesProxy)*
+- `GSLayer (instance).background`  *(type: GSBackgroundLayer)*
+- `GSLayer (instance).backgroundImage`  *(type: NoneType)*
+- `GSLayer (instance).bezierPath`  *(type: NoneType)*
+- `GSLayer (instance).bottomMetricsKey`  *(type: NoneType)*
+- `GSLayer (instance).bounds`  *(type: CGRect)*
+- `GSLayer (instance).color`  *(type: NoneType)*
+- `GSLayer (instance).colorObject`  *(type: NoneType)*
+- `GSLayer (instance).completeBezierPath`  *(type: NoneType)*
+- `GSLayer (instance).completeOpenBezierPath`  *(type: NoneType)*
+- `GSLayer (instance).components`  *(type: GSProxyShapes)*
+- `GSLayer (instance).descender`  *(type: float)*
+- `GSLayer (instance).drawBezierPath`  *(type: NoneType)*
+- `GSLayer (instance).drawOpenBezierPath`  *(type: NoneType)*
+- `GSLayer (instance).guideLines`  *(type: LayerGuidesProxy)*
+- `GSLayer (instance).guides`  *(type: LayerGuidesProxy)*
+- `GSLayer (instance).hints`  *(type: LayerHintsProxy)*
+- `GSLayer (instance).isAligned`  *(type: bool)*
+- `GSLayer (instance).isMasterLayer`  *(type: bool)*
+- `GSLayer (instance).isSpecialLayer`  *(type: bool)*
+- `GSLayer (instance).italicAngle`  *(type: float)*
+- `GSLayer (instance).layerId`  *(type: NoneType)*
+- `GSLayer (instance).leftMetricsKey`  *(type: NoneType)*
+- `GSLayer (instance).master`  *(type: NoneType)*
+- `GSLayer (instance).metrics`  *(type: __NSArray0)*
+- `GSLayer (instance).name`  *(type: NoneType)*
+- `GSLayer (instance).openBezierPath`  *(type: NoneType)*
+- `GSLayer (instance).parent`  *(type: NoneType)*
+- `GSLayer (instance).paths`  *(type: GSProxyShapes)*
+- `GSLayer (instance).rightMetricsKey`  *(type: NoneType)*
+- `GSLayer (instance).selection`  *(type: LayerSelectionProxy)*
+- `GSLayer (instance).selectionBounds`  *(type: CGRect)*
+- `GSLayer (instance).shapes`  *(type: LayerShapesProxy)*
+- `GSLayer (instance).smartComponentPoleMapping`  *(type: SmartComponentPoleMappingProxy)*
+- `GSLayer (instance).tempData`  *(type: TempDataProxy)*
+- `GSLayer (instance).topMetricsKey`  *(type: NoneType)*
+- `GSLayer (instance).userData`  *(type: UserDataProxy)*
+- `GSLayer (instance).vertOrigin`  *(type: NoneType)*
+- `GSLayer (instance).vertWidth`  *(type: NoneType)*
+- `GSLayer (instance).visible`  *(type: bool)*
+- `GSLayer (instance).width`  *(type: float)*
+- `GSLayer (instance).widthMetricsKey`  *(type: NoneType)*
+
+## Methods
+
+- `GSLayer..cxx_destruct()`
+- `GSLayer.CAMLType()`
+- `GSLayer.CAMLTypeForKey_(arg0, /)`
+- `GSLayer.CAMLTypeSupportedForKey_(arg0, /)`
+- `GSLayer.CA_addValue_multipliedBy_(arg0, arg1, /)`
+- `GSLayer.CA_archivingValueForKey_(arg0, /)`
+- `GSLayer.CA_copyNumericValue_(arg0, /)`
+- `GSLayer.CA_copyRenderValue()`
+- `GSLayer.CA_copyRenderValueWithColorspace_(arg0, /)`
+- `GSLayer.CA_distanceToValue_(arg0, /)`
+- `GSLayer.CA_interpolateValue_byFraction_(arg0, arg1, /)`
+- `GSLayer.CA_interpolateValues___interpolator_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.CA_numericValueCount()`
+- `GSLayer.CA_prepareRenderValue()`
+- `GSLayer.CA_roundToIntegerFromValue_(arg0, /)`
+- `GSLayer.CA_validateValue_forKey_(arg0, arg1, /)`
+- `GSLayer.CKAssignToContainerWithID_(arg0, /)`
+- `GSLayer.CKDescription()`
+- `GSLayer.CKDescriptionPropertiesWithPublic_private_shouldExpand_(arg0, arg1, arg2, /)`
+- `GSLayer.CKDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSLayer.CKExpandedDescription()`
+- `GSLayer.CKHashedDescription()`
+- `GSLayer.CKObjectDescriptionRedact_(arg0, /)`
+- `GSLayer.CKObjectDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSLayer.CKPropertiesDescription()`
+- `GSLayer.CKPropertiesDescriptionStringFromProperties_(arg0, /)`
+- `GSLayer.CKRedactedDescription()`
+- `GSLayer.CKSingleLineDescription()`
+- `GSLayer.CKUnredactedDescription()`
+- `GSLayer.IKImageRepresentationWithType_(arg0, /)`
+- `GSLayer.NSLifeguard_autorelease()`
+- `GSLayer.NSRepresentation()`
+- `GSLayer.NSRepresentation()`
+- `GSLayer.NS_addTiledLayerDescendent_(arg0, /)`
+- `GSLayer.NS_observationForKeyPath_options_block_(arg0, arg1, arg2, /)`
+- `GSLayer.NS_observationForKeyPaths_options_block_(arg0, arg1, arg2, /)`
+- `GSLayer.NS_removeTiledLayerDescendent_(arg0, /)`
+- `GSLayer.NS_tiledLayerVisibleRect()`
+- `GSLayer.RBSIsXPCObject()`
+- `GSLayer.SCNUI_name()`
+- `GSLayer.SCN_setupDisplayLinkWithQueue_screen_policy_(arg0, arg1, arg2, /)`
+- `GSLayer.abCaseInsensitiveIsEqual_(arg0, /)`
+- `GSLayer.abDictionaryWithValuesForKeyPaths_(arg0, /)`
+- `GSLayer.abRemoveObserverIgnoringExceptions_forKeyPath_(arg0, arg1, /)`
+- `GSLayer.accessibilityAddTemporaryChild_(arg0, /)`
+- `GSLayer.accessibilityAllowsOverriddenAttributesWhenIgnored()`
+- `GSLayer.accessibilityArrayAttributeCount_(arg0, /)`
+- `GSLayer.accessibilityArrayAttributeValues_index_maxCount_(arg0, arg1, arg2, /)`
+- `GSLayer.accessibilityAttributeValue_forParameter_(arg0, arg1, /)`
+- `GSLayer.accessibilityAttributedValueForStringAttributeAttributeForParameter_(arg0, /)`
+- `GSLayer.accessibilityBrailleMapRenderRegion()`
+- `GSLayer.accessibilityBrailleMapRenderer()`
+- `GSLayer.accessibilityDecodeOverriddenAttributes_(arg0, /)`
+- `GSLayer.accessibilityEncodeOverriddenAttributes_(arg0, /)`
+- `GSLayer.accessibilityIndexForChildUIElementAttributeForParameter_(arg0, /)`
+- `GSLayer.accessibilityIndexOfChild_(arg0, /)`
+- `GSLayer.accessibilityOverriddenAttributes()`
+- `GSLayer.accessibilityParameterizedAttributeNames()`
+- `GSLayer.accessibilityPerformShowMenuOfChild_(arg0, /)`
+- `GSLayer.accessibilityPresenterProcessIdentifier()`
+- `GSLayer.accessibilityRemoveTemporaryChild_(arg0, /)`
+- `GSLayer.accessibilityReplaceRange_withText_(arg0, arg1, /)`
+- `GSLayer.accessibilitySetOverrideValue_forAttribute_(arg0, arg1, /)`
+- `GSLayer.accessibilitySetPresenterProcessIdentifier_(arg0, /)`
+- `GSLayer.accessibilityShouldSendNotification_(arg0, /)`
+- `GSLayer.accessibilityShouldUseUniqueId()`
+- `GSLayer.accessibilitySupportsCustomElementData()`
+- `GSLayer.accessibilitySupportsNotifications()`
+- `GSLayer.accessibilitySupportsOverriddenAttributes()`
+- `GSLayer.accessibilityTemporaryChildren()`
+- `GSLayer.accessibilityVisibleArea()`
+- `GSLayer.addAnchor_(arg0, /)`
+- `GSLayer.addAnnotation_(arg0, /)`
+- `GSLayer.addBackgroundImageWithURL_(arg0, /)`
+- `GSLayer.addChainedObservers_(arg0, /)`
+- `GSLayer.addExtremePoints()`
+- `GSLayer.addExtremePointsForce_checkSelection_(arg0, arg1, /)`
+- `GSLayer.addGuide_(arg0, /)`
+- `GSLayer.addHintCheck_(arg0, /)`
+- `GSLayer.addHint_(arg0, /)`
+- `GSLayer.addInflectionPoints()`
+- `GSLayer.addMissingAnchors(self)`
+- `GSLayer.addNodesAtExtremes(self, force=False, checkSelection=False)`
+- `GSLayer.addObject_toBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSLayer.addObject_toPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer.addObjectsFromArrayToSelection_(arg0, /)`
+- `GSLayer.addObservationTransformer_(arg0, /)`
+- `GSLayer.addObserverBlock_(arg0, /)`
+- `GSLayer.addObserver_(arg0, /)`
+- `GSLayer.addObserver_forKeyPath_options_context_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.addObserver_forObservableKeyPath_(arg0, arg1, /)`
+- `GSLayer.addSelectionFast_(arg0, /)`
+- `GSLayer.addSelection_(arg0, /)`
+- `GSLayer.addShapeFast_(arg0, /)`
+- `GSLayer.addShape_(arg0, /)`
+- `GSLayer.addShapes_(arg0, /)`
+- `GSLayer.addUserData_(arg0, /)`
+- `GSLayer.akToolbarButtonItemType()`
+- `GSLayer.alignComponents()`
+- `GSLayer.alignComponents_(arg0, /)`
+- `GSLayer.allComponents()`
+- `GSLayer.allCorners()`
+- `GSLayer.allGuides()`
+- `GSLayer.allNodes()`
+- `GSLayer.allPostScriptHints()`
+- `GSLayer.allPropertyKeys()`
+- `GSLayer.allTrueTypeHints()`
+- `GSLayer.allowsWeakReference()`
+- `GSLayer.anchorChangedName_(arg0, /)`
+- `GSLayer.anchorDictTraversingComponents()`
+- `GSLayer.anchorForName_(arg0, /)`
+- `GSLayer.anchorForName_traverseComponents_(arg0, arg1, /)`
+- `GSLayer.anchorNamesTraversingComponents()`
+- `GSLayer.anchorNamesTraversingComponentsStopAtComponent_(arg0, /)`
+- `GSLayer.anchorsTraversingComponents()`
+- `GSLayer.applyCustomParameters_callbacks_font_error_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.applyHints_(arg0, /)`
+- `GSLayer.applyTransform(self, transformStruct)`
+- `GSLayer.areUpdatesDisabled()`
+- `GSLayer.associatedFontMaster()`
+- `GSLayer.associatedFontMasterFast()`
+- `GSLayer.associatedObject()`
+- `GSLayer.attributeForKey_(arg0, /)`
+- `GSLayer.attributeKeys()`
+- `GSLayer.autoContentAccessingProxy()`
+- `GSLayer.autohint()`
+- `GSLayer.autohintError_(arg0, /)`
+- `GSLayer.autorelease()`
+- `GSLayer.awakeAfterUsingCoder_(arg0, /)`
+- `GSLayer.awakeFromNib()`
+- `GSLayer.axes()`
+- `GSLayer.axesValuesList_fontAxes_(arg0, arg1, /)`
+- `GSLayer.beginChanges(self)`
+- `GSLayer.bezierData()`
+- `GSLayer.bezierPathFast()`
+- `GSLayer.bind_toObject_withKeyPath_options_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.boolValueSafe()`
+- `GSLayer.boolValueSafe_(arg0, /)`
+- `GSLayer.bottomMetricsKeyState()`
+- `GSLayer.bottomMetricsKeyState_(arg0, /)`
+- `GSLayer.bottomMetricsKeyUI()`
+- `GSLayer.bottomPlainMetricsKey()`
+- `GSLayer.boundsAngle_(arg0, /)`
+- `GSLayer.boundsOfSelection()`
+- `GSLayer.boundsOfSelectionAngle_(arg0, /)`
+- `GSLayer.bs_isPlistableType()`
+- `GSLayer.bs_secureEncoded()`
+- `GSLayer.bsbAtHeight_(arg0, /)`
+- `GSLayer.calculateIntersectionsForPath_startPoint_endPoint_(arg0, arg1, arg2, /)`
+- `GSLayer.calculateIntersectionsStartPoint_endPoint_(arg0, arg1, /)`
+- `GSLayer.calculateIntersectionsStartPoint_endPoint_decompose_(arg0, arg1, arg2, /)`
+- `GSLayer.calculateIntersectionsStartPoint_endPoint_decompose_ignoreLocked_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.canRenderWithCGLContext_(arg0, /)`
+- `GSLayer.center()`
+- `GSLayer.checkConnections()`
+- `GSLayer.checkForCoincidentPaths()`
+- `GSLayer.checkIfAlign()`
+- `GSLayer.ck_bindInStatement_atIndex_(arg0, arg1, /)`
+- `GSLayer.cksqlcs_appendSQLConstantValueToString_(arg0, /)`
+- `GSLayer.cksqlcs_archivedObjectBindingValue_(arg0, /)`
+- `GSLayer.cksqlcs_bindArchivedObject_index_db_(arg0, arg1, arg2, /)`
+- `GSLayer.cksqlcs_bindBlob_index_db_(arg0, arg1, arg2, /)`
+- `GSLayer.cksqlcs_bindDouble_index_db_(arg0, arg1, arg2, /)`
+- `GSLayer.cksqlcs_bindInt64_index_db_(arg0, arg1, arg2, /)`
+- `GSLayer.cksqlcs_bindText_index_db_(arg0, arg1, arg2, /)`
+- `GSLayer.cksqlcs_blobBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSLayer.cksqlcs_doubleBindingValue_(arg0, /)`
+- `GSLayer.cksqlcs_int64BindingValue_(arg0, /)`
+- `GSLayer.cksqlcs_textBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSLayer.classCode()`
+- `GSLayer.classDescription()`
+- `GSLayer.classDescriptionForDestinationKey_(arg0, /)`
+- `GSLayer.classForArchiver()`
+- `GSLayer.classForCoder()`
+- `GSLayer.classForKeyedArchiver()`
+- `GSLayer.classForPortCoder()`
+- `GSLayer.className()`
+- `GSLayer.class__()`
+- `GSLayer.cleanUpPaths()`
+- `GSLayer.clear()`
+- `GSLayer.clearProperties()`
+- `GSLayer.clearSelection()`
+- `GSLayer.clearSelectionUndo()`
+- `GSLayer.closeOpenPaths_(arg0, /)`
+- `GSLayer.coalescedPerformSelector_(arg0, /)`
+- `GSLayer.coerceValueForScriptingProperties_(arg0, /)`
+- `GSLayer.coerceValue_forKey_(arg0, arg1, /)`
+- `GSLayer.colorIndex()`
+- `GSLayer.compareString()`
+- `GSLayer.componentNameFor_partUnicode_groups_modelComp_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.componentNames()`
+- `GSLayer.componentNamesText()`
+- `GSLayer.componentNamesTraverseComponents_(arg0, /)`
+- `GSLayer.componentNamesTraversingComponents()`
+- `GSLayer.compositionParameterView_didChangeParameterWithKey_(arg0, arg1, /)`
+- `GSLayer.compositionParameterView_shouldDisplayParameterWithKey_attributes_(arg0, arg1, arg2, /)`
+- `GSLayer.compositionPickerViewDidStartAnimating_(arg0, /)`
+- `GSLayer.compositionPickerViewWillStopAnimating_(arg0, /)`
+- `GSLayer.compositionPickerView_didLoadComposition_(arg0, arg1, /)`
+- `GSLayer.compositionPickerView_didSelectComposition_(arg0, arg1, /)`
+- `GSLayer.compositionPickerView_draggingEnteredComposition_sender_(arg0, arg1, arg2, /)`
+- `GSLayer.compositionPickerView_keyDown_(arg0, arg1, /)`
+- `GSLayer.compositionPickerView_performDragOperationOnComposition_sender_(arg0, arg1, arg2, /)`
+- `GSLayer.compositionPickerView_willSelectComposition_(arg0, arg1, /)`
+- `GSLayer.computeInterpolationMasters_solution_masterIds_(arg0, arg1, arg2, /)`
+- `GSLayer.computeMastersCoeff_hasWeightAxis_doBraceLayer_masterIds_axesMax_axesMin_axisCount_masters_error_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, /)`
+- `GSLayer.computeMasters_(arg0, /)`
+- `GSLayer.computeTargetCoeff_layer_axesMax_axesMin_axisCount_smartSettings_target_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, /)`
+- `GSLayer.computeTarget_layer_masters_smartSettings_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.conformsToProtocol_(arg0, /)`
+- `GSLayer.connectAllOpenPaths()`
+- `GSLayer.connectPathsWithNode_andNode_(arg0, arg1, /)`
+- `GSLayer.connectPathsWithNode_andNode_extendPath_(arg0, arg1, arg2, /)`
+- `GSLayer.content()`
+- `GSLayer.contentToBackgroundCheckSelection_keepOldBackground_(arg0, arg1, /)`
+- `GSLayer.copy()`
+- `GSLayer.copyAnchorsFromComponents()`
+- `GSLayer.copyDecomposedLayer()`
+- `GSLayer.copyRenderedTextureForCGLContext_pixelFormat_bounds_isFlipped_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.copyScriptingValue_forKey_withProperties_(arg0, arg1, arg2, /)`
+- `GSLayer.copyThin_(arg0, /)`
+- `GSLayer.copyThin_selection_(arg0, arg1, /)`
+- `GSLayer.copyWithZone_(arg0, /)`
+- `GSLayer.correctPathDirection()`
+- `GSLayer.countOfAnchors()`
+- `GSLayer.countOfAnnotations()`
+- `GSLayer.countOfAttributes()`
+- `GSLayer.countOfComponents()`
+- `GSLayer.countOfGuides()`
+- `GSLayer.countOfHints()`
+- `GSLayer.countOfPaths()`
+- `GSLayer.countOfPostScriptHints()`
+- `GSLayer.countOfSelection()`
+- `GSLayer.countOfShapes()`
+- `GSLayer.countOfUserData()`
+- `GSLayer.createImageWithOptions_(arg0, /)`
+- `GSLayer.createKeyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSLayer.createOptimizedProviderWithTransformation_cropping_(arg0, arg1, /)`
+- `GSLayer.cutBetweenPoints(self, Point1, Point2)`
+- `GSLayer.dealloc()`
+- `GSLayer.dealloc()`
+- `GSLayer.debugDescription()`
+- `GSLayer.decomposeBraceLayers()`
+- `GSLayer.decomposeComponentDontNotify_(arg0, /)`
+- `GSLayer.decomposeComponentDontNotify_callback_(arg0, arg1, /)`
+- `GSLayer.decomposeComponentDontNotify_doAnchors_doHints_callback_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.decomposeComponent_(arg0, /)`
+- `GSLayer.decomposeComponent_doAnchors_doHints_(arg0, arg1, arg2, /)`
+- `GSLayer.decomposeComponents()`
+- `GSLayer.decomposeComponentsCallback_(arg0, /)`
+- `GSLayer.decomposeCorners()`
+- `GSLayer.decomposeSmartOutlines()`
+- `GSLayer.defaultInit()`
+- `GSLayer.defaultSettings_verticalStem_(arg0, arg1, /)`
+- `GSLayer.description()`
+- `GSLayer.description()`
+- `GSLayer.description()`
+- `GSLayer.descriptionAtIndent_(arg0, /)`
+- `GSLayer.descriptionForAttributeAxisRules()`
+- `GSLayer.descriptionForAttributeColor()`
+- `GSLayer.descriptionForAttributeCoordinates()`
+- `GSLayer.dictionaryWithValuesForKeys_(arg0, /)`
+- `GSLayer.didChangeValueForKey_(arg0, /)`
+- `GSLayer.didChangeValueForKey_(arg0, /)`
+- `GSLayer.didChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSLayer.didChange__valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSLayer.didChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSLayer.differenceToLayer_options_(arg0, arg1, /)`
+- `GSLayer.disableLock()`
+- `GSLayer.dividePathAtNode_(arg0, /)`
+- `GSLayer.doAlignComponents()`
+- `GSLayer.doAlignWidth()`
+- `GSLayer.doSlantingCorrectionWithAngle_checkSelection_(arg0, arg1, /)`
+- `GSLayer.doSlantingCorrectionWithAngle_checkSelection_correctContrast_correctShape_correctThickness_horizontalStem_verticalStem_center_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, /)`
+- `GSLayer.doSlantingCorrectionWithAngle_correctContrast_correctShape_correctThickness_checkSelection_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSLayer.doesContain_(arg0, /)`
+- `GSLayer.doesNotRecognizeSelector_(arg0, /)`
+- `GSLayer.doesNotRecognizeSelector_(arg0, /)`
+- `GSLayer.doubleValueSafe()`
+- `GSLayer.doubleValueSafe_(arg0, /)`
+- `GSLayer.draw(self, pen, contours=True, components=True)`
+- `GSLayer.drawBezierPath_hasPaths_(arg0, arg1, /)`
+- `GSLayer.drawBlackInPen_openPen_(arg0, arg1, /)`
+- `GSLayer.drawColorInPen_(arg0, /)`
+- `GSLayer.drawDrawStack_inPen_(arg0, arg1, /)`
+- `GSLayer.drawExtraInfoInFrame_options_inView_(arg0, arg1, arg2, /)`
+- `GSLayer.drawInFrame_(arg0, /)`
+- `GSLayer.drawInFrame_color_(arg0, arg1, /)`
+- `GSLayer.drawInFrame_color_metrics_(arg0, arg1, arg2, /)`
+- `GSLayer.drawInFrame_color_metrics_scale_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.drawInPen_(arg0, /)`
+- `GSLayer.drawInPen_openPen_(arg0, arg1, /)`
+- `GSLayer.drawPoints(self, pen, contours=True, components=True)`
+- `GSLayer.drawStack()`
+- `GSLayer.drawStackForShapes_transform_penClass_secondaryPen_extraHandles_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSLayer.elementDidChange_(arg0, /)`
+- `GSLayer.enableFutureUpdates()`
+- `GSLayer.encodeWithCAMLWriter_(arg0, /)`
+- `GSLayer.encodeWithCoder_(arg0, /)`
+- `GSLayer.endChanges(self)`
+- `GSLayer.entityName()`
+- `GSLayer.enumerateComponentsUsingBlock_(arg0, /)`
+- `GSLayer.enumerateComponentsWithOptions_usingBlock_(arg0, arg1, /)`
+- `GSLayer.enumeratePathsUsingBlock_(arg0, /)`
+- `GSLayer.enumeratePathsWithOptions_usingBlock_(arg0, arg1, /)`
+- `GSLayer.enumerateShapesUsingBlock_(arg0, /)`
+- `GSLayer.exposedBindings()`
+- `GSLayer.extendSegmentsForPoints_node_offset_(arg0, arg1, arg2, /)`
+- `GSLayer.extraHandles()`
+- `GSLayer.factorsCoeff_(arg0, /)`
+- `GSLayer.factorsMA_(arg0, /)`
+- `GSLayer.factorsMM_(arg0, /)`
+- `GSLayer.fastBounds()`
+- `GSLayer.finalize()`
+- `GSLayer.findComponent_baseName_withSuffix_(arg0, arg1, arg2, /)`
+- `GSLayer.findSuffixesWithSuffixes_baseName_(arg0, arg1, /)`
+- `GSLayer.finishObserving()`
+- `GSLayer.fitOverlappingOffCurves_indexes_(arg0, arg1, /)`
+- `GSLayer.flattenOutlines()`
+- `GSLayer.flattenOutlinesRemoveOverlap_origHints_secondaryPath_extraHandles_error_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSLayer.flushKeyBindings()`
+- `GSLayer.font()`
+- `GSLayer.forwardInvocation_(arg0, /)`
+- `GSLayer.forwardingTargetForSelector_(arg0, /)`
+- `GSLayer.fp__ivarDescriptionForClass_(arg0, /)`
+- `GSLayer.fp__methodDescriptionForClass_(arg0, /)`
+- `GSLayer.fp_ivarDescription()`
+- `GSLayer.fp_methodDescription()`
+- `GSLayer.fp_shortMethodDescription()`
+- `GSLayer.getAutohintsDoHorizontal_doVertical_error_(arg0, arg1, arg2, /)`
+- `GSLayer.getBoundsFromPathRect()`
+- `GSLayer.getCopyOfContentFromLayer_doSelection_(arg0, arg1, /)`
+- `GSLayer.getPen(self)`
+- `GSLayer.getPointPen(self)`
+- `GSLayer.getPositionsFromLayer_(arg0, /)`
+- `GSLayer.getStemValues_value1_value2_(arg0, arg1, arg2, /)`
+- `GSLayer.glyph()`
+- `GSLayer.glyphMetrics()`
+- `GSLayer.glyphMetricsForDirection_(arg0, /)`
+- `GSLayer.handleQueryWithUnboundKey_(arg0, /)`
+- `GSLayer.handleTakeValue_forUnboundKey_(arg0, arg1, /)`
+- `GSLayer.hasAlignedSideBearings()`
+- `GSLayer.hasAlignedWidth()`
+- `GSLayer.hasAnchors()`
+- `GSLayer.hasAnnotations()`
+- `GSLayer.hasBackground()`
+- `GSLayer.hasBackgroundImage()`
+- `GSLayer.hasComponents()`
+- `GSLayer.hasCorners()`
+- `GSLayer.hasHints()`
+- `GSLayer.hasPostScriptHints()`
+- `GSLayer.hasTrueTypeHints()`
+- `GSLayer.hash()`
+- `GSLayer.hintsFast()`
+- `GSLayer.hintsFromCharString_doLinks_(arg0, arg1, /)`
+- `GSLayer.hintsFromCharString_doLinks_ignoreVerticalStems_(arg0, arg1, arg2, /)`
+- `GSLayer.horizontalShift_otherShifts_(arg0, arg1, /)`
+- `GSLayer.if_setValueIfNonNil_forKey_(arg0, arg1, /)`
+- `GSLayer.if_setValueIfYES_forKey_(arg0, arg1, /)`
+- `GSLayer.ignoreUpdates()`
+- `GSLayer.ikInMainLoopWait_(arg0, /)`
+- `GSLayer.imageBrowser_didValidateVisibleCellsAtIndexes_(arg0, arg1, /)`
+- `GSLayer.imageBrowser_willDisplayCellsAtIndexes_(arg0, arg1, /)`
+- `GSLayer.imageRepresentation()`
+- `GSLayer.imageRepresentationType()`
+- `GSLayer.imageSubtitle()`
+- `GSLayer.imageTitle()`
+- `GSLayer.imageToDrawForCell_(arg0, /)`
+- `GSLayer.imageUID()`
+- `GSLayer.implementsSelector_(arg0, /)`
+- `GSLayer.importOutlinesFromURL_scale_error_(arg0, arg1, arg2, /)`
+- `GSLayer.indexOfObjectInGuides_(arg0, /)`
+- `GSLayer.indexOfObjectInHints_(arg0, /)`
+- `GSLayer.indexOfObjectInShapes_(arg0, /)`
+- `GSLayer.indexOfPath_(arg0, /)`
+- `GSLayer.indexPathOfNodeAtX_actualPosition_(arg0, arg1, /)`
+- `GSLayer.indexPathOfNodeAtX_atY_actualPosition_(arg0, arg1, arg2, /)`
+- `GSLayer.indexPathOfNodeAtY_actualPosition_(arg0, arg1, /)`
+- `GSLayer.indexPathOfNode_(arg0, /)`
+- `GSLayer.indexPathOfShape_(arg0, /)`
+- `GSLayer.indexPath_byAddingPathCount_(arg0, arg1, /)`
+- `GSLayer.infoForBinding_(arg0, /)`
+- `GSLayer.init()`
+- `GSLayer.init()`
+- `GSLayer.initLock()`
+- `GSLayer.initWithCoder_(arg0, /)`
+- `GSLayer.initWithDict_format_(arg0, arg1, /)`
+- `GSLayer.initWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSLayer.insertObject_inAnnotationsAtIndex_(arg0, arg1, /)`
+- `GSLayer.insertObject_inGuidesAtIndex_(arg0, arg1, /)`
+- `GSLayer.insertObject_inHintsAtIndex_(arg0, arg1, /)`
+- `GSLayer.insertObject_inShapesAtIndexPath_(arg0, arg1, /)`
+- `GSLayer.insertObject_inShapesAtIndex_(arg0, arg1, /)`
+- `GSLayer.insertValue_atIndex_inPropertyWithKey_(arg0, arg1, arg2, /)`
+- `GSLayer.insertValue_inPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer.int64ValueSafe()`
+- `GSLayer.int64ValueSafe_(arg0, /)`
+- `GSLayer.interpolateUntouchedPoints_direction_originalShapes_(arg0, arg1, arg2, /)`
+- `GSLayer.intersections()`
+- `GSLayer.intersectionsBetweenPoints(self, Point1, Point2, components=False, ignoreLocked=False)`
+- `GSLayer.inverseForRelationshipKey_(arg0, /)`
+- `GSLayer.isAligning()`
+- `GSLayer.isAnyColorLayer()`
+- `GSLayer.isAnySpecialLayer()`
+- `GSLayer.isAppleColorLayer()`
+- `GSLayer.isBraceLayer()`
+- `GSLayer.isBracketLayer()`
+- `GSLayer.isCaseInsensitiveLike_(arg0, /)`
+- `GSLayer.isColorPaletteLayer()`
+- `GSLayer.isEqualToLayer_(arg0, /)`
+- `GSLayer.isEqualTo_(arg0, /)`
+- `GSLayer.isEqual_(arg0, /)`
+- `GSLayer.isFault()`
+- `GSLayer.isFullColorLayer()`
+- `GSLayer.isGreaterThanOrEqualTo_(arg0, /)`
+- `GSLayer.isGreaterThan_(arg0, /)`
+- `GSLayer.isIgnoringUpdates()`
+- `GSLayer.isKindOfClass_(arg0, /)`
+- `GSLayer.isLessThanOrEqualTo_(arg0, /)`
+- `GSLayer.isLessThan_(arg0, /)`
+- `GSLayer.isLike_(arg0, /)`
+- `GSLayer.isMemberOfClass_(arg0, /)`
+- `GSLayer.isNSArray__()`
+- `GSLayer.isNSCFConstantString__()`
+- `GSLayer.isNSData__()`
+- `GSLayer.isNSDate__()`
+- `GSLayer.isNSDictionary__()`
+- `GSLayer.isNSNumber__()`
+- `GSLayer.isNSObject__()`
+- `GSLayer.isNSOrderedSet__()`
+- `GSLayer.isNSSet__()`
+- `GSLayer.isNSString__()`
+- `GSLayer.isNSTimeZone__()`
+- `GSLayer.isNSValue__()`
+- `GSLayer.isNotEqualTo_(arg0, /)`
+- `GSLayer.isNull()`
+- `GSLayer.isProxy()`
+- `GSLayer.isSVGColorLayer()`
+- `GSLayer.isSecondaryMetric_(arg0, /)`
+- `GSLayer.isSmartComponentLayer()`
+- `GSLayer.isToManyKey_(arg0, /)`
+- `GSLayer.isUpToDate()`
+- `GSLayer.isUpdatingMetrics()`
+- `GSLayer.kerning()`
+- `GSLayer.keyForAttributeCoordinates()`
+- `GSLayer.keyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSLayer.lastOperation()`
+- `GSLayer.lastOperation_(arg0, /)`
+- `GSLayer.lastUpdate()`
+- `GSLayer.layer()`
+- `GSLayer.layerColor()`
+- `GSLayer.layerColor_(arg0, /)`
+- `GSLayer.layerGroupKey()`
+- `GSLayer.layerKey()`
+- `GSLayer.layerSettingsIcon()`
+- `GSLayer.leftMetricsKeyState()`
+- `GSLayer.leftMetricsKeyState_(arg0, /)`
+- `GSLayer.leftMetricsKeyUI()`
+- `GSLayer.leftPlainMetricsKey()`
+- `GSLayer.legacyName_(arg0, /)`
+- `GSLayer.lockReadAlignInfo()`
+- `GSLayer.lockReadMetrics()`
+- `GSLayer.lockReadShapes()`
+- `GSLayer.lockWriteAlignInfo()`
+- `GSLayer.lockWriteMetrics()`
+- `GSLayer.lockWriteShapes()`
+- `GSLayer.locked()`
+- `GSLayer.lsbAtHeight_(arg0, /)`
+- `GSLayer.makeComponents()`
+- `GSLayer.maxX()`
+- `GSLayer.maxY()`
+- `GSLayer.methodDescriptionForSelector_(arg0, /)`
+- `GSLayer.methodForSelector_(arg0, /)`
+- `GSLayer.methodSignatureForSelector_(arg0, /)`
+- `GSLayer.methodSignatureForSelector_(arg0, /)`
+- `GSLayer.metricForName_(arg0, /)`
+- `GSLayer.metricForType_(arg0, /)`
+- `GSLayer.metricKeyOffsetLeft_right_(arg0, arg1, /)`
+- `GSLayer.metricsForMaster_(arg0, /)`
+- `GSLayer.metricsKeysInvalid()`
+- `GSLayer.metricsKeysOutOfSync()`
+- `GSLayer.metricsValue_atHeight_(arg0, arg1, /)`
+- `GSLayer.metricsValue_forKey_(arg0, arg1, /)`
+- `GSLayer.metricsValue_forKey_value_atHeight_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.minX()`
+- `GSLayer.minY()`
+- `GSLayer.moveContent_(arg0, /)`
+- `GSLayer.mr_formattedDebugDescription()`
+- `GSLayer.mutableArrayValueForKeyPath_(arg0, /)`
+- `GSLayer.mutableArrayValueForKey_(arg0, /)`
+- `GSLayer.mutableCopy()`
+- `GSLayer.mutableCopyWithZone_(arg0, /)`
+- `GSLayer.mutableCopyWithZone_(arg0, /)`
+- `GSLayer.mutableOrderedSetValueForKeyPath_(arg0, /)`
+- `GSLayer.mutableOrderedSetValueForKey_(arg0, /)`
+- `GSLayer.mutableSetValueForKeyPath_(arg0, /)`
+- `GSLayer.mutableSetValueForKey_(arg0, /)`
+- `GSLayer.my_compactDescription()`
+- `GSLayer.nameFirst()`
+- `GSLayer.nameSecond()`
+- `GSLayer.nameUI()`
+- `GSLayer.nearestToNode_fromList_(arg0, arg1, /)`
+- `GSLayer.needsAlignment()`
+- `GSLayer.needsCentering()`
+- `GSLayer.newScriptingObjectOfClass_forValueForKey_withContentsValue_properties_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.newTaggedNSStringWithASCIIBytes__length__(arg0, arg1, /)`
+- `GSLayer.nextKerningExceptionForLayer_direction_(arg0, arg1, /)`
+- `GSLayer.nextKerningForLayer_direction_(arg0, arg1, /)`
+- `GSLayer.nodeAtIndexPath_(arg0, /)`
+- `GSLayer.nodeAtPoint_excludeNode_ignoreLocked_tolerance_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.nodeAtPoint_excludeNodes_traverseComponents_ignoreLocked_tolerance_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSLayer.objectInAnchorsAtIndex_(arg0, /)`
+- `GSLayer.objectInAnnotationsAtIndex_(arg0, /)`
+- `GSLayer.objectInGuidesAtIndex_(arg0, /)`
+- `GSLayer.objectInHintsAtIndex_(arg0, /)`
+- `GSLayer.objectInShapesAtIndexFast_(arg0, /)`
+- `GSLayer.objectInShapesAtIndexPath_(arg0, /)`
+- `GSLayer.objectInShapesAtIndex_(arg0, /)`
+- `GSLayer.objectSpecifier()`
+- `GSLayer.objectSpecifier()`
+- `GSLayer.observationInfo()`
+- `GSLayer.observeValueForKeyPath_ofObject_change_context_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.openCornerAtNode_offset_(arg0, arg1, /)`
+- `GSLayer.optionDescriptionsForBinding_(arg0, /)`
+- `GSLayer.ownName()`
+- `GSLayer.ownsDestinationObjectsForRelationshipKey_(arg0, /)`
+- `GSLayer.paletteColor_(arg0, /)`
+- `GSLayer.partSelection()`
+- `GSLayer.pasteDict_selectedNodes_error_(arg0, arg1, arg2, /)`
+- `GSLayer.pasteHintDictToKnobs_error_(arg0, arg1, /)`
+- `GSLayer.pasteHintDict_selectedNodes_error_(arg0, arg1, arg2, /)`
+- `GSLayer.pathIntersectCheckSelection_error_(arg0, arg1, /)`
+- `GSLayer.pathIntersect_(arg0, /)`
+- `GSLayer.pathIntersect_from_error_(arg0, arg1, arg2, /)`
+- `GSLayer.pathSubtractKeepOverlaps_error_(arg0, arg1, /)`
+- `GSLayer.pathSubtract_(arg0, /)`
+- `GSLayer.pathSubtract_from_keepOverlaps_error_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.pep_afterDelay_(arg0, /)`
+- `GSLayer.pep_getInvocation_(arg0, /)`
+- `GSLayer.pep_onMainThread()`
+- `GSLayer.pep_onMainThreadIfNecessary()`
+- `GSLayer.pep_onOperationQueue_(arg0, /)`
+- `GSLayer.pep_onOperationQueue_priority_(arg0, arg1, /)`
+- `GSLayer.pep_onThread_(arg0, /)`
+- `GSLayer.pep_onThread_immediateForMatchingThread_(arg0, arg1, /)`
+- `GSLayer.performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSLayer.performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSLayer.performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.performSelector_(arg0, /)`
+- `GSLayer.performSelector_object_afterDelay_(arg0, arg1, arg2, /)`
+- `GSLayer.performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSLayer.performSelector_withObject_(arg0, arg1, /)`
+- `GSLayer.performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSLayer.performSelector_withObject_afterDelay_ignoreMenuTracking_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.performSelector_withObject_withObject_(arg0, arg1, arg2, /)`
+- `GSLayer.pieceInterpolate_(arg0, /)`
+- `GSLayer.pkaxRespondsToSelector_fromExtrasProtocol_(arg0, arg1, /)`
+- `GSLayer.pkaxValueForKey_(arg0, /)`
+- `GSLayer.plainMetricsKeyUI_(arg0, /)`
+- `GSLayer.plainMetricsKeyUI_value_(arg0, arg1, /)`
+- `GSLayer.plainMetricsKey_(arg0, /)`
+- `GSLayer.postRead_format_(arg0, arg1, /)`
+- `GSLayer.preloadContent()`
+- `GSLayer.prepareComponentsForTrueTypeExport_keepTransformed_keepSmart_(arg0, arg1, arg2, /)`
+- `GSLayer.prepareForInterfaceBuilder()`
+- `GSLayer.previousKerningExceptionForLayer_direction_(arg0, arg1, /)`
+- `GSLayer.previousKerningForLayer_direction_(arg0, arg1, /)`
+- `GSLayer.propertyListValueFormat_(arg0, /)`
+- `GSLayer.pyobjc_performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSLayer.pyobjc_performSelectorOnMainThread_withObject_(arg0, arg1, /)`
+- `GSLayer.pyobjc_performSelectorOnMainThread_withObject_modes_(arg0, arg1, arg2, /)`
+- `GSLayer.pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSLayer.pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.pyobjc_performSelector_onThread_withObject_(arg0, arg1, arg2, /)`
+- `GSLayer.pyobjc_performSelector_onThread_withObject_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.pyobjc_performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.pyobjc_performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSLayer.pyobjc_performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSLayer.pyobjc_performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.readBuffer()`
+- `GSLayer.receiveObservedError_(arg0, /)`
+- `GSLayer.receiveObservedValue_(arg0, /)`
+- `GSLayer.reconnectNodesAtNode1_node2_offset_(arg0, arg1, arg2, /)`
+- `GSLayer.reconnectNodes_(arg0, /)`
+- `GSLayer.reinterpolate(self)`
+- `GSLayer.reinterpolateMetrics()`
+- `GSLayer.release()`
+- `GSLayer.releaseRenderedTexture_forCGLContext_(arg0, arg1, /)`
+- `GSLayer.removeAnchorWithName_(arg0, /)`
+- `GSLayer.removeAnchor_(arg0, /)`
+- `GSLayer.removeAnnotation_(arg0, /)`
+- `GSLayer.removeAttributeForKey_(arg0, /)`
+- `GSLayer.removeHint_(arg0, /)`
+- `GSLayer.removeObjectFromAnnotationsAtIndex_(arg0, /)`
+- `GSLayer.removeObjectFromGuidesAtIndex_(arg0, /)`
+- `GSLayer.removeObjectFromGuides_(arg0, /)`
+- `GSLayer.removeObjectFromHintsAtIndex_(arg0, /)`
+- `GSLayer.removeObjectFromSelectionAtIndex_(arg0, /)`
+- `GSLayer.removeObjectFromSelection_(arg0, /)`
+- `GSLayer.removeObjectFromShapesAtIndex_(arg0, /)`
+- `GSLayer.removeObject_fromBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSLayer.removeObject_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer.removeObjectsFromSelection_(arg0, /)`
+- `GSLayer.removeObservation_(arg0, /)`
+- `GSLayer.removeObservation_forObservableKeyPath_(arg0, arg1, /)`
+- `GSLayer.removeObserver_forKeyPath_(arg0, arg1, /)`
+- `GSLayer.removeObserver_forKeyPath_context_(arg0, arg1, arg2, /)`
+- `GSLayer.removeOverlap(self, checkSelection=False)`
+- `GSLayer.removeOverlapCheckSelection_error_(arg0, arg1, /)`
+- `GSLayer.removeOverlapCheckSelection_keepOpenPaths_gridSize_error_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.removeOverlap_gridSize_error_(arg0, arg1, arg2, /)`
+- `GSLayer.removeShape_(arg0, /)`
+- `GSLayer.removeShapesAtIndexes_(arg0, /)`
+- `GSLayer.removeShapes_(arg0, /)`
+- `GSLayer.removeUserDataForKey_(arg0, /)`
+- `GSLayer.removeValueAtIndex_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer.renderToBuffer_withBytesPerRow_pixelFormat_forBounds_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.renderWithCGLContext_forBounds_(arg0, arg1, /)`
+- `GSLayer.replaceObjectInAnnotationsAtIndex_withObject_(arg0, arg1, /)`
+- `GSLayer.replaceObjectInGuidesAtIndex_withObject_(arg0, arg1, /)`
+- `GSLayer.replaceObjectInHintsAtIndex_withObject_(arg0, arg1, /)`
+- `GSLayer.replaceShapeAtIndex_withShape_(arg0, arg1, /)`
+- `GSLayer.replaceValueAtIndex_inPropertyWithKey_withValue_(arg0, arg1, arg2, /)`
+- `GSLayer.replacementObjectForArchiver_(arg0, /)`
+- `GSLayer.replacementObjectForCoder_(arg0, /)`
+- `GSLayer.replacementObjectForKeyedArchiver_(arg0, /)`
+- `GSLayer.replacementObjectForPortCoder_(arg0, /)`
+- `GSLayer.resetLayerKey()`
+- `GSLayer.resolveForwardingConflictWithPreviousMetadata_forKey_(arg0, arg1, /)`
+- `GSLayer.respondsToSelector_(arg0, /)`
+- `GSLayer.restoreHints()`
+- `GSLayer.retain()`
+- `GSLayer.retainCount()`
+- `GSLayer.retainWeakReference()`
+- `GSLayer.rightMetricsKeyState()`
+- `GSLayer.rightMetricsKeyState_(arg0, /)`
+- `GSLayer.rightMetricsKeyUI()`
+- `GSLayer.rightPlainMetricsKey()`
+- `GSLayer.roundCoordinates()`
+- `GSLayer.roundCoordinatesToGridFast_(arg0, /)`
+- `GSLayer.roundCoordinatesToGrid_(arg0, /)`
+- `GSLayer.roundSelectedCoordinates()`
+- `GSLayer.rsbAtHeight_(arg0, /)`
+- `GSLayer.safari_isNSBoolean()`
+- `GSLayer.safari_postKVONotificationsForKey_aroundBlock_(arg0, arg1, /)`
+- `GSLayer.safari_removeDeallocationSentinelForObserver_(arg0, /)`
+- `GSLayer.safari_setDeallocationSentinelForObserver_(arg0, /)`
+- `GSLayer.safari_setDeallocationSentinelForObserver_withContext_(arg0, arg1, /)`
+- `GSLayer.saveHints()`
+- `GSLayer.saveToFile_format_options_error_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.scaleToFullHeight_bounds_(arg0, arg1, /)`
+- `GSLayer.scriptingProperties()`
+- `GSLayer.scriptingValueForSpecifier_(arg0, /)`
+- `GSLayer.secondaryPath()`
+- `GSLayer.segmentAtIndexPath_(arg0, /)`
+- `GSLayer.selNode()`
+- `GSLayer.selectedObjects()`
+- `GSLayer.selectedPaths_notSelected_(arg0, arg1, /)`
+- `GSLayer.selectionContainsObject_(arg0, /)`
+- `GSLayer.selectionPath()`
+- `GSLayer.self()`
+- `GSLayer.setAccessibilityBrailleMapRenderRegion_(arg0, /)`
+- `GSLayer.setAccessibilityBrailleMapRenderer_(arg0, /)`
+- `GSLayer.setAnchorArrayFast_(arg0, /)`
+- `GSLayer.setAnchorArray_(arg0, /)`
+- `GSLayer.setAnchorsFast_(arg0, /)`
+- `GSLayer.setAnchors_(arg0, /)`
+- `GSLayer.setAnnotations_(arg0, /)`
+- `GSLayer.setAppleColorLayer_(arg0, /)`
+- `GSLayer.setAssociatedMasterId_(arg0, /)`
+- `GSLayer.setAssociatedObject_(arg0, /)`
+- `GSLayer.setAttributeFast_forKey_(arg0, arg1, /)`
+- `GSLayer.setAttribute_forKey_(arg0, arg1, /)`
+- `GSLayer.setAttributes_(arg0, /)`
+- `GSLayer.setBSB_(arg0, /)`
+- `GSLayer.setBackgroundImage_(arg0, /)`
+- `GSLayer.setBackground_(arg0, /)`
+- `GSLayer.setBezierPath_(arg0, /)`
+- `GSLayer.setBottomMetricsKeyUI_(arg0, /)`
+- `GSLayer.setBottomMetricsKey_(arg0, /)`
+- `GSLayer.setBraceLayer_(arg0, /)`
+- `GSLayer.setBracketLayer_(arg0, /)`
+- `GSLayer.setBsb_atHeight_(arg0, arg1, /)`
+- `GSLayer.setColorIndex_(arg0, /)`
+- `GSLayer.setColorPaletteLayer_(arg0, /)`
+- `GSLayer.setColor_(arg0, /)`
+- `GSLayer.setComponentNames_(arg0, /)`
+- `GSLayer.setDisableUpdates()`
+- `GSLayer.setDisableUpdates_(arg0, /)`
+- `GSLayer.setDrawOpenBezierPath_(arg0, /)`
+- `GSLayer.setEnableUpdates()`
+- `GSLayer.setExtraHandles_(arg0, /)`
+- `GSLayer.setFullColorLayer_(arg0, /)`
+- `GSLayer.setGuides_(arg0, /)`
+- `GSLayer.setHintsFast_(arg0, /)`
+- `GSLayer.setHints_(arg0, /)`
+- `GSLayer.setIsAligning_(arg0, /)`
+- `GSLayer.setIsUpdatingMetrics_(arg0, /)`
+- `GSLayer.setKerning_(arg0, /)`
+- `GSLayer.setLSB_(arg0, /)`
+- `GSLayer.setLastUpdate_(arg0, /)`
+- `GSLayer.setLayerId_(arg0, /)`
+- `GSLayer.setLeftMetricsKeyUI_(arg0, /)`
+- `GSLayer.setLeftMetricsKey_(arg0, /)`
+- `GSLayer.setLocked_(arg0, /)`
+- `GSLayer.setLsb_atHeight_(arg0, arg1, /)`
+- `GSLayer.setMetric_atHeight_side_(arg0, arg1, arg2, /)`
+- `GSLayer.setMetric_side_(arg0, arg1, /)`
+- `GSLayer.setName_(arg0, /)`
+- `GSLayer.setNeedUpdateMetrics()`
+- `GSLayer.setNeedUpdateShapes()`
+- `GSLayer.setNextKerningException_forLayer_direction_(arg0, arg1, arg2, /)`
+- `GSLayer.setNextKerning_forLayer_direction_(arg0, arg1, arg2, /)`
+- `GSLayer.setNilValueForKey_(arg0, /)`
+- `GSLayer.setObservationInfo_(arg0, /)`
+- `GSLayer.setObservation_forObservingKeyPath_(arg0, arg1, /)`
+- `GSLayer.setOpenBezierPath_(arg0, /)`
+- `GSLayer.setParent_(arg0, /)`
+- `GSLayer.setPartSelection_(arg0, /)`
+- `GSLayer.setPlainMetricsKey_side_(arg0, arg1, /)`
+- `GSLayer.setPreviousKerningException_forLayer_direction_(arg0, arg1, arg2, /)`
+- `GSLayer.setPreviousKerning_forLayer_direction_(arg0, arg1, arg2, /)`
+- `GSLayer.setRSB_(arg0, /)`
+- `GSLayer.setReadBuffer_(arg0, /)`
+- `GSLayer.setReadBuffer_forKey_(arg0, arg1, /)`
+- `GSLayer.setRightMetricsKeyUI_(arg0, /)`
+- `GSLayer.setRightMetricsKey_(arg0, /)`
+- `GSLayer.setRsb_atHeight_(arg0, arg1, /)`
+- `GSLayer.setSVGColorLayer_(arg0, /)`
+- `GSLayer.setScriptingProperties_(arg0, /)`
+- `GSLayer.setSecondaryPath_(arg0, /)`
+- `GSLayer.setSelectionPath_(arg0, /)`
+- `GSLayer.setSelectionUndo_(arg0, /)`
+- `GSLayer.setSelection_(arg0, /)`
+- `GSLayer.setShapesFast_(arg0, /)`
+- `GSLayer.setShapes_(arg0, /)`
+- `GSLayer.setShapes_hints_(arg0, arg1, /)`
+- `GSLayer.setTSB_(arg0, /)`
+- `GSLayer.setTempData_(arg0, /)`
+- `GSLayer.setTempData_forKey_(arg0, arg1, /)`
+- `GSLayer.setTopMetricsKeyUI_(arg0, /)`
+- `GSLayer.setTopMetricsKey_(arg0, /)`
+- `GSLayer.setTsb_atHeight_(arg0, arg1, /)`
+- `GSLayer.setUserData_(arg0, /)`
+- `GSLayer.setUserData_forKey_(arg0, arg1, /)`
+- `GSLayer.setUserInterfaceItemIdentifier_(arg0, /)`
+- `GSLayer.setValue_forKeyPath_(arg0, arg1, /)`
+- `GSLayer.setValue_forKey_(arg0, arg1, /)`
+- `GSLayer.setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSLayer.setValuesForKeysWithDictionary_(arg0, /)`
+- `GSLayer.setVertOriginMetricsKeyUI_(arg0, /)`
+- `GSLayer.setVertOriginMetricsKey_(arg0, /)`
+- `GSLayer.setVertOrigin_(arg0, /)`
+- `GSLayer.setVertWidthMetricsKeyUI_(arg0, /)`
+- `GSLayer.setVertWidthMetricsKey_(arg0, /)`
+- `GSLayer.setVertWidth_(arg0, /)`
+- `GSLayer.setVisible_(arg0, /)`
+- `GSLayer.setWidthMetricsKeyUI_(arg0, /)`
+- `GSLayer.setWidthMetricsKey_(arg0, /)`
+- `GSLayer.setWidth_(arg0, /)`
+- `GSLayer.settingsView_clearSettingForKey_(arg0, arg1, /)`
+- `GSLayer.settingsView_renameKey_toKey_(arg0, arg1, arg2, /)`
+- `GSLayer.settingsView_setSetting_forKey_(arg0, arg1, arg2, /)`
+- `GSLayer.settingsView_settingForKey_(arg0, arg1, /)`
+- `GSLayer.settingsView_shouldRenameKey_(arg0, arg1, /)`
+- `GSLayer.shapesGroupedByAttribute_hasMask_(arg0, arg1, /)`
+- `GSLayer.shouldColorMatch()`
+- `GSLayer.slantHeight()`
+- `GSLayer.slantX_origin_correctContrast_correctShape_correctThickness_checkSelection_(arg0, arg1, arg2, arg3, arg4, arg5, /)`
+- `GSLayer.slantX_origin_doCorrection_checkSelection_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer.slantY_origin_checkSelection_(arg0, arg1, arg2, /)`
+- `GSLayer.sortedSelectedNodes()`
+- `GSLayer.startUpdates()`
+- `GSLayer.stopUpdates()`
+- `GSLayer.storedValueForKey_(arg0, /)`
+- `GSLayer.stringValueSafe()`
+- `GSLayer.stringValueSafe_(arg0, /)`
+- `GSLayer.superclass()`
+- `GSLayer.supportedBufferPixelFormats()`
+- `GSLayer.supportedRenderedTexturePixelFormats()`
+- `GSLayer.supportsBSXPCSecureCoding()`
+- `GSLayer.supportsRBSXPCSecureCoding()`
+- `GSLayer.swapForegroundWithBackground()`
+- `GSLayer.switchAnchorFastName_withName_(arg0, arg1, /)`
+- `GSLayer.syncBottomMetrics()`
+- `GSLayer.syncLeftMetrics()`
+- `GSLayer.syncMetrics()`
+- `GSLayer.syncMetricsThreshold()`
+- `GSLayer.syncRightMetrics()`
+- `GSLayer.syncTopMetrics()`
+- `GSLayer.syncVertWidthMetrics()`
+- `GSLayer.syncWidthMetrics()`
+- `GSLayer.syncWidthMetricsAndCenter()`
+- `GSLayer.takeStoredValue_forKey_(arg0, arg1, /)`
+- `GSLayer.takeStoredValuesFromDictionary_(arg0, /)`
+- `GSLayer.takeValue_forKeyPath_(arg0, arg1, /)`
+- `GSLayer.takeValue_forKey_(arg0, arg1, /)`
+- `GSLayer.takeValuesFromDictionary_(arg0, /)`
+- `GSLayer.tempDataForKey_(arg0, /)`
+- `GSLayer.toManyRelationshipKeys()`
+- `GSLayer.toOneRelationshipKeys()`
+- `GSLayer.topHeight()`
+- `GSLayer.topMetricsKeyState()`
+- `GSLayer.topMetricsKeyState_(arg0, /)`
+- `GSLayer.topMetricsKeyUI()`
+- `GSLayer.topPlainMetricsKey()`
+- `GSLayer.transform(self, transform, selection=False, components=True)`
+- `GSLayer.transformFast_(arg0, /)`
+- `GSLayer.transformFast_doComponent_(arg0, arg1, /)`
+- `GSLayer.transformSelection_(arg0, /)`
+- `GSLayer.transform_(arg0, /)`
+- `GSLayer.transform_checkForSelection_(arg0, arg1, /)`
+- `GSLayer.transform_checkForSelection_doComponent_(arg0, arg1, arg2, /)`
+- `GSLayer.transform_checkForSelection_doComponents_(arg0, arg1, arg2, /)`
+- `GSLayer.tsbAtHeight_(arg0, /)`
+- `GSLayer.un_safeBoolValue()`
+- `GSLayer.unableToSetNilForKey_(arg0, /)`
+- `GSLayer.unbind_(arg0, /)`
+- `GSLayer.undoManager()`
+- `GSLayer.undoManagerCheck()`
+- `GSLayer.unlockReadAlignInfo()`
+- `GSLayer.unlockReadMetrics()`
+- `GSLayer.unlockReadShapes()`
+- `GSLayer.unlockWriteAlignInfo()`
+- `GSLayer.unlockWriteMetrics()`
+- `GSLayer.unlockWriteShapes()`
+- `GSLayer.updateCorners()`
+- `GSLayer.updateHints()`
+- `GSLayer.updateMetrics()`
+- `GSLayer.updateMetricsAndNotify_(arg0, /)`
+- `GSLayer.userDataForKey_(arg0, /)`
+- `GSLayer.userInterfaceItemIdentifier()`
+- `GSLayer.utf8ValueSafe()`
+- `GSLayer.utf8ValueSafe_(arg0, /)`
+- `GSLayer.validateBottomMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer.validateComponentNames_error_(arg0, arg1, /)`
+- `GSLayer.validateLeftMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer.validateMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer.validateRightMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer.validateTakeValue_forKeyPath_(arg0, arg1, /)`
+- `GSLayer.validateTopMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer.validateValue_forKeyPath_error_(arg0, arg1, arg2, /)`
+- `GSLayer.validateValue_forKey_(arg0, arg1, /)`
+- `GSLayer.validateValue_forKey_error_(arg0, arg1, arg2, /)`
+- `GSLayer.validateVertOriginMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer.validateVertWidthMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer.validateWidthMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer.valueAtIndex_inPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer.valueClassForBinding_(arg0, /)`
+- `GSLayer.valueForKeyPath_(arg0, /)`
+- `GSLayer.valueForKey_(arg0, /)`
+- `GSLayer.valueForUndefinedKey_(arg0, /)`
+- `GSLayer.valueWithName_inPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer.valueWithUniqueID_inPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer.valuesForKeys_(arg0, /)`
+- `GSLayer.vertOriginMetricsKey()`
+- `GSLayer.vertOriginMetricsKeyState()`
+- `GSLayer.vertOriginMetricsKeyState_(arg0, /)`
+- `GSLayer.vertOriginMetricsKeyUI()`
+- `GSLayer.vertOriginPlainMetricsKey()`
+- `GSLayer.vertWidthDefault()`
+- `GSLayer.vertWidthMetricsKey()`
+- `GSLayer.vertWidthMetricsKeyState()`
+- `GSLayer.vertWidthMetricsKeyState_defaultKey_(arg0, arg1, /)`
+- `GSLayer.vertWidthMetricsKeyUI()`
+- `GSLayer.vertWidthPlainMetricsKey()`
+- `GSLayer.vertWidthUI()`
+- `GSLayer.vk_loggingDescription()`
+- `GSLayer.vk_loggingIdentifier()`
+- `GSLayer.vk_prettyLoggingDescription()`
+- `GSLayer.widthMetricsKeyState()`
+- `GSLayer.widthMetricsKeyState_(arg0, /)`
+- `GSLayer.widthMetricsKeyUI()`
+- `GSLayer.widthMetricsKeyUIFast()`
+- `GSLayer.widthPlainMetricsKey()`
+- `GSLayer.willChangeValueForKey_(arg0, /)`
+- `GSLayer.willChangeValueForKey_(arg0, /)`
+- `GSLayer.willChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSLayer.willChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSLayer.zone()`
+- `GSLayer (instance)..cxx_destruct()`
+- `GSLayer (instance).CAMLType()`
+- `GSLayer (instance).CAMLTypeForKey_(arg0, /)`
+- `GSLayer (instance).CAMLTypeSupportedForKey_(arg0, /)`
+- `GSLayer (instance).CA_addValue_multipliedBy_(arg0, arg1, /)`
+- `GSLayer (instance).CA_archivingValueForKey_(arg0, /)`
+- `GSLayer (instance).CA_copyNumericValue_(arg0, /)`
+- `GSLayer (instance).CA_copyRenderValue()`
+- `GSLayer (instance).CA_copyRenderValueWithColorspace_(arg0, /)`
+- `GSLayer (instance).CA_distanceToValue_(arg0, /)`
+- `GSLayer (instance).CA_interpolateValue_byFraction_(arg0, arg1, /)`
+- `GSLayer (instance).CA_interpolateValues___interpolator_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).CA_numericValueCount()`
+- `GSLayer (instance).CA_prepareRenderValue()`
+- `GSLayer (instance).CA_roundToIntegerFromValue_(arg0, /)`
+- `GSLayer (instance).CA_validateValue_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).CKAssignToContainerWithID_(arg0, /)`
+- `GSLayer (instance).CKDescription()`
+- `GSLayer (instance).CKDescriptionPropertiesWithPublic_private_shouldExpand_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).CKDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSLayer (instance).CKExpandedDescription()`
+- `GSLayer (instance).CKHashedDescription()`
+- `GSLayer (instance).CKObjectDescriptionRedact_(arg0, /)`
+- `GSLayer (instance).CKObjectDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSLayer (instance).CKPropertiesDescription()`
+- `GSLayer (instance).CKPropertiesDescriptionStringFromProperties_(arg0, /)`
+- `GSLayer (instance).CKRedactedDescription()`
+- `GSLayer (instance).CKSingleLineDescription()`
+- `GSLayer (instance).CKUnredactedDescription()`
+- `GSLayer (instance).IKImageRepresentationWithType_(arg0, /)`
+- `GSLayer (instance).NSLifeguard_autorelease()`
+- `GSLayer (instance).NSRepresentation()`
+- `GSLayer (instance).NS_addTiledLayerDescendent_(arg0, /)`
+- `GSLayer (instance).NS_observationForKeyPath_options_block_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).NS_observationForKeyPaths_options_block_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).NS_removeTiledLayerDescendent_(arg0, /)`
+- `GSLayer (instance).NS_tiledLayerVisibleRect()`
+- `GSLayer (instance).RBSIsXPCObject()`
+- `GSLayer (instance).SCNUI_name()`
+- `GSLayer (instance).SCN_setupDisplayLinkWithQueue_screen_policy_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).abCaseInsensitiveIsEqual_(arg0, /)`
+- `GSLayer (instance).abDictionaryWithValuesForKeyPaths_(arg0, /)`
+- `GSLayer (instance).abRemoveObserverIgnoringExceptions_forKeyPath_(arg0, arg1, /)`
+- `GSLayer (instance).accessibilityAddTemporaryChild_(arg0, /)`
+- `GSLayer (instance).accessibilityAllowsOverriddenAttributesWhenIgnored()`
+- `GSLayer (instance).accessibilityArrayAttributeCount_(arg0, /)`
+- `GSLayer (instance).accessibilityArrayAttributeValues_index_maxCount_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).accessibilityAttributeValue_forParameter_(arg0, arg1, /)`
+- `GSLayer (instance).accessibilityAttributedValueForStringAttributeAttributeForParameter_(arg0, /)`
+- `GSLayer (instance).accessibilityBrailleMapRenderRegion()`
+- `GSLayer (instance).accessibilityBrailleMapRenderer()`
+- `GSLayer (instance).accessibilityDecodeOverriddenAttributes_(arg0, /)`
+- `GSLayer (instance).accessibilityEncodeOverriddenAttributes_(arg0, /)`
+- `GSLayer (instance).accessibilityIndexForChildUIElementAttributeForParameter_(arg0, /)`
+- `GSLayer (instance).accessibilityIndexOfChild_(arg0, /)`
+- `GSLayer (instance).accessibilityOverriddenAttributes()`
+- `GSLayer (instance).accessibilityParameterizedAttributeNames()`
+- `GSLayer (instance).accessibilityPerformShowMenuOfChild_(arg0, /)`
+- `GSLayer (instance).accessibilityPresenterProcessIdentifier()`
+- `GSLayer (instance).accessibilityRemoveTemporaryChild_(arg0, /)`
+- `GSLayer (instance).accessibilityReplaceRange_withText_(arg0, arg1, /)`
+- `GSLayer (instance).accessibilitySetOverrideValue_forAttribute_(arg0, arg1, /)`
+- `GSLayer (instance).accessibilitySetPresenterProcessIdentifier_(arg0, /)`
+- `GSLayer (instance).accessibilityShouldSendNotification_(arg0, /)`
+- `GSLayer (instance).accessibilityShouldUseUniqueId()`
+- `GSLayer (instance).accessibilitySupportsCustomElementData()`
+- `GSLayer (instance).accessibilitySupportsNotifications()`
+- `GSLayer (instance).accessibilitySupportsOverriddenAttributes()`
+- `GSLayer (instance).accessibilityTemporaryChildren()`
+- `GSLayer (instance).accessibilityVisibleArea()`
+- `GSLayer (instance).addAnchor_(arg0, /)`
+- `GSLayer (instance).addAnnotation_(arg0, /)`
+- `GSLayer (instance).addBackgroundImageWithURL_(arg0, /)`
+- `GSLayer (instance).addChainedObservers_(arg0, /)`
+- `GSLayer (instance).addExtremePoints()`
+- `GSLayer (instance).addExtremePointsForce_checkSelection_(arg0, arg1, /)`
+- `GSLayer (instance).addGuide_(arg0, /)`
+- `GSLayer (instance).addHintCheck_(arg0, /)`
+- `GSLayer (instance).addHint_(arg0, /)`
+- `GSLayer (instance).addInflectionPoints()`
+- `GSLayer (instance).addMissingAnchors()`
+- `GSLayer (instance).addNodesAtExtremes(force=False, checkSelection=False)`
+- `GSLayer (instance).addObject_toBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSLayer (instance).addObject_toPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer (instance).addObjectsFromArrayToSelection_(arg0, /)`
+- `GSLayer (instance).addObservationTransformer_(arg0, /)`
+- `GSLayer (instance).addObserverBlock_(arg0, /)`
+- `GSLayer (instance).addObserver_(arg0, /)`
+- `GSLayer (instance).addObserver_forKeyPath_options_context_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).addObserver_forObservableKeyPath_(arg0, arg1, /)`
+- `GSLayer (instance).addSelectionFast_(arg0, /)`
+- `GSLayer (instance).addSelection_(arg0, /)`
+- `GSLayer (instance).addShapeFast_(arg0, /)`
+- `GSLayer (instance).addShape_(arg0, /)`
+- `GSLayer (instance).addShapes_(arg0, /)`
+- `GSLayer (instance).addUserData_(arg0, /)`
+- `GSLayer (instance).akToolbarButtonItemType()`
+- `GSLayer (instance).alignComponents()`
+- `GSLayer (instance).alignComponents_(arg0, /)`
+- `GSLayer (instance).allComponents()`
+- `GSLayer (instance).allCorners()`
+- `GSLayer (instance).allGuides()`
+- `GSLayer (instance).allNodes()`
+- `GSLayer (instance).allPostScriptHints()`
+- `GSLayer (instance).allPropertyKeys()`
+- `GSLayer (instance).allTrueTypeHints()`
+- `GSLayer (instance).allowsWeakReference()`
+- `GSLayer (instance).anchorChangedName_(arg0, /)`
+- `GSLayer (instance).anchorDictTraversingComponents()`
+- `GSLayer (instance).anchorForName_(arg0, /)`
+- `GSLayer (instance).anchorForName_traverseComponents_(arg0, arg1, /)`
+- `GSLayer (instance).anchorNamesTraversingComponents()`
+- `GSLayer (instance).anchorNamesTraversingComponentsStopAtComponent_(arg0, /)`
+- `GSLayer (instance).anchorsTraversingComponents()`
+- `GSLayer (instance).applyCustomParameters_callbacks_font_error_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).applyHints_(arg0, /)`
+- `GSLayer (instance).applyTransform(transformStruct)`
+- `GSLayer (instance).areUpdatesDisabled()`
+- `GSLayer (instance).associatedFontMaster()`
+- `GSLayer (instance).associatedFontMasterFast()`
+- `GSLayer (instance).associatedObject()`
+- `GSLayer (instance).attributeForKey_(arg0, /)`
+- `GSLayer (instance).attributeKeys()`
+- `GSLayer (instance).autoContentAccessingProxy()`
+- `GSLayer (instance).autohint()`
+- `GSLayer (instance).autohintError_(arg0, /)`
+- `GSLayer (instance).autorelease()`
+- `GSLayer (instance).awakeAfterUsingCoder_(arg0, /)`
+- `GSLayer (instance).awakeFromNib()`
+- `GSLayer (instance).axes()`
+- `GSLayer (instance).axesValuesList_fontAxes_(arg0, arg1, /)`
+- `GSLayer (instance).beginChanges()`
+- `GSLayer (instance).bezierData()`
+- `GSLayer (instance).bezierPathFast()`
+- `GSLayer (instance).bind_toObject_withKeyPath_options_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).boolValueSafe()`
+- `GSLayer (instance).boolValueSafe_(arg0, /)`
+- `GSLayer (instance).bottomMetricsKeyState()`
+- `GSLayer (instance).bottomMetricsKeyState_(arg0, /)`
+- `GSLayer (instance).bottomMetricsKeyUI()`
+- `GSLayer (instance).bottomPlainMetricsKey()`
+- `GSLayer (instance).boundsAngle_(arg0, /)`
+- `GSLayer (instance).boundsOfSelection()`
+- `GSLayer (instance).boundsOfSelectionAngle_(arg0, /)`
+- `GSLayer (instance).bs_isPlistableType()`
+- `GSLayer (instance).bs_secureEncoded()`
+- `GSLayer (instance).bsbAtHeight_(arg0, /)`
+- `GSLayer (instance).calculateIntersectionsForPath_startPoint_endPoint_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).calculateIntersectionsStartPoint_endPoint_(arg0, arg1, /)`
+- `GSLayer (instance).calculateIntersectionsStartPoint_endPoint_decompose_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).calculateIntersectionsStartPoint_endPoint_decompose_ignoreLocked_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).canRenderWithCGLContext_(arg0, /)`
+- `GSLayer (instance).center()`
+- `GSLayer (instance).checkConnections()`
+- `GSLayer (instance).checkForCoincidentPaths()`
+- `GSLayer (instance).checkIfAlign()`
+- `GSLayer (instance).ck_bindInStatement_atIndex_(arg0, arg1, /)`
+- `GSLayer (instance).cksqlcs_appendSQLConstantValueToString_(arg0, /)`
+- `GSLayer (instance).cksqlcs_archivedObjectBindingValue_(arg0, /)`
+- `GSLayer (instance).cksqlcs_bindArchivedObject_index_db_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).cksqlcs_bindBlob_index_db_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).cksqlcs_bindDouble_index_db_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).cksqlcs_bindInt64_index_db_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).cksqlcs_bindText_index_db_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).cksqlcs_blobBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).cksqlcs_doubleBindingValue_(arg0, /)`
+- `GSLayer (instance).cksqlcs_int64BindingValue_(arg0, /)`
+- `GSLayer (instance).cksqlcs_textBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).classCode()`
+- `GSLayer (instance).classDescription()`
+- `GSLayer (instance).classDescriptionForDestinationKey_(arg0, /)`
+- `GSLayer (instance).classForArchiver()`
+- `GSLayer (instance).classForCoder()`
+- `GSLayer (instance).classForKeyedArchiver()`
+- `GSLayer (instance).classForPortCoder()`
+- `GSLayer (instance).className()`
+- `GSLayer (instance).class__()`
+- `GSLayer (instance).cleanUpPaths()`
+- `GSLayer (instance).clear()`
+- `GSLayer (instance).clearProperties()`
+- `GSLayer (instance).clearSelection()`
+- `GSLayer (instance).clearSelectionUndo()`
+- `GSLayer (instance).closeOpenPaths_(arg0, /)`
+- `GSLayer (instance).coalescedPerformSelector_(arg0, /)`
+- `GSLayer (instance).coerceValueForScriptingProperties_(arg0, /)`
+- `GSLayer (instance).coerceValue_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).colorIndex()`
+- `GSLayer (instance).compareString()`
+- `GSLayer (instance).componentNameFor_partUnicode_groups_modelComp_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).componentNames()`
+- `GSLayer (instance).componentNamesText()`
+- `GSLayer (instance).componentNamesTraverseComponents_(arg0, /)`
+- `GSLayer (instance).componentNamesTraversingComponents()`
+- `GSLayer (instance).compositionParameterView_didChangeParameterWithKey_(arg0, arg1, /)`
+- `GSLayer (instance).compositionParameterView_shouldDisplayParameterWithKey_attributes_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).compositionPickerViewDidStartAnimating_(arg0, /)`
+- `GSLayer (instance).compositionPickerViewWillStopAnimating_(arg0, /)`
+- `GSLayer (instance).compositionPickerView_didLoadComposition_(arg0, arg1, /)`
+- `GSLayer (instance).compositionPickerView_didSelectComposition_(arg0, arg1, /)`
+- `GSLayer (instance).compositionPickerView_draggingEnteredComposition_sender_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).compositionPickerView_keyDown_(arg0, arg1, /)`
+- `GSLayer (instance).compositionPickerView_performDragOperationOnComposition_sender_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).compositionPickerView_willSelectComposition_(arg0, arg1, /)`
+- `GSLayer (instance).computeInterpolationMasters_solution_masterIds_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).computeMastersCoeff_hasWeightAxis_doBraceLayer_masterIds_axesMax_axesMin_axisCount_masters_error_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, /)`
+- `GSLayer (instance).computeMasters_(arg0, /)`
+- `GSLayer (instance).computeTargetCoeff_layer_axesMax_axesMin_axisCount_smartSettings_target_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, /)`
+- `GSLayer (instance).computeTarget_layer_masters_smartSettings_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).conformsToProtocol_(arg0, /)`
+- `GSLayer (instance).connectAllOpenPaths()`
+- `GSLayer (instance).connectPathsWithNode_andNode_(arg0, arg1, /)`
+- `GSLayer (instance).connectPathsWithNode_andNode_extendPath_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).content()`
+- `GSLayer (instance).contentToBackgroundCheckSelection_keepOldBackground_(arg0, arg1, /)`
+- `GSLayer (instance).copy()`
+- `GSLayer (instance).copyAnchorsFromComponents()`
+- `GSLayer (instance).copyDecomposedLayer()`
+- `GSLayer (instance).copyRenderedTextureForCGLContext_pixelFormat_bounds_isFlipped_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).copyScriptingValue_forKey_withProperties_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).copyThin_(arg0, /)`
+- `GSLayer (instance).copyThin_selection_(arg0, arg1, /)`
+- `GSLayer (instance).copyWithZone_(arg0, /)`
+- `GSLayer (instance).correctPathDirection()`
+- `GSLayer (instance).countOfAnchors()`
+- `GSLayer (instance).countOfAnnotations()`
+- `GSLayer (instance).countOfAttributes()`
+- `GSLayer (instance).countOfComponents()`
+- `GSLayer (instance).countOfGuides()`
+- `GSLayer (instance).countOfHints()`
+- `GSLayer (instance).countOfPaths()`
+- `GSLayer (instance).countOfPostScriptHints()`
+- `GSLayer (instance).countOfSelection()`
+- `GSLayer (instance).countOfShapes()`
+- `GSLayer (instance).countOfUserData()`
+- `GSLayer (instance).createImageWithOptions_(arg0, /)`
+- `GSLayer (instance).createKeyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSLayer (instance).createOptimizedProviderWithTransformation_cropping_(arg0, arg1, /)`
+- `GSLayer (instance).cutBetweenPoints(Point1, Point2)`
+- `GSLayer (instance).dealloc()`
+- `GSLayer (instance).debugDescription()`
+- `GSLayer (instance).decomposeBraceLayers()`
+- `GSLayer (instance).decomposeComponentDontNotify_(arg0, /)`
+- `GSLayer (instance).decomposeComponentDontNotify_callback_(arg0, arg1, /)`
+- `GSLayer (instance).decomposeComponentDontNotify_doAnchors_doHints_callback_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).decomposeComponent_(arg0, /)`
+- `GSLayer (instance).decomposeComponent_doAnchors_doHints_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).decomposeComponents()`
+- `GSLayer (instance).decomposeComponentsCallback_(arg0, /)`
+- `GSLayer (instance).decomposeCorners()`
+- `GSLayer (instance).decomposeSmartOutlines()`
+- `GSLayer (instance).defaultInit()`
+- `GSLayer (instance).defaultSettings_verticalStem_(arg0, arg1, /)`
+- `GSLayer (instance).description()`
+- `GSLayer (instance).descriptionAtIndent_(arg0, /)`
+- `GSLayer (instance).descriptionForAttributeAxisRules()`
+- `GSLayer (instance).descriptionForAttributeColor()`
+- `GSLayer (instance).descriptionForAttributeCoordinates()`
+- `GSLayer (instance).dictionaryWithValuesForKeys_(arg0, /)`
+- `GSLayer (instance).didChangeValueForKey_(arg0, /)`
+- `GSLayer (instance).didChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).didChange__valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).didChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).differenceToLayer_options_(arg0, arg1, /)`
+- `GSLayer (instance).disableLock()`
+- `GSLayer (instance).dividePathAtNode_(arg0, /)`
+- `GSLayer (instance).doAlignComponents()`
+- `GSLayer (instance).doAlignWidth()`
+- `GSLayer (instance).doSlantingCorrectionWithAngle_checkSelection_(arg0, arg1, /)`
+- `GSLayer (instance).doSlantingCorrectionWithAngle_checkSelection_correctContrast_correctShape_correctThickness_horizontalStem_verticalStem_center_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, /)`
+- `GSLayer (instance).doSlantingCorrectionWithAngle_correctContrast_correctShape_correctThickness_checkSelection_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSLayer (instance).doesContain_(arg0, /)`
+- `GSLayer (instance).doesNotRecognizeSelector_(arg0, /)`
+- `GSLayer (instance).doubleValueSafe()`
+- `GSLayer (instance).doubleValueSafe_(arg0, /)`
+- `GSLayer (instance).draw(pen, contours=True, components=True)`
+- `GSLayer (instance).drawBezierPath_hasPaths_(arg0, arg1, /)`
+- `GSLayer (instance).drawBlackInPen_openPen_(arg0, arg1, /)`
+- `GSLayer (instance).drawColorInPen_(arg0, /)`
+- `GSLayer (instance).drawDrawStack_inPen_(arg0, arg1, /)`
+- `GSLayer (instance).drawExtraInfoInFrame_options_inView_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).drawInFrame_(arg0, /)`
+- `GSLayer (instance).drawInFrame_color_(arg0, arg1, /)`
+- `GSLayer (instance).drawInFrame_color_metrics_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).drawInFrame_color_metrics_scale_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).drawInPen_(arg0, /)`
+- `GSLayer (instance).drawInPen_openPen_(arg0, arg1, /)`
+- `GSLayer (instance).drawPoints(pen, contours=True, components=True)`
+- `GSLayer (instance).drawStack()`
+- `GSLayer (instance).drawStackForShapes_transform_penClass_secondaryPen_extraHandles_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSLayer (instance).elementDidChange_(arg0, /)`
+- `GSLayer (instance).enableFutureUpdates()`
+- `GSLayer (instance).encodeWithCAMLWriter_(arg0, /)`
+- `GSLayer (instance).encodeWithCoder_(arg0, /)`
+- `GSLayer (instance).endChanges()`
+- `GSLayer (instance).entityName()`
+- `GSLayer (instance).enumerateComponentsUsingBlock_(arg0, /)`
+- `GSLayer (instance).enumerateComponentsWithOptions_usingBlock_(arg0, arg1, /)`
+- `GSLayer (instance).enumeratePathsUsingBlock_(arg0, /)`
+- `GSLayer (instance).enumeratePathsWithOptions_usingBlock_(arg0, arg1, /)`
+- `GSLayer (instance).enumerateShapesUsingBlock_(arg0, /)`
+- `GSLayer (instance).exposedBindings()`
+- `GSLayer (instance).extendSegmentsForPoints_node_offset_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).extraHandles()`
+- `GSLayer (instance).factorsCoeff_(arg0, /)`
+- `GSLayer (instance).factorsMA_(arg0, /)`
+- `GSLayer (instance).factorsMM_(arg0, /)`
+- `GSLayer (instance).fastBounds()`
+- `GSLayer (instance).finalize()`
+- `GSLayer (instance).findComponent_baseName_withSuffix_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).findSuffixesWithSuffixes_baseName_(arg0, arg1, /)`
+- `GSLayer (instance).finishObserving()`
+- `GSLayer (instance).fitOverlappingOffCurves_indexes_(arg0, arg1, /)`
+- `GSLayer (instance).flattenOutlines()`
+- `GSLayer (instance).flattenOutlinesRemoveOverlap_origHints_secondaryPath_extraHandles_error_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSLayer (instance).flushKeyBindings()`
+- `GSLayer (instance).font()`
+- `GSLayer (instance).forwardInvocation_(arg0, /)`
+- `GSLayer (instance).forwardingTargetForSelector_(arg0, /)`
+- `GSLayer (instance).fp__ivarDescriptionForClass_(arg0, /)`
+- `GSLayer (instance).fp__methodDescriptionForClass_(arg0, /)`
+- `GSLayer (instance).fp_ivarDescription()`
+- `GSLayer (instance).fp_methodDescription()`
+- `GSLayer (instance).fp_shortMethodDescription()`
+- `GSLayer (instance).getAutohintsDoHorizontal_doVertical_error_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).getBoundsFromPathRect()`
+- `GSLayer (instance).getCopyOfContentFromLayer_doSelection_(arg0, arg1, /)`
+- `GSLayer (instance).getPen()`
+- `GSLayer (instance).getPointPen()`
+- `GSLayer (instance).getPositionsFromLayer_(arg0, /)`
+- `GSLayer (instance).getStemValues_value1_value2_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).glyph()`
+- `GSLayer (instance).glyphMetrics()`
+- `GSLayer (instance).glyphMetricsForDirection_(arg0, /)`
+- `GSLayer (instance).handleQueryWithUnboundKey_(arg0, /)`
+- `GSLayer (instance).handleTakeValue_forUnboundKey_(arg0, arg1, /)`
+- `GSLayer (instance).hasAlignedSideBearings()`
+- `GSLayer (instance).hasAlignedWidth()`
+- `GSLayer (instance).hasAnchors()`
+- `GSLayer (instance).hasAnnotations()`
+- `GSLayer (instance).hasBackground()`
+- `GSLayer (instance).hasBackgroundImage()`
+- `GSLayer (instance).hasComponents()`
+- `GSLayer (instance).hasCorners()`
+- `GSLayer (instance).hasHints()`
+- `GSLayer (instance).hasPostScriptHints()`
+- `GSLayer (instance).hasTrueTypeHints()`
+- `GSLayer (instance).hash()`
+- `GSLayer (instance).hintsFast()`
+- `GSLayer (instance).hintsFromCharString_doLinks_(arg0, arg1, /)`
+- `GSLayer (instance).hintsFromCharString_doLinks_ignoreVerticalStems_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).horizontalShift_otherShifts_(arg0, arg1, /)`
+- `GSLayer (instance).if_setValueIfNonNil_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).if_setValueIfYES_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).ignoreUpdates()`
+- `GSLayer (instance).ikInMainLoopWait_(arg0, /)`
+- `GSLayer (instance).imageBrowser_didValidateVisibleCellsAtIndexes_(arg0, arg1, /)`
+- `GSLayer (instance).imageBrowser_willDisplayCellsAtIndexes_(arg0, arg1, /)`
+- `GSLayer (instance).imageRepresentation()`
+- `GSLayer (instance).imageRepresentationType()`
+- `GSLayer (instance).imageSubtitle()`
+- `GSLayer (instance).imageTitle()`
+- `GSLayer (instance).imageToDrawForCell_(arg0, /)`
+- `GSLayer (instance).imageUID()`
+- `GSLayer (instance).implementsSelector_(arg0, /)`
+- `GSLayer (instance).importOutlinesFromURL_scale_error_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).indexOfObjectInGuides_(arg0, /)`
+- `GSLayer (instance).indexOfObjectInHints_(arg0, /)`
+- `GSLayer (instance).indexOfObjectInShapes_(arg0, /)`
+- `GSLayer (instance).indexOfPath_(arg0, /)`
+- `GSLayer (instance).indexPathOfNodeAtX_actualPosition_(arg0, arg1, /)`
+- `GSLayer (instance).indexPathOfNodeAtX_atY_actualPosition_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).indexPathOfNodeAtY_actualPosition_(arg0, arg1, /)`
+- `GSLayer (instance).indexPathOfNode_(arg0, /)`
+- `GSLayer (instance).indexPathOfShape_(arg0, /)`
+- `GSLayer (instance).indexPath_byAddingPathCount_(arg0, arg1, /)`
+- `GSLayer (instance).infoForBinding_(arg0, /)`
+- `GSLayer (instance).init()`
+- `GSLayer (instance).initLock()`
+- `GSLayer (instance).initWithCoder_(arg0, /)`
+- `GSLayer (instance).initWithDict_format_(arg0, arg1, /)`
+- `GSLayer (instance).initWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSLayer (instance).insertObject_inAnnotationsAtIndex_(arg0, arg1, /)`
+- `GSLayer (instance).insertObject_inGuidesAtIndex_(arg0, arg1, /)`
+- `GSLayer (instance).insertObject_inHintsAtIndex_(arg0, arg1, /)`
+- `GSLayer (instance).insertObject_inShapesAtIndexPath_(arg0, arg1, /)`
+- `GSLayer (instance).insertObject_inShapesAtIndex_(arg0, arg1, /)`
+- `GSLayer (instance).insertValue_atIndex_inPropertyWithKey_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).insertValue_inPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer (instance).int64ValueSafe()`
+- `GSLayer (instance).int64ValueSafe_(arg0, /)`
+- `GSLayer (instance).interpolateUntouchedPoints_direction_originalShapes_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).intersections()`
+- `GSLayer (instance).intersectionsBetweenPoints(Point1, Point2, components=False, ignoreLocked=False)`
+- `GSLayer (instance).inverseForRelationshipKey_(arg0, /)`
+- `GSLayer (instance).isAligning()`
+- `GSLayer (instance).isAnyColorLayer()`
+- `GSLayer (instance).isAnySpecialLayer()`
+- `GSLayer (instance).isAppleColorLayer()`
+- `GSLayer (instance).isBraceLayer()`
+- `GSLayer (instance).isBracketLayer()`
+- `GSLayer (instance).isCaseInsensitiveLike_(arg0, /)`
+- `GSLayer (instance).isColorPaletteLayer()`
+- `GSLayer (instance).isEqualToLayer_(arg0, /)`
+- `GSLayer (instance).isEqualTo_(arg0, /)`
+- `GSLayer (instance).isEqual_(arg0, /)`
+- `GSLayer (instance).isFault()`
+- `GSLayer (instance).isFullColorLayer()`
+- `GSLayer (instance).isGreaterThanOrEqualTo_(arg0, /)`
+- `GSLayer (instance).isGreaterThan_(arg0, /)`
+- `GSLayer (instance).isIgnoringUpdates()`
+- `GSLayer (instance).isKindOfClass_(arg0, /)`
+- `GSLayer (instance).isLessThanOrEqualTo_(arg0, /)`
+- `GSLayer (instance).isLessThan_(arg0, /)`
+- `GSLayer (instance).isLike_(arg0, /)`
+- `GSLayer (instance).isMemberOfClass_(arg0, /)`
+- `GSLayer (instance).isNSArray__()`
+- `GSLayer (instance).isNSCFConstantString__()`
+- `GSLayer (instance).isNSData__()`
+- `GSLayer (instance).isNSDate__()`
+- `GSLayer (instance).isNSDictionary__()`
+- `GSLayer (instance).isNSNumber__()`
+- `GSLayer (instance).isNSObject__()`
+- `GSLayer (instance).isNSOrderedSet__()`
+- `GSLayer (instance).isNSSet__()`
+- `GSLayer (instance).isNSString__()`
+- `GSLayer (instance).isNSTimeZone__()`
+- `GSLayer (instance).isNSValue__()`
+- `GSLayer (instance).isNotEqualTo_(arg0, /)`
+- `GSLayer (instance).isNull()`
+- `GSLayer (instance).isProxy()`
+- `GSLayer (instance).isSVGColorLayer()`
+- `GSLayer (instance).isSecondaryMetric_(arg0, /)`
+- `GSLayer (instance).isSmartComponentLayer()`
+- `GSLayer (instance).isToManyKey_(arg0, /)`
+- `GSLayer (instance).isUpToDate()`
+- `GSLayer (instance).isUpdatingMetrics()`
+- `GSLayer (instance).kerning()`
+- `GSLayer (instance).keyForAttributeCoordinates()`
+- `GSLayer (instance).keyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSLayer (instance).lastOperation()`
+- `GSLayer (instance).lastOperation_(arg0, /)`
+- `GSLayer (instance).lastUpdate()`
+- `GSLayer (instance).layer()`
+- `GSLayer (instance).layerColor()`
+- `GSLayer (instance).layerColor_(arg0, /)`
+- `GSLayer (instance).layerGroupKey()`
+- `GSLayer (instance).layerKey()`
+- `GSLayer (instance).layerSettingsIcon()`
+- `GSLayer (instance).leftMetricsKeyState()`
+- `GSLayer (instance).leftMetricsKeyState_(arg0, /)`
+- `GSLayer (instance).leftMetricsKeyUI()`
+- `GSLayer (instance).leftPlainMetricsKey()`
+- `GSLayer (instance).legacyName_(arg0, /)`
+- `GSLayer (instance).lockReadAlignInfo()`
+- `GSLayer (instance).lockReadMetrics()`
+- `GSLayer (instance).lockReadShapes()`
+- `GSLayer (instance).lockWriteAlignInfo()`
+- `GSLayer (instance).lockWriteMetrics()`
+- `GSLayer (instance).lockWriteShapes()`
+- `GSLayer (instance).locked()`
+- `GSLayer (instance).lsbAtHeight_(arg0, /)`
+- `GSLayer (instance).makeComponents()`
+- `GSLayer (instance).maxX()`
+- `GSLayer (instance).maxY()`
+- `GSLayer (instance).methodDescriptionForSelector_(arg0, /)`
+- `GSLayer (instance).methodForSelector_(arg0, /)`
+- `GSLayer (instance).methodSignatureForSelector_(arg0, /)`
+- `GSLayer (instance).metricForName_(arg0, /)`
+- `GSLayer (instance).metricForType_(arg0, /)`
+- `GSLayer (instance).metricKeyOffsetLeft_right_(arg0, arg1, /)`
+- `GSLayer (instance).metricsForMaster_(arg0, /)`
+- `GSLayer (instance).metricsKeysInvalid()`
+- `GSLayer (instance).metricsKeysOutOfSync()`
+- `GSLayer (instance).metricsValue_atHeight_(arg0, arg1, /)`
+- `GSLayer (instance).metricsValue_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).metricsValue_forKey_value_atHeight_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).minX()`
+- `GSLayer (instance).minY()`
+- `GSLayer (instance).moveContent_(arg0, /)`
+- `GSLayer (instance).mr_formattedDebugDescription()`
+- `GSLayer (instance).mutableArrayValueForKeyPath_(arg0, /)`
+- `GSLayer (instance).mutableArrayValueForKey_(arg0, /)`
+- `GSLayer (instance).mutableCopy()`
+- `GSLayer (instance).mutableCopyWithZone_(arg0, /)`
+- `GSLayer (instance).mutableOrderedSetValueForKeyPath_(arg0, /)`
+- `GSLayer (instance).mutableOrderedSetValueForKey_(arg0, /)`
+- `GSLayer (instance).mutableSetValueForKeyPath_(arg0, /)`
+- `GSLayer (instance).mutableSetValueForKey_(arg0, /)`
+- `GSLayer (instance).my_compactDescription()`
+- `GSLayer (instance).nameFirst()`
+- `GSLayer (instance).nameSecond()`
+- `GSLayer (instance).nameUI()`
+- `GSLayer (instance).nearestToNode_fromList_(arg0, arg1, /)`
+- `GSLayer (instance).needsAlignment()`
+- `GSLayer (instance).needsCentering()`
+- `GSLayer (instance).newScriptingObjectOfClass_forValueForKey_withContentsValue_properties_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).newTaggedNSStringWithASCIIBytes__length__(arg0, arg1, /)`
+- `GSLayer (instance).nextKerningExceptionForLayer_direction_(arg0, arg1, /)`
+- `GSLayer (instance).nextKerningForLayer_direction_(arg0, arg1, /)`
+- `GSLayer (instance).nodeAtIndexPath_(arg0, /)`
+- `GSLayer (instance).nodeAtPoint_excludeNode_ignoreLocked_tolerance_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).nodeAtPoint_excludeNodes_traverseComponents_ignoreLocked_tolerance_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSLayer (instance).objectInAnchorsAtIndex_(arg0, /)`
+- `GSLayer (instance).objectInAnnotationsAtIndex_(arg0, /)`
+- `GSLayer (instance).objectInGuidesAtIndex_(arg0, /)`
+- `GSLayer (instance).objectInHintsAtIndex_(arg0, /)`
+- `GSLayer (instance).objectInShapesAtIndexFast_(arg0, /)`
+- `GSLayer (instance).objectInShapesAtIndexPath_(arg0, /)`
+- `GSLayer (instance).objectInShapesAtIndex_(arg0, /)`
+- `GSLayer (instance).objectSpecifier()`
+- `GSLayer (instance).observationInfo()`
+- `GSLayer (instance).observeValueForKeyPath_ofObject_change_context_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).openCornerAtNode_offset_(arg0, arg1, /)`
+- `GSLayer (instance).optionDescriptionsForBinding_(arg0, /)`
+- `GSLayer (instance).ownName()`
+- `GSLayer (instance).ownsDestinationObjectsForRelationshipKey_(arg0, /)`
+- `GSLayer (instance).paletteColor_(arg0, /)`
+- `GSLayer (instance).partSelection()`
+- `GSLayer (instance).pasteDict_selectedNodes_error_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).pasteHintDictToKnobs_error_(arg0, arg1, /)`
+- `GSLayer (instance).pasteHintDict_selectedNodes_error_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).pathIntersectCheckSelection_error_(arg0, arg1, /)`
+- `GSLayer (instance).pathIntersect_(arg0, /)`
+- `GSLayer (instance).pathIntersect_from_error_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).pathSubtractKeepOverlaps_error_(arg0, arg1, /)`
+- `GSLayer (instance).pathSubtract_(arg0, /)`
+- `GSLayer (instance).pathSubtract_from_keepOverlaps_error_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).pep_afterDelay_(arg0, /)`
+- `GSLayer (instance).pep_getInvocation_(arg0, /)`
+- `GSLayer (instance).pep_onMainThread()`
+- `GSLayer (instance).pep_onMainThreadIfNecessary()`
+- `GSLayer (instance).pep_onOperationQueue_(arg0, /)`
+- `GSLayer (instance).pep_onOperationQueue_priority_(arg0, arg1, /)`
+- `GSLayer (instance).pep_onThread_(arg0, /)`
+- `GSLayer (instance).pep_onThread_immediateForMatchingThread_(arg0, arg1, /)`
+- `GSLayer (instance).performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSLayer (instance).performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).performSelector_(arg0, /)`
+- `GSLayer (instance).performSelector_object_afterDelay_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSLayer (instance).performSelector_withObject_(arg0, arg1, /)`
+- `GSLayer (instance).performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).performSelector_withObject_afterDelay_ignoreMenuTracking_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).performSelector_withObject_withObject_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).pieceInterpolate_(arg0, /)`
+- `GSLayer (instance).pkaxRespondsToSelector_fromExtrasProtocol_(arg0, arg1, /)`
+- `GSLayer (instance).pkaxValueForKey_(arg0, /)`
+- `GSLayer (instance).plainMetricsKeyUI_(arg0, /)`
+- `GSLayer (instance).plainMetricsKeyUI_value_(arg0, arg1, /)`
+- `GSLayer (instance).plainMetricsKey_(arg0, /)`
+- `GSLayer (instance).postRead_format_(arg0, arg1, /)`
+- `GSLayer (instance).preloadContent()`
+- `GSLayer (instance).prepareComponentsForTrueTypeExport_keepTransformed_keepSmart_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).prepareForInterfaceBuilder()`
+- `GSLayer (instance).previousKerningExceptionForLayer_direction_(arg0, arg1, /)`
+- `GSLayer (instance).previousKerningForLayer_direction_(arg0, arg1, /)`
+- `GSLayer (instance).propertyListValueFormat_(arg0, /)`
+- `GSLayer (instance).pyobjc_performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSLayer (instance).pyobjc_performSelectorOnMainThread_withObject_(arg0, arg1, /)`
+- `GSLayer (instance).pyobjc_performSelectorOnMainThread_withObject_modes_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).pyobjc_performSelector_onThread_withObject_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).pyobjc_performSelector_onThread_withObject_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).pyobjc_performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).pyobjc_performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSLayer (instance).pyobjc_performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).pyobjc_performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).readBuffer()`
+- `GSLayer (instance).receiveObservedError_(arg0, /)`
+- `GSLayer (instance).receiveObservedValue_(arg0, /)`
+- `GSLayer (instance).reconnectNodesAtNode1_node2_offset_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).reconnectNodes_(arg0, /)`
+- `GSLayer (instance).reinterpolate()`
+- `GSLayer (instance).reinterpolateMetrics()`
+- `GSLayer (instance).release()`
+- `GSLayer (instance).releaseRenderedTexture_forCGLContext_(arg0, arg1, /)`
+- `GSLayer (instance).removeAnchorWithName_(arg0, /)`
+- `GSLayer (instance).removeAnchor_(arg0, /)`
+- `GSLayer (instance).removeAnnotation_(arg0, /)`
+- `GSLayer (instance).removeAttributeForKey_(arg0, /)`
+- `GSLayer (instance).removeHint_(arg0, /)`
+- `GSLayer (instance).removeObjectFromAnnotationsAtIndex_(arg0, /)`
+- `GSLayer (instance).removeObjectFromGuidesAtIndex_(arg0, /)`
+- `GSLayer (instance).removeObjectFromGuides_(arg0, /)`
+- `GSLayer (instance).removeObjectFromHintsAtIndex_(arg0, /)`
+- `GSLayer (instance).removeObjectFromSelectionAtIndex_(arg0, /)`
+- `GSLayer (instance).removeObjectFromSelection_(arg0, /)`
+- `GSLayer (instance).removeObjectFromShapesAtIndex_(arg0, /)`
+- `GSLayer (instance).removeObject_fromBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSLayer (instance).removeObject_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer (instance).removeObjectsFromSelection_(arg0, /)`
+- `GSLayer (instance).removeObservation_(arg0, /)`
+- `GSLayer (instance).removeObservation_forObservableKeyPath_(arg0, arg1, /)`
+- `GSLayer (instance).removeObserver_forKeyPath_(arg0, arg1, /)`
+- `GSLayer (instance).removeObserver_forKeyPath_context_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).removeOverlap(checkSelection=False)`
+- `GSLayer (instance).removeOverlapCheckSelection_error_(arg0, arg1, /)`
+- `GSLayer (instance).removeOverlapCheckSelection_keepOpenPaths_gridSize_error_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).removeOverlap_gridSize_error_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).removeShape_(arg0, /)`
+- `GSLayer (instance).removeShapesAtIndexes_(arg0, /)`
+- `GSLayer (instance).removeShapes_(arg0, /)`
+- `GSLayer (instance).removeUserDataForKey_(arg0, /)`
+- `GSLayer (instance).removeValueAtIndex_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer (instance).renderToBuffer_withBytesPerRow_pixelFormat_forBounds_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).renderWithCGLContext_forBounds_(arg0, arg1, /)`
+- `GSLayer (instance).replaceObjectInAnnotationsAtIndex_withObject_(arg0, arg1, /)`
+- `GSLayer (instance).replaceObjectInGuidesAtIndex_withObject_(arg0, arg1, /)`
+- `GSLayer (instance).replaceObjectInHintsAtIndex_withObject_(arg0, arg1, /)`
+- `GSLayer (instance).replaceShapeAtIndex_withShape_(arg0, arg1, /)`
+- `GSLayer (instance).replaceValueAtIndex_inPropertyWithKey_withValue_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).replacementObjectForArchiver_(arg0, /)`
+- `GSLayer (instance).replacementObjectForCoder_(arg0, /)`
+- `GSLayer (instance).replacementObjectForKeyedArchiver_(arg0, /)`
+- `GSLayer (instance).replacementObjectForPortCoder_(arg0, /)`
+- `GSLayer (instance).resetLayerKey()`
+- `GSLayer (instance).resolveForwardingConflictWithPreviousMetadata_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).respondsToSelector_(arg0, /)`
+- `GSLayer (instance).restoreHints()`
+- `GSLayer (instance).retain()`
+- `GSLayer (instance).retainCount()`
+- `GSLayer (instance).retainWeakReference()`
+- `GSLayer (instance).rightMetricsKeyState()`
+- `GSLayer (instance).rightMetricsKeyState_(arg0, /)`
+- `GSLayer (instance).rightMetricsKeyUI()`
+- `GSLayer (instance).rightPlainMetricsKey()`
+- `GSLayer (instance).roundCoordinates()`
+- `GSLayer (instance).roundCoordinatesToGridFast_(arg0, /)`
+- `GSLayer (instance).roundCoordinatesToGrid_(arg0, /)`
+- `GSLayer (instance).roundSelectedCoordinates()`
+- `GSLayer (instance).rsbAtHeight_(arg0, /)`
+- `GSLayer (instance).safari_isNSBoolean()`
+- `GSLayer (instance).safari_postKVONotificationsForKey_aroundBlock_(arg0, arg1, /)`
+- `GSLayer (instance).safari_removeDeallocationSentinelForObserver_(arg0, /)`
+- `GSLayer (instance).safari_setDeallocationSentinelForObserver_(arg0, /)`
+- `GSLayer (instance).safari_setDeallocationSentinelForObserver_withContext_(arg0, arg1, /)`
+- `GSLayer (instance).saveHints()`
+- `GSLayer (instance).saveToFile_format_options_error_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).scaleToFullHeight_bounds_(arg0, arg1, /)`
+- `GSLayer (instance).scriptingProperties()`
+- `GSLayer (instance).scriptingValueForSpecifier_(arg0, /)`
+- `GSLayer (instance).secondaryPath()`
+- `GSLayer (instance).segmentAtIndexPath_(arg0, /)`
+- `GSLayer (instance).selNode()`
+- `GSLayer (instance).selectedObjects()`
+- `GSLayer (instance).selectedPaths_notSelected_(arg0, arg1, /)`
+- `GSLayer (instance).selectionContainsObject_(arg0, /)`
+- `GSLayer (instance).selectionPath()`
+- `GSLayer (instance).self()`
+- `GSLayer (instance).setAccessibilityBrailleMapRenderRegion_(arg0, /)`
+- `GSLayer (instance).setAccessibilityBrailleMapRenderer_(arg0, /)`
+- `GSLayer (instance).setAnchorArrayFast_(arg0, /)`
+- `GSLayer (instance).setAnchorArray_(arg0, /)`
+- `GSLayer (instance).setAnchorsFast_(arg0, /)`
+- `GSLayer (instance).setAnchors_(arg0, /)`
+- `GSLayer (instance).setAnnotations_(arg0, /)`
+- `GSLayer (instance).setAppleColorLayer_(arg0, /)`
+- `GSLayer (instance).setAssociatedMasterId_(arg0, /)`
+- `GSLayer (instance).setAssociatedObject_(arg0, /)`
+- `GSLayer (instance).setAttributeFast_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).setAttribute_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).setAttributes_(arg0, /)`
+- `GSLayer (instance).setBSB_(arg0, /)`
+- `GSLayer (instance).setBackgroundImage_(arg0, /)`
+- `GSLayer (instance).setBackground_(arg0, /)`
+- `GSLayer (instance).setBezierPath_(arg0, /)`
+- `GSLayer (instance).setBottomMetricsKeyUI_(arg0, /)`
+- `GSLayer (instance).setBottomMetricsKey_(arg0, /)`
+- `GSLayer (instance).setBraceLayer_(arg0, /)`
+- `GSLayer (instance).setBracketLayer_(arg0, /)`
+- `GSLayer (instance).setBsb_atHeight_(arg0, arg1, /)`
+- `GSLayer (instance).setColorIndex_(arg0, /)`
+- `GSLayer (instance).setColorPaletteLayer_(arg0, /)`
+- `GSLayer (instance).setColor_(arg0, /)`
+- `GSLayer (instance).setComponentNames_(arg0, /)`
+- `GSLayer (instance).setDisableUpdates()`
+- `GSLayer (instance).setDisableUpdates_(arg0, /)`
+- `GSLayer (instance).setDrawOpenBezierPath_(arg0, /)`
+- `GSLayer (instance).setEnableUpdates()`
+- `GSLayer (instance).setExtraHandles_(arg0, /)`
+- `GSLayer (instance).setFullColorLayer_(arg0, /)`
+- `GSLayer (instance).setGuides_(arg0, /)`
+- `GSLayer (instance).setHintsFast_(arg0, /)`
+- `GSLayer (instance).setHints_(arg0, /)`
+- `GSLayer (instance).setIsAligning_(arg0, /)`
+- `GSLayer (instance).setIsUpdatingMetrics_(arg0, /)`
+- `GSLayer (instance).setKerning_(arg0, /)`
+- `GSLayer (instance).setLSB_(arg0, /)`
+- `GSLayer (instance).setLastUpdate_(arg0, /)`
+- `GSLayer (instance).setLayerId_(arg0, /)`
+- `GSLayer (instance).setLeftMetricsKeyUI_(arg0, /)`
+- `GSLayer (instance).setLeftMetricsKey_(arg0, /)`
+- `GSLayer (instance).setLocked_(arg0, /)`
+- `GSLayer (instance).setLsb_atHeight_(arg0, arg1, /)`
+- `GSLayer (instance).setMetric_atHeight_side_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).setMetric_side_(arg0, arg1, /)`
+- `GSLayer (instance).setName_(arg0, /)`
+- `GSLayer (instance).setNeedUpdateMetrics()`
+- `GSLayer (instance).setNeedUpdateShapes()`
+- `GSLayer (instance).setNextKerningException_forLayer_direction_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).setNextKerning_forLayer_direction_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).setNilValueForKey_(arg0, /)`
+- `GSLayer (instance).setObservationInfo_(arg0, /)`
+- `GSLayer (instance).setObservation_forObservingKeyPath_(arg0, arg1, /)`
+- `GSLayer (instance).setOpenBezierPath_(arg0, /)`
+- `GSLayer (instance).setParent_(arg0, /)`
+- `GSLayer (instance).setPartSelection_(arg0, /)`
+- `GSLayer (instance).setPlainMetricsKey_side_(arg0, arg1, /)`
+- `GSLayer (instance).setPreviousKerningException_forLayer_direction_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).setPreviousKerning_forLayer_direction_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).setRSB_(arg0, /)`
+- `GSLayer (instance).setReadBuffer_(arg0, /)`
+- `GSLayer (instance).setReadBuffer_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).setRightMetricsKeyUI_(arg0, /)`
+- `GSLayer (instance).setRightMetricsKey_(arg0, /)`
+- `GSLayer (instance).setRsb_atHeight_(arg0, arg1, /)`
+- `GSLayer (instance).setSVGColorLayer_(arg0, /)`
+- `GSLayer (instance).setScriptingProperties_(arg0, /)`
+- `GSLayer (instance).setSecondaryPath_(arg0, /)`
+- `GSLayer (instance).setSelectionPath_(arg0, /)`
+- `GSLayer (instance).setSelectionUndo_(arg0, /)`
+- `GSLayer (instance).setSelection_(arg0, /)`
+- `GSLayer (instance).setShapesFast_(arg0, /)`
+- `GSLayer (instance).setShapes_(arg0, /)`
+- `GSLayer (instance).setShapes_hints_(arg0, arg1, /)`
+- `GSLayer (instance).setTSB_(arg0, /)`
+- `GSLayer (instance).setTempData_(arg0, /)`
+- `GSLayer (instance).setTempData_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).setTopMetricsKeyUI_(arg0, /)`
+- `GSLayer (instance).setTopMetricsKey_(arg0, /)`
+- `GSLayer (instance).setTsb_atHeight_(arg0, arg1, /)`
+- `GSLayer (instance).setUserData_(arg0, /)`
+- `GSLayer (instance).setUserData_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).setUserInterfaceItemIdentifier_(arg0, /)`
+- `GSLayer (instance).setValue_forKeyPath_(arg0, arg1, /)`
+- `GSLayer (instance).setValue_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSLayer (instance).setValuesForKeysWithDictionary_(arg0, /)`
+- `GSLayer (instance).setVertOriginMetricsKeyUI_(arg0, /)`
+- `GSLayer (instance).setVertOriginMetricsKey_(arg0, /)`
+- `GSLayer (instance).setVertOrigin_(arg0, /)`
+- `GSLayer (instance).setVertWidthMetricsKeyUI_(arg0, /)`
+- `GSLayer (instance).setVertWidthMetricsKey_(arg0, /)`
+- `GSLayer (instance).setVertWidth_(arg0, /)`
+- `GSLayer (instance).setVisible_(arg0, /)`
+- `GSLayer (instance).setWidthMetricsKeyUI_(arg0, /)`
+- `GSLayer (instance).setWidthMetricsKey_(arg0, /)`
+- `GSLayer (instance).setWidth_(arg0, /)`
+- `GSLayer (instance).settingsView_clearSettingForKey_(arg0, arg1, /)`
+- `GSLayer (instance).settingsView_renameKey_toKey_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).settingsView_setSetting_forKey_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).settingsView_settingForKey_(arg0, arg1, /)`
+- `GSLayer (instance).settingsView_shouldRenameKey_(arg0, arg1, /)`
+- `GSLayer (instance).shapesGroupedByAttribute_hasMask_(arg0, arg1, /)`
+- `GSLayer (instance).shouldColorMatch()`
+- `GSLayer (instance).slantHeight()`
+- `GSLayer (instance).slantX_origin_correctContrast_correctShape_correctThickness_checkSelection_(arg0, arg1, arg2, arg3, arg4, arg5, /)`
+- `GSLayer (instance).slantX_origin_doCorrection_checkSelection_(arg0, arg1, arg2, arg3, /)`
+- `GSLayer (instance).slantY_origin_checkSelection_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).sortedSelectedNodes()`
+- `GSLayer (instance).startUpdates()`
+- `GSLayer (instance).stopUpdates()`
+- `GSLayer (instance).storedValueForKey_(arg0, /)`
+- `GSLayer (instance).stringValueSafe()`
+- `GSLayer (instance).stringValueSafe_(arg0, /)`
+- `GSLayer (instance).superclass()`
+- `GSLayer (instance).supportedBufferPixelFormats()`
+- `GSLayer (instance).supportedRenderedTexturePixelFormats()`
+- `GSLayer (instance).supportsBSXPCSecureCoding()`
+- `GSLayer (instance).supportsRBSXPCSecureCoding()`
+- `GSLayer (instance).swapForegroundWithBackground()`
+- `GSLayer (instance).switchAnchorFastName_withName_(arg0, arg1, /)`
+- `GSLayer (instance).syncBottomMetrics()`
+- `GSLayer (instance).syncLeftMetrics()`
+- `GSLayer (instance).syncMetrics()`
+- `GSLayer (instance).syncMetricsThreshold()`
+- `GSLayer (instance).syncRightMetrics()`
+- `GSLayer (instance).syncTopMetrics()`
+- `GSLayer (instance).syncVertWidthMetrics()`
+- `GSLayer (instance).syncWidthMetrics()`
+- `GSLayer (instance).syncWidthMetricsAndCenter()`
+- `GSLayer (instance).takeStoredValue_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).takeStoredValuesFromDictionary_(arg0, /)`
+- `GSLayer (instance).takeValue_forKeyPath_(arg0, arg1, /)`
+- `GSLayer (instance).takeValue_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).takeValuesFromDictionary_(arg0, /)`
+- `GSLayer (instance).tempDataForKey_(arg0, /)`
+- `GSLayer (instance).toManyRelationshipKeys()`
+- `GSLayer (instance).toOneRelationshipKeys()`
+- `GSLayer (instance).topHeight()`
+- `GSLayer (instance).topMetricsKeyState()`
+- `GSLayer (instance).topMetricsKeyState_(arg0, /)`
+- `GSLayer (instance).topMetricsKeyUI()`
+- `GSLayer (instance).topPlainMetricsKey()`
+- `GSLayer (instance).transform(transform, selection=False, components=True)`
+- `GSLayer (instance).transformFast_(arg0, /)`
+- `GSLayer (instance).transformFast_doComponent_(arg0, arg1, /)`
+- `GSLayer (instance).transformSelection_(arg0, /)`
+- `GSLayer (instance).transform_(arg0, /)`
+- `GSLayer (instance).transform_checkForSelection_(arg0, arg1, /)`
+- `GSLayer (instance).transform_checkForSelection_doComponent_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).transform_checkForSelection_doComponents_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).tsbAtHeight_(arg0, /)`
+- `GSLayer (instance).un_safeBoolValue()`
+- `GSLayer (instance).unableToSetNilForKey_(arg0, /)`
+- `GSLayer (instance).unbind_(arg0, /)`
+- `GSLayer (instance).undoManager()`
+- `GSLayer (instance).undoManagerCheck()`
+- `GSLayer (instance).unlockReadAlignInfo()`
+- `GSLayer (instance).unlockReadMetrics()`
+- `GSLayer (instance).unlockReadShapes()`
+- `GSLayer (instance).unlockWriteAlignInfo()`
+- `GSLayer (instance).unlockWriteMetrics()`
+- `GSLayer (instance).unlockWriteShapes()`
+- `GSLayer (instance).updateCorners()`
+- `GSLayer (instance).updateHints()`
+- `GSLayer (instance).updateMetrics()`
+- `GSLayer (instance).updateMetricsAndNotify_(arg0, /)`
+- `GSLayer (instance).userDataForKey_(arg0, /)`
+- `GSLayer (instance).userInterfaceItemIdentifier()`
+- `GSLayer (instance).utf8ValueSafe()`
+- `GSLayer (instance).utf8ValueSafe_(arg0, /)`
+- `GSLayer (instance).validateBottomMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer (instance).validateComponentNames_error_(arg0, arg1, /)`
+- `GSLayer (instance).validateLeftMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer (instance).validateMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer (instance).validateRightMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer (instance).validateTakeValue_forKeyPath_(arg0, arg1, /)`
+- `GSLayer (instance).validateTopMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer (instance).validateValue_forKeyPath_error_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).validateValue_forKey_(arg0, arg1, /)`
+- `GSLayer (instance).validateValue_forKey_error_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).validateVertOriginMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer (instance).validateVertWidthMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer (instance).validateWidthMetricsKey_error_(arg0, arg1, /)`
+- `GSLayer (instance).valueAtIndex_inPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer (instance).valueClassForBinding_(arg0, /)`
+- `GSLayer (instance).valueForKeyPath_(arg0, /)`
+- `GSLayer (instance).valueForKey_(arg0, /)`
+- `GSLayer (instance).valueForUndefinedKey_(arg0, /)`
+- `GSLayer (instance).valueWithName_inPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer (instance).valueWithUniqueID_inPropertyWithKey_(arg0, arg1, /)`
+- `GSLayer (instance).valuesForKeys_(arg0, /)`
+- `GSLayer (instance).vertOriginMetricsKey()`
+- `GSLayer (instance).vertOriginMetricsKeyState()`
+- `GSLayer (instance).vertOriginMetricsKeyState_(arg0, /)`
+- `GSLayer (instance).vertOriginMetricsKeyUI()`
+- `GSLayer (instance).vertOriginPlainMetricsKey()`
+- `GSLayer (instance).vertWidthDefault()`
+- `GSLayer (instance).vertWidthMetricsKey()`
+- `GSLayer (instance).vertWidthMetricsKeyState()`
+- `GSLayer (instance).vertWidthMetricsKeyState_defaultKey_(arg0, arg1, /)`
+- `GSLayer (instance).vertWidthMetricsKeyUI()`
+- `GSLayer (instance).vertWidthPlainMetricsKey()`
+- `GSLayer (instance).vertWidthUI()`
+- `GSLayer (instance).vk_loggingDescription()`
+- `GSLayer (instance).vk_loggingIdentifier()`
+- `GSLayer (instance).vk_prettyLoggingDescription()`
+- `GSLayer (instance).widthMetricsKeyState()`
+- `GSLayer (instance).widthMetricsKeyState_(arg0, /)`
+- `GSLayer (instance).widthMetricsKeyUI()`
+- `GSLayer (instance).widthMetricsKeyUIFast()`
+- `GSLayer (instance).widthPlainMetricsKey()`
+- `GSLayer (instance).willChangeValueForKey_(arg0, /)`
+- `GSLayer (instance).willChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).willChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSLayer (instance).zone()`

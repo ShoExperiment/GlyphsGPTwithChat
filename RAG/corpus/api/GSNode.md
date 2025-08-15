@@ -1,0 +1,976 @@
+# GSNode — a node (point) in a path
+**Use when:** reading or setting node positions and types in a `GSPath`.
+**Key APIs:** `position` (GSPoint), `type`, `connection`
+**Do:** update positions via `node.position`; handle on-curve/off-curve types carefully.
+**Don’t:** mix path edits with live iteration without collecting indexes first.
+**Keywords:** GSNode, position, type, connection, point, node
+
+
+## Attributes
+
+- `GSNode.connection`  *(type: property)*
+- `GSNode.connection`  *(type: property)*
+- `GSNode.glyph`  *(type: property)*
+- `GSNode.glyph`  *(type: property)*
+- `GSNode.index`  *(type: property)*
+- `GSNode.layer`  *(type: property)*
+- `GSNode.layer`  *(type: property)*
+- `GSNode.layer`  *(type: property)*
+- `GSNode.layer`  *(type: property)*
+- `GSNode.locked`  *(type: property)*
+- `GSNode.name`  *(type: property)*
+- `GSNode.nextNode`  *(type: property)*
+- `GSNode.orientation`  *(type: property)*
+- `GSNode.parent`  *(type: property)*
+- `GSNode.parent`  *(type: property)*
+- `GSNode.position`  *(type: property)*
+- `GSNode.position`  *(type: property)*
+- `GSNode.prevNode`  *(type: property)*
+- `GSNode.smooth`  *(type: property)*
+- `GSNode.type`  *(type: property)*
+- `GSNode.type`  *(type: property)*
+- `GSNode.userData`  *(type: property)*
+- `GSNode.userData`  *(type: property)*
+- `GSNode.x`  *(type: property)*
+- `GSNode.y`  *(type: property)*
+- `GSNode (instance).connection`  *(type: int)*
+- `GSNode (instance).glyph`  *(type: NoneType)*
+- `GSNode (instance).index`  *(type: int)*
+- `GSNode (instance).layer`  *(type: NoneType)*
+- `GSNode (instance).locked`  *(type: bool)*
+- `GSNode (instance).name`  *(type: NoneType)*
+- `GSNode (instance).nextNode`  *(type: NoneType)*
+- `GSNode (instance).orientation`  *(type: int)*
+- `GSNode (instance).parent`  *(type: NoneType)*
+- `GSNode (instance).position`  *(type: CGPoint)*
+- `GSNode (instance).prevNode`  *(type: NoneType)*
+- `GSNode (instance).smooth`  *(type: bool)*
+- `GSNode (instance).type`  *(type: str)*
+- `GSNode (instance).userData`  *(type: UserDataProxy)*
+- `GSNode (instance).x`  *(type: float)*
+- `GSNode (instance).y`  *(type: float)*
+
+## Methods
+
+- `GSNode..cxx_destruct()`
+- `GSNode..cxx_destruct()`
+- `GSNode.CAMLType()`
+- `GSNode.CAMLTypeForKey_(arg0, /)`
+- `GSNode.CAMLTypeSupportedForKey_(arg0, /)`
+- `GSNode.CA_addValue_multipliedBy_(arg0, arg1, /)`
+- `GSNode.CA_archivingValueForKey_(arg0, /)`
+- `GSNode.CA_copyNumericValue_(arg0, /)`
+- `GSNode.CA_copyRenderValue()`
+- `GSNode.CA_copyRenderValueWithColorspace_(arg0, /)`
+- `GSNode.CA_distanceToValue_(arg0, /)`
+- `GSNode.CA_interpolateValue_byFraction_(arg0, arg1, /)`
+- `GSNode.CA_interpolateValues___interpolator_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.CA_numericValueCount()`
+- `GSNode.CA_prepareRenderValue()`
+- `GSNode.CA_roundToIntegerFromValue_(arg0, /)`
+- `GSNode.CA_validateValue_forKey_(arg0, arg1, /)`
+- `GSNode.CKAssignToContainerWithID_(arg0, /)`
+- `GSNode.CKDescription()`
+- `GSNode.CKDescriptionPropertiesWithPublic_private_shouldExpand_(arg0, arg1, arg2, /)`
+- `GSNode.CKDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSNode.CKExpandedDescription()`
+- `GSNode.CKHashedDescription()`
+- `GSNode.CKObjectDescriptionRedact_(arg0, /)`
+- `GSNode.CKObjectDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSNode.CKPropertiesDescription()`
+- `GSNode.CKPropertiesDescriptionStringFromProperties_(arg0, /)`
+- `GSNode.CKRedactedDescription()`
+- `GSNode.CKSingleLineDescription()`
+- `GSNode.CKUnredactedDescription()`
+- `GSNode.IKImageRepresentationWithType_(arg0, /)`
+- `GSNode.NSLifeguard_autorelease()`
+- `GSNode.NSRepresentation()`
+- `GSNode.NSRepresentation()`
+- `GSNode.NS_addTiledLayerDescendent_(arg0, /)`
+- `GSNode.NS_observationForKeyPath_options_block_(arg0, arg1, arg2, /)`
+- `GSNode.NS_observationForKeyPaths_options_block_(arg0, arg1, arg2, /)`
+- `GSNode.NS_removeTiledLayerDescendent_(arg0, /)`
+- `GSNode.NS_tiledLayerVisibleRect()`
+- `GSNode.RBSIsXPCObject()`
+- `GSNode.SCNUI_name()`
+- `GSNode.SCN_setupDisplayLinkWithQueue_screen_policy_(arg0, arg1, arg2, /)`
+- `GSNode.abCaseInsensitiveIsEqual_(arg0, /)`
+- `GSNode.abDictionaryWithValuesForKeyPaths_(arg0, /)`
+- `GSNode.abRemoveObserverIgnoringExceptions_forKeyPath_(arg0, arg1, /)`
+- `GSNode.accessibilityAddTemporaryChild_(arg0, /)`
+- `GSNode.accessibilityAllowsOverriddenAttributesWhenIgnored()`
+- `GSNode.accessibilityArrayAttributeCount_(arg0, /)`
+- `GSNode.accessibilityArrayAttributeValues_index_maxCount_(arg0, arg1, arg2, /)`
+- `GSNode.accessibilityAttributeValue_forParameter_(arg0, arg1, /)`
+- `GSNode.accessibilityAttributedValueForStringAttributeAttributeForParameter_(arg0, /)`
+- `GSNode.accessibilityBrailleMapRenderRegion()`
+- `GSNode.accessibilityBrailleMapRenderer()`
+- `GSNode.accessibilityDecodeOverriddenAttributes_(arg0, /)`
+- `GSNode.accessibilityEncodeOverriddenAttributes_(arg0, /)`
+- `GSNode.accessibilityIndexForChildUIElementAttributeForParameter_(arg0, /)`
+- `GSNode.accessibilityIndexOfChild_(arg0, /)`
+- `GSNode.accessibilityOverriddenAttributes()`
+- `GSNode.accessibilityParameterizedAttributeNames()`
+- `GSNode.accessibilityPerformShowMenuOfChild_(arg0, /)`
+- `GSNode.accessibilityPresenterProcessIdentifier()`
+- `GSNode.accessibilityRemoveTemporaryChild_(arg0, /)`
+- `GSNode.accessibilityReplaceRange_withText_(arg0, arg1, /)`
+- `GSNode.accessibilitySetOverrideValue_forAttribute_(arg0, arg1, /)`
+- `GSNode.accessibilitySetPresenterProcessIdentifier_(arg0, /)`
+- `GSNode.accessibilityShouldSendNotification_(arg0, /)`
+- `GSNode.accessibilityShouldUseUniqueId()`
+- `GSNode.accessibilitySupportsCustomElementData()`
+- `GSNode.accessibilitySupportsNotifications()`
+- `GSNode.accessibilitySupportsOverriddenAttributes()`
+- `GSNode.accessibilityTemporaryChildren()`
+- `GSNode.accessibilityVisibleArea()`
+- `GSNode.addChainedObservers_(arg0, /)`
+- `GSNode.addObject_toBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSNode.addObject_toPropertyWithKey_(arg0, arg1, /)`
+- `GSNode.addObservationTransformer_(arg0, /)`
+- `GSNode.addObserverBlock_(arg0, /)`
+- `GSNode.addObserver_(arg0, /)`
+- `GSNode.addObserver_forKeyPath_options_context_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.addObserver_forObservableKeyPath_(arg0, arg1, /)`
+- `GSNode.addUserData_(arg0, /)`
+- `GSNode.akToolbarButtonItemType()`
+- `GSNode.allPropertyKeys()`
+- `GSNode.allowsWeakReference()`
+- `GSNode.associatedObject()`
+- `GSNode.attributeForKey_(arg0, /)`
+- `GSNode.attributeKeys()`
+- `GSNode.attributes()`
+- `GSNode.autoContentAccessingProxy()`
+- `GSNode.autorelease()`
+- `GSNode.awakeAfterUsingCoder_(arg0, /)`
+- `GSNode.awakeFromNib()`
+- `GSNode.bind_toObject_withKeyPath_options_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.boolValueSafe()`
+- `GSNode.boolValueSafe_(arg0, /)`
+- `GSNode.bounds()`
+- `GSNode.bounds()`
+- `GSNode.bs_isPlistableType()`
+- `GSNode.bs_secureEncoded()`
+- `GSNode.canAttachCorner()`
+- `GSNode.canRenderWithCGLContext_(arg0, /)`
+- `GSNode.checkConnection()`
+- `GSNode.ck_bindInStatement_atIndex_(arg0, arg1, /)`
+- `GSNode.cksqlcs_appendSQLConstantValueToString_(arg0, /)`
+- `GSNode.cksqlcs_archivedObjectBindingValue_(arg0, /)`
+- `GSNode.cksqlcs_bindArchivedObject_index_db_(arg0, arg1, arg2, /)`
+- `GSNode.cksqlcs_bindBlob_index_db_(arg0, arg1, arg2, /)`
+- `GSNode.cksqlcs_bindDouble_index_db_(arg0, arg1, arg2, /)`
+- `GSNode.cksqlcs_bindInt64_index_db_(arg0, arg1, arg2, /)`
+- `GSNode.cksqlcs_bindText_index_db_(arg0, arg1, arg2, /)`
+- `GSNode.cksqlcs_blobBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSNode.cksqlcs_doubleBindingValue_(arg0, /)`
+- `GSNode.cksqlcs_int64BindingValue_(arg0, /)`
+- `GSNode.cksqlcs_textBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSNode.classCode()`
+- `GSNode.classDescription()`
+- `GSNode.classDescriptionForDestinationKey_(arg0, /)`
+- `GSNode.classForArchiver()`
+- `GSNode.classForCoder()`
+- `GSNode.classForKeyedArchiver()`
+- `GSNode.classForPortCoder()`
+- `GSNode.className()`
+- `GSNode.class__()`
+- `GSNode.clearProperties()`
+- `GSNode.coalescedPerformSelector_(arg0, /)`
+- `GSNode.coerceValueForScriptingProperties_(arg0, /)`
+- `GSNode.coerceValue_forKey_(arg0, arg1, /)`
+- `GSNode.compositionParameterView_didChangeParameterWithKey_(arg0, arg1, /)`
+- `GSNode.compositionParameterView_shouldDisplayParameterWithKey_attributes_(arg0, arg1, arg2, /)`
+- `GSNode.compositionPickerViewDidStartAnimating_(arg0, /)`
+- `GSNode.compositionPickerViewWillStopAnimating_(arg0, /)`
+- `GSNode.compositionPickerView_didLoadComposition_(arg0, arg1, /)`
+- `GSNode.compositionPickerView_didSelectComposition_(arg0, arg1, /)`
+- `GSNode.compositionPickerView_draggingEnteredComposition_sender_(arg0, arg1, arg2, /)`
+- `GSNode.compositionPickerView_keyDown_(arg0, arg1, /)`
+- `GSNode.compositionPickerView_performDragOperationOnComposition_sender_(arg0, arg1, arg2, /)`
+- `GSNode.compositionPickerView_willSelectComposition_(arg0, arg1, /)`
+- `GSNode.conformsToProtocol_(arg0, /)`
+- `GSNode.copy()`
+- `GSNode.copyRenderedTextureForCGLContext_pixelFormat_bounds_isFlipped_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.copyScriptingValue_forKey_withProperties_(arg0, arg1, arg2, /)`
+- `GSNode.copyWithZone_(arg0, /)`
+- `GSNode.copyWithZone_(arg0, /)`
+- `GSNode.copyWithZone_(arg0, /)`
+- `GSNode.countOfAttributes()`
+- `GSNode.countOfTempData()`
+- `GSNode.countOfUserData()`
+- `GSNode.createImageWithOptions_(arg0, /)`
+- `GSNode.createKeyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSNode.createOptimizedProviderWithTransformation_cropping_(arg0, arg1, /)`
+- `GSNode.dealloc()`
+- `GSNode.dealloc()`
+- `GSNode.debugDescription()`
+- `GSNode.description()`
+- `GSNode.description()`
+- `GSNode.description()`
+- `GSNode.description()`
+- `GSNode.descriptionAtIndent_(arg0, /)`
+- `GSNode.dictionaryWithValuesForKeys_(arg0, /)`
+- `GSNode.didChangeValueForKey_(arg0, /)`
+- `GSNode.didChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSNode.didChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSNode.doesContain_(arg0, /)`
+- `GSNode.doesNotRecognizeSelector_(arg0, /)`
+- `GSNode.doesNotRecognizeSelector_(arg0, /)`
+- `GSNode.doubleValueSafe()`
+- `GSNode.doubleValueSafe_(arg0, /)`
+- `GSNode.drawInPen_(arg0, /)`
+- `GSNode.drawInPen_openPen_secondaryPen_extraHandles_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.drawInView_(arg0, /)`
+- `GSNode.drawSimpleInPen_(arg0, /)`
+- `GSNode.elementDidChange_(arg0, /)`
+- `GSNode.elementString()`
+- `GSNode.elementString()`
+- `GSNode.encodeWithCAMLWriter_(arg0, /)`
+- `GSNode.encodeWithCoder_(arg0, /)`
+- `GSNode.encodeWithCoder_(arg0, /)`
+- `GSNode.encodeWithCoder_(arg0, /)`
+- `GSNode.entityName()`
+- `GSNode.exposedBindings()`
+- `GSNode.fastBounds()`
+- `GSNode.fastBoundsTransform_(arg0, /)`
+- `GSNode.finalize()`
+- `GSNode.finishObserving()`
+- `GSNode.flushKeyBindings()`
+- `GSNode.font()`
+- `GSNode.forwardInvocation_(arg0, /)`
+- `GSNode.forwardingTargetForSelector_(arg0, /)`
+- `GSNode.fp__ivarDescriptionForClass_(arg0, /)`
+- `GSNode.fp__methodDescriptionForClass_(arg0, /)`
+- `GSNode.fp_ivarDescription()`
+- `GSNode.fp_methodDescription()`
+- `GSNode.fp_shortMethodDescription()`
+- `GSNode.getHandleRect_scale_(arg0, arg1, /)`
+- `GSNode.getPositionsFromShape_(arg0, /)`
+- `GSNode.getStrokeSettingsWidth_height_pos_capStart_capEnd_join_fill_mask_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, /)`
+- `GSNode.handleQueryWithUnboundKey_(arg0, /)`
+- `GSNode.handleTakeValue_forUnboundKey_(arg0, arg1, /)`
+- `GSNode.hash()`
+- `GSNode.hitTest_(arg0, /)`
+- `GSNode.hitTest_tolerance_(arg0, arg1, /)`
+- `GSNode.if_setValueIfNonNil_forKey_(arg0, arg1, /)`
+- `GSNode.if_setValueIfYES_forKey_(arg0, arg1, /)`
+- `GSNode.ikInMainLoopWait_(arg0, /)`
+- `GSNode.imageBrowser_didValidateVisibleCellsAtIndexes_(arg0, arg1, /)`
+- `GSNode.imageBrowser_willDisplayCellsAtIndexes_(arg0, arg1, /)`
+- `GSNode.imageSubtitle()`
+- `GSNode.imageTitle()`
+- `GSNode.imageToDrawForCell_(arg0, /)`
+- `GSNode.implementsSelector_(arg0, /)`
+- `GSNode.infoForBinding_(arg0, /)`
+- `GSNode.init()`
+- `GSNode.init()`
+- `GSNode.initWithArray_format_(arg0, arg1, /)`
+- `GSNode.initWithCoder_(arg0, /)`
+- `GSNode.initWithCoder_(arg0, /)`
+- `GSNode.initWithDescription_(arg0, /)`
+- `GSNode.initWithDict_format_(arg0, arg1, /)`
+- `GSNode.initWithDict_format_(arg0, arg1, /)`
+- `GSNode.initWithDict_format_(arg0, arg1, /)`
+- `GSNode.initWithElementString_(arg0, /)`
+- `GSNode.initWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSNode.initWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSNode.initWithPosition_type_connection_(arg0, arg1, arg2, /)`
+- `GSNode.insertValue_atIndex_inPropertyWithKey_(arg0, arg1, arg2, /)`
+- `GSNode.insertValue_inPropertyWithKey_(arg0, arg1, /)`
+- `GSNode.int64ValueSafe()`
+- `GSNode.int64ValueSafe_(arg0, /)`
+- `GSNode.inverseForRelationshipKey_(arg0, /)`
+- `GSNode.isCaseInsensitiveLike_(arg0, /)`
+- `GSNode.isEqualToNode_(arg0, /)`
+- `GSNode.isEqualToShape_(arg0, /)`
+- `GSNode.isEqualTo_(arg0, /)`
+- `GSNode.isEqual_(arg0, /)`
+- `GSNode.isFault()`
+- `GSNode.isGreaterThanOrEqualTo_(arg0, /)`
+- `GSNode.isGreaterThan_(arg0, /)`
+- `GSNode.isKindOfClass_(arg0, /)`
+- `GSNode.isLessThanOrEqualTo_(arg0, /)`
+- `GSNode.isLessThan_(arg0, /)`
+- `GSNode.isLike_(arg0, /)`
+- `GSNode.isLocked()`
+- `GSNode.isMemberOfClass_(arg0, /)`
+- `GSNode.isNSArray__()`
+- `GSNode.isNSCFConstantString__()`
+- `GSNode.isNSData__()`
+- `GSNode.isNSDate__()`
+- `GSNode.isNSDictionary__()`
+- `GSNode.isNSNumber__()`
+- `GSNode.isNSObject__()`
+- `GSNode.isNSOrderedSet__()`
+- `GSNode.isNSSet__()`
+- `GSNode.isNSString__()`
+- `GSNode.isNSTimeZone__()`
+- `GSNode.isNSValue__()`
+- `GSNode.isNotEqualTo_(arg0, /)`
+- `GSNode.isNull()`
+- `GSNode.isProxy()`
+- `GSNode.isSmooth()`
+- `GSNode.isToManyKey_(arg0, /)`
+- `GSNode.keyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSNode.makeLocked()`
+- `GSNode.makeLocked()`
+- `GSNode.makeNodeFirst()`
+- `GSNode.makeSmooth()`
+- `GSNode.makeUnlocked()`
+- `GSNode.makeUnlocked()`
+- `GSNode.methodDescriptionForSelector_(arg0, /)`
+- `GSNode.methodForSelector_(arg0, /)`
+- `GSNode.methodSignatureForSelector_(arg0, /)`
+- `GSNode.methodSignatureForSelector_(arg0, /)`
+- `GSNode.moveElementUndoName()`
+- `GSNode.moveWithPoint_(arg0, /)`
+- `GSNode.moveWithPoint_(arg0, /)`
+- `GSNode.mr_formattedDebugDescription()`
+- `GSNode.mutableArrayValueForKeyPath_(arg0, /)`
+- `GSNode.mutableArrayValueForKey_(arg0, /)`
+- `GSNode.mutableCopy()`
+- `GSNode.mutableCopyWithZone_(arg0, /)`
+- `GSNode.mutableCopyWithZone_(arg0, /)`
+- `GSNode.mutableOrderedSetValueForKeyPath_(arg0, /)`
+- `GSNode.mutableOrderedSetValueForKey_(arg0, /)`
+- `GSNode.mutableSetValueForKeyPath_(arg0, /)`
+- `GSNode.mutableSetValueForKey_(arg0, /)`
+- `GSNode.my_compactDescription()`
+- `GSNode.newScriptingObjectOfClass_forValueForKey_withContentsValue_properties_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.newTaggedNSStringWithASCIIBytes__length__(arg0, arg1, /)`
+- `GSNode.nextOncurveNode()`
+- `GSNode.nodeIndex()`
+- `GSNode.objectSpecifier()`
+- `GSNode.objectSpecifier()`
+- `GSNode.observationInfo()`
+- `GSNode.observeValueForKeyPath_ofObject_change_context_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.optionDescriptionsForBinding_(arg0, /)`
+- `GSNode.ownsDestinationObjectsForRelationshipKey_(arg0, /)`
+- `GSNode.parentPath()`
+- `GSNode.pep_afterDelay_(arg0, /)`
+- `GSNode.pep_getInvocation_(arg0, /)`
+- `GSNode.pep_onMainThread()`
+- `GSNode.pep_onMainThreadIfNecessary()`
+- `GSNode.pep_onOperationQueue_(arg0, /)`
+- `GSNode.pep_onOperationQueue_priority_(arg0, arg1, /)`
+- `GSNode.pep_onThread_(arg0, /)`
+- `GSNode.pep_onThread_immediateForMatchingThread_(arg0, arg1, /)`
+- `GSNode.performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSNode.performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSNode.performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.performSelector_(arg0, /)`
+- `GSNode.performSelector_object_afterDelay_(arg0, arg1, arg2, /)`
+- `GSNode.performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSNode.performSelector_withObject_(arg0, arg1, /)`
+- `GSNode.performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSNode.performSelector_withObject_afterDelay_ignoreMenuTracking_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.performSelector_withObject_withObject_(arg0, arg1, arg2, /)`
+- `GSNode.pkaxRespondsToSelector_fromExtrasProtocol_(arg0, arg1, /)`
+- `GSNode.pkaxValueForKey_(arg0, /)`
+- `GSNode.positionForLayerWidth_(arg0, /)`
+- `GSNode.positionPrecise()`
+- `GSNode.positionPrecise()`
+- `GSNode.positionPreciseForLayerWidth_(arg0, /)`
+- `GSNode.postRead_format_(arg0, arg1, /)`
+- `GSNode.prepareForInterfaceBuilder()`
+- `GSNode.previousOncurveNode()`
+- `GSNode.propertyListValueFormat_(arg0, /)`
+- `GSNode.propertyListValueFormat_(arg0, /)`
+- `GSNode.propertyListValueFormat_(arg0, /)`
+- `GSNode.pyobjc_performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSNode.pyobjc_performSelectorOnMainThread_withObject_(arg0, arg1, /)`
+- `GSNode.pyobjc_performSelectorOnMainThread_withObject_modes_(arg0, arg1, arg2, /)`
+- `GSNode.pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSNode.pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.pyobjc_performSelector_onThread_withObject_(arg0, arg1, arg2, /)`
+- `GSNode.pyobjc_performSelector_onThread_withObject_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.pyobjc_performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.pyobjc_performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSNode.pyobjc_performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSNode.pyobjc_performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.readLineWithGlyphsParser_(arg0, /)`
+- `GSNode.readListWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSNode.receiveObservedError_(arg0, /)`
+- `GSNode.receiveObservedValue_(arg0, /)`
+- `GSNode.release()`
+- `GSNode.releaseRenderedTexture_forCGLContext_(arg0, arg1, /)`
+- `GSNode.removeAttributeForKey_(arg0, /)`
+- `GSNode.removeObject_fromBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSNode.removeObject_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSNode.removeObservation_(arg0, /)`
+- `GSNode.removeObservation_forObservableKeyPath_(arg0, arg1, /)`
+- `GSNode.removeObserver_forKeyPath_(arg0, arg1, /)`
+- `GSNode.removeObserver_forKeyPath_context_(arg0, arg1, arg2, /)`
+- `GSNode.removeUserDataForKey_(arg0, /)`
+- `GSNode.removeValueAtIndex_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSNode.renderToBuffer_withBytesPerRow_pixelFormat_forBounds_(arg0, arg1, arg2, arg3, /)`
+- `GSNode.renderWithCGLContext_forBounds_(arg0, arg1, /)`
+- `GSNode.replaceValueAtIndex_inPropertyWithKey_withValue_(arg0, arg1, arg2, /)`
+- `GSNode.replacementObjectForArchiver_(arg0, /)`
+- `GSNode.replacementObjectForCoder_(arg0, /)`
+- `GSNode.replacementObjectForKeyedArchiver_(arg0, /)`
+- `GSNode.replacementObjectForPortCoder_(arg0, /)`
+- `GSNode.resolveForwardingConflictWithPreviousMetadata_forKey_(arg0, arg1, /)`
+- `GSNode.respondsToSelector_(arg0, /)`
+- `GSNode.retain()`
+- `GSNode.retainCount()`
+- `GSNode.retainWeakReference()`
+- `GSNode.roundToGridFast_(arg0, /)`
+- `GSNode.roundToGridFast_(arg0, /)`
+- `GSNode.roundToGrid_(arg0, /)`
+- `GSNode.roundToGrid_(arg0, /)`
+- `GSNode.roundToGrid_(arg0, /)`
+- `GSNode.safari_isNSBoolean()`
+- `GSNode.safari_postKVONotificationsForKey_aroundBlock_(arg0, arg1, /)`
+- `GSNode.safari_removeDeallocationSentinelForObserver_(arg0, /)`
+- `GSNode.safari_setDeallocationSentinelForObserver_(arg0, /)`
+- `GSNode.safari_setDeallocationSentinelForObserver_withContext_(arg0, arg1, /)`
+- `GSNode.saveToFile_format_error_(arg0, arg1, arg2, /)`
+- `GSNode.saveToFile_format_error_(arg0, arg1, arg2, /)`
+- `GSNode.scaleAttributes_(arg0, /)`
+- `GSNode.scriptingProperties()`
+- `GSNode.scriptingValueForSpecifier_(arg0, /)`
+- `GSNode.self()`
+- `GSNode.setAccessibilityBrailleMapRenderRegion_(arg0, /)`
+- `GSNode.setAccessibilityBrailleMapRenderer_(arg0, /)`
+- `GSNode.setAssociatedObject_(arg0, /)`
+- `GSNode.setAttribute_forKey_(arg0, arg1, /)`
+- `GSNode.setAttributes_(arg0, /)`
+- `GSNode.setAttributes_format_(arg0, arg1, /)`
+- `GSNode.setConnection_(arg0, /)`
+- `GSNode.setLocked_(arg0, /)`
+- `GSNode.setLocked_(arg0, /)`
+- `GSNode.setNilValueForKey_(arg0, /)`
+- `GSNode.setObservationInfo_(arg0, /)`
+- `GSNode.setObservation_forObservingKeyPath_(arg0, arg1, /)`
+- `GSNode.setOrientation_(arg0, /)`
+- `GSNode.setParent_(arg0, /)`
+- `GSNode.setPositionFast_(arg0, /)`
+- `GSNode.setPositionFast_round_(arg0, arg1, /)`
+- `GSNode.setPosition_(arg0, /)`
+- `GSNode.setPosition_(arg0, /)`
+- `GSNode.setPosition_forLayerWidth_(arg0, arg1, /)`
+- `GSNode.setPosition_forLayerWidth_(arg0, arg1, /)`
+- `GSNode.setPropertyListValue_format_(arg0, arg1, /)`
+- `GSNode.setPropertyListValue_format_(arg0, arg1, /)`
+- `GSNode.setScriptingProperties_(arg0, /)`
+- `GSNode.setTempData_(arg0, /)`
+- `GSNode.setTempData_forKey_(arg0, arg1, /)`
+- `GSNode.setTypeString_(arg0, /)`
+- `GSNode.setType_(arg0, /)`
+- `GSNode.setUserData_(arg0, /)`
+- `GSNode.setUserData_forKey_(arg0, arg1, /)`
+- `GSNode.setUserInterfaceItemIdentifier_(arg0, /)`
+- `GSNode.setValue_forKeyPath_(arg0, arg1, /)`
+- `GSNode.setValue_forKey_(arg0, arg1, /)`
+- `GSNode.setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSNode.setValuesForKeysWithDictionary_(arg0, /)`
+- `GSNode.setX_(arg0, /)`
+- `GSNode.setY_(arg0, /)`
+- `GSNode.settingsView_clearSettingForKey_(arg0, arg1, /)`
+- `GSNode.settingsView_renameKey_toKey_(arg0, arg1, arg2, /)`
+- `GSNode.settingsView_setSetting_forKey_(arg0, arg1, arg2, /)`
+- `GSNode.settingsView_settingForKey_(arg0, arg1, /)`
+- `GSNode.settingsView_shouldRenameKey_(arg0, arg1, /)`
+- `GSNode.shapeType()`
+- `GSNode.shouldColorMatch()`
+- `GSNode.storedValueForKey_(arg0, /)`
+- `GSNode.stringValueSafe()`
+- `GSNode.stringValueSafe_(arg0, /)`
+- `GSNode.superclass()`
+- `GSNode.supportedBufferPixelFormats()`
+- `GSNode.supportedRenderedTexturePixelFormats()`
+- `GSNode.supportsBSXPCSecureCoding()`
+- `GSNode.supportsRBSXPCSecureCoding()`
+- `GSNode.takeStoredValue_forKey_(arg0, arg1, /)`
+- `GSNode.takeStoredValuesFromDictionary_(arg0, /)`
+- `GSNode.takeValue_forKeyPath_(arg0, arg1, /)`
+- `GSNode.takeValue_forKey_(arg0, arg1, /)`
+- `GSNode.takeValuesFromDictionary_(arg0, /)`
+- `GSNode.tempData()`
+- `GSNode.tempDataForKey_(arg0, /)`
+- `GSNode.toManyRelationshipKeys()`
+- `GSNode.toOneRelationshipKeys()`
+- `GSNode.toggleConnection()`
+- `GSNode.toggleConnection_(arg0, /)`
+- `GSNode.transformFast_round_(arg0, arg1, /)`
+- `GSNode.transform_(arg0, /)`
+- `GSNode.transform_(arg0, /)`
+- `GSNode.transform_selection_(arg0, arg1, /)`
+- `GSNode.typeString()`
+- `GSNode.typeTag()`
+- `GSNode.un_safeBoolValue()`
+- `GSNode.unableToSetNilForKey_(arg0, /)`
+- `GSNode.unbind_(arg0, /)`
+- `GSNode.undoManager()`
+- `GSNode.undoManager()`
+- `GSNode.undoManagerCheck()`
+- `GSNode.undoManagerCheck()`
+- `GSNode.userDataForKey_(arg0, /)`
+- `GSNode.userInterfaceItemIdentifier()`
+- `GSNode.utf8ValueSafe()`
+- `GSNode.utf8ValueSafe_(arg0, /)`
+- `GSNode.validateTakeValue_forKeyPath_(arg0, arg1, /)`
+- `GSNode.validateValue_forKeyPath_error_(arg0, arg1, arg2, /)`
+- `GSNode.validateValue_forKey_(arg0, arg1, /)`
+- `GSNode.validateValue_forKey_error_(arg0, arg1, arg2, /)`
+- `GSNode.valueAtIndex_inPropertyWithKey_(arg0, arg1, /)`
+- `GSNode.valueClassForBinding_(arg0, /)`
+- `GSNode.valueForKeyPath_(arg0, /)`
+- `GSNode.valueForKey_(arg0, /)`
+- `GSNode.valueForUndefinedKey_(arg0, /)`
+- `GSNode.valueWithName_inPropertyWithKey_(arg0, arg1, /)`
+- `GSNode.valueWithUniqueID_inPropertyWithKey_(arg0, arg1, /)`
+- `GSNode.valuesForKeys_(arg0, /)`
+- `GSNode.vk_loggingDescription()`
+- `GSNode.vk_loggingIdentifier()`
+- `GSNode.vk_prettyLoggingDescription()`
+- `GSNode.willChangeValueForKey_(arg0, /)`
+- `GSNode.willChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSNode.willChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSNode.zone()`
+- `GSNode (instance)..cxx_destruct()`
+- `GSNode (instance).CAMLType()`
+- `GSNode (instance).CAMLTypeForKey_(arg0, /)`
+- `GSNode (instance).CAMLTypeSupportedForKey_(arg0, /)`
+- `GSNode (instance).CA_addValue_multipliedBy_(arg0, arg1, /)`
+- `GSNode (instance).CA_archivingValueForKey_(arg0, /)`
+- `GSNode (instance).CA_copyNumericValue_(arg0, /)`
+- `GSNode (instance).CA_copyRenderValue()`
+- `GSNode (instance).CA_copyRenderValueWithColorspace_(arg0, /)`
+- `GSNode (instance).CA_distanceToValue_(arg0, /)`
+- `GSNode (instance).CA_interpolateValue_byFraction_(arg0, arg1, /)`
+- `GSNode (instance).CA_interpolateValues___interpolator_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).CA_numericValueCount()`
+- `GSNode (instance).CA_prepareRenderValue()`
+- `GSNode (instance).CA_roundToIntegerFromValue_(arg0, /)`
+- `GSNode (instance).CA_validateValue_forKey_(arg0, arg1, /)`
+- `GSNode (instance).CKAssignToContainerWithID_(arg0, /)`
+- `GSNode (instance).CKDescription()`
+- `GSNode (instance).CKDescriptionPropertiesWithPublic_private_shouldExpand_(arg0, arg1, arg2, /)`
+- `GSNode (instance).CKDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSNode (instance).CKExpandedDescription()`
+- `GSNode (instance).CKHashedDescription()`
+- `GSNode (instance).CKObjectDescriptionRedact_(arg0, /)`
+- `GSNode (instance).CKObjectDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSNode (instance).CKPropertiesDescription()`
+- `GSNode (instance).CKPropertiesDescriptionStringFromProperties_(arg0, /)`
+- `GSNode (instance).CKRedactedDescription()`
+- `GSNode (instance).CKSingleLineDescription()`
+- `GSNode (instance).CKUnredactedDescription()`
+- `GSNode (instance).IKImageRepresentationWithType_(arg0, /)`
+- `GSNode (instance).NSLifeguard_autorelease()`
+- `GSNode (instance).NSRepresentation()`
+- `GSNode (instance).NS_addTiledLayerDescendent_(arg0, /)`
+- `GSNode (instance).NS_observationForKeyPath_options_block_(arg0, arg1, arg2, /)`
+- `GSNode (instance).NS_observationForKeyPaths_options_block_(arg0, arg1, arg2, /)`
+- `GSNode (instance).NS_removeTiledLayerDescendent_(arg0, /)`
+- `GSNode (instance).NS_tiledLayerVisibleRect()`
+- `GSNode (instance).RBSIsXPCObject()`
+- `GSNode (instance).SCNUI_name()`
+- `GSNode (instance).SCN_setupDisplayLinkWithQueue_screen_policy_(arg0, arg1, arg2, /)`
+- `GSNode (instance).abCaseInsensitiveIsEqual_(arg0, /)`
+- `GSNode (instance).abDictionaryWithValuesForKeyPaths_(arg0, /)`
+- `GSNode (instance).abRemoveObserverIgnoringExceptions_forKeyPath_(arg0, arg1, /)`
+- `GSNode (instance).accessibilityAddTemporaryChild_(arg0, /)`
+- `GSNode (instance).accessibilityAllowsOverriddenAttributesWhenIgnored()`
+- `GSNode (instance).accessibilityArrayAttributeCount_(arg0, /)`
+- `GSNode (instance).accessibilityArrayAttributeValues_index_maxCount_(arg0, arg1, arg2, /)`
+- `GSNode (instance).accessibilityAttributeValue_forParameter_(arg0, arg1, /)`
+- `GSNode (instance).accessibilityAttributedValueForStringAttributeAttributeForParameter_(arg0, /)`
+- `GSNode (instance).accessibilityBrailleMapRenderRegion()`
+- `GSNode (instance).accessibilityBrailleMapRenderer()`
+- `GSNode (instance).accessibilityDecodeOverriddenAttributes_(arg0, /)`
+- `GSNode (instance).accessibilityEncodeOverriddenAttributes_(arg0, /)`
+- `GSNode (instance).accessibilityIndexForChildUIElementAttributeForParameter_(arg0, /)`
+- `GSNode (instance).accessibilityIndexOfChild_(arg0, /)`
+- `GSNode (instance).accessibilityOverriddenAttributes()`
+- `GSNode (instance).accessibilityParameterizedAttributeNames()`
+- `GSNode (instance).accessibilityPerformShowMenuOfChild_(arg0, /)`
+- `GSNode (instance).accessibilityPresenterProcessIdentifier()`
+- `GSNode (instance).accessibilityRemoveTemporaryChild_(arg0, /)`
+- `GSNode (instance).accessibilityReplaceRange_withText_(arg0, arg1, /)`
+- `GSNode (instance).accessibilitySetOverrideValue_forAttribute_(arg0, arg1, /)`
+- `GSNode (instance).accessibilitySetPresenterProcessIdentifier_(arg0, /)`
+- `GSNode (instance).accessibilityShouldSendNotification_(arg0, /)`
+- `GSNode (instance).accessibilityShouldUseUniqueId()`
+- `GSNode (instance).accessibilitySupportsCustomElementData()`
+- `GSNode (instance).accessibilitySupportsNotifications()`
+- `GSNode (instance).accessibilitySupportsOverriddenAttributes()`
+- `GSNode (instance).accessibilityTemporaryChildren()`
+- `GSNode (instance).accessibilityVisibleArea()`
+- `GSNode (instance).addChainedObservers_(arg0, /)`
+- `GSNode (instance).addObject_toBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSNode (instance).addObject_toPropertyWithKey_(arg0, arg1, /)`
+- `GSNode (instance).addObservationTransformer_(arg0, /)`
+- `GSNode (instance).addObserverBlock_(arg0, /)`
+- `GSNode (instance).addObserver_(arg0, /)`
+- `GSNode (instance).addObserver_forKeyPath_options_context_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).addObserver_forObservableKeyPath_(arg0, arg1, /)`
+- `GSNode (instance).addUserData_(arg0, /)`
+- `GSNode (instance).akToolbarButtonItemType()`
+- `GSNode (instance).allPropertyKeys()`
+- `GSNode (instance).allowsWeakReference()`
+- `GSNode (instance).associatedObject()`
+- `GSNode (instance).attributeForKey_(arg0, /)`
+- `GSNode (instance).attributeKeys()`
+- `GSNode (instance).attributes()`
+- `GSNode (instance).autoContentAccessingProxy()`
+- `GSNode (instance).autorelease()`
+- `GSNode (instance).awakeAfterUsingCoder_(arg0, /)`
+- `GSNode (instance).awakeFromNib()`
+- `GSNode (instance).bind_toObject_withKeyPath_options_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).boolValueSafe()`
+- `GSNode (instance).boolValueSafe_(arg0, /)`
+- `GSNode (instance).bounds()`
+- `GSNode (instance).bs_isPlistableType()`
+- `GSNode (instance).bs_secureEncoded()`
+- `GSNode (instance).canAttachCorner()`
+- `GSNode (instance).canRenderWithCGLContext_(arg0, /)`
+- `GSNode (instance).checkConnection()`
+- `GSNode (instance).ck_bindInStatement_atIndex_(arg0, arg1, /)`
+- `GSNode (instance).cksqlcs_appendSQLConstantValueToString_(arg0, /)`
+- `GSNode (instance).cksqlcs_archivedObjectBindingValue_(arg0, /)`
+- `GSNode (instance).cksqlcs_bindArchivedObject_index_db_(arg0, arg1, arg2, /)`
+- `GSNode (instance).cksqlcs_bindBlob_index_db_(arg0, arg1, arg2, /)`
+- `GSNode (instance).cksqlcs_bindDouble_index_db_(arg0, arg1, arg2, /)`
+- `GSNode (instance).cksqlcs_bindInt64_index_db_(arg0, arg1, arg2, /)`
+- `GSNode (instance).cksqlcs_bindText_index_db_(arg0, arg1, arg2, /)`
+- `GSNode (instance).cksqlcs_blobBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSNode (instance).cksqlcs_doubleBindingValue_(arg0, /)`
+- `GSNode (instance).cksqlcs_int64BindingValue_(arg0, /)`
+- `GSNode (instance).cksqlcs_textBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSNode (instance).classCode()`
+- `GSNode (instance).classDescription()`
+- `GSNode (instance).classDescriptionForDestinationKey_(arg0, /)`
+- `GSNode (instance).classForArchiver()`
+- `GSNode (instance).classForCoder()`
+- `GSNode (instance).classForKeyedArchiver()`
+- `GSNode (instance).classForPortCoder()`
+- `GSNode (instance).className()`
+- `GSNode (instance).class__()`
+- `GSNode (instance).clearProperties()`
+- `GSNode (instance).coalescedPerformSelector_(arg0, /)`
+- `GSNode (instance).coerceValueForScriptingProperties_(arg0, /)`
+- `GSNode (instance).coerceValue_forKey_(arg0, arg1, /)`
+- `GSNode (instance).compositionParameterView_didChangeParameterWithKey_(arg0, arg1, /)`
+- `GSNode (instance).compositionParameterView_shouldDisplayParameterWithKey_attributes_(arg0, arg1, arg2, /)`
+- `GSNode (instance).compositionPickerViewDidStartAnimating_(arg0, /)`
+- `GSNode (instance).compositionPickerViewWillStopAnimating_(arg0, /)`
+- `GSNode (instance).compositionPickerView_didLoadComposition_(arg0, arg1, /)`
+- `GSNode (instance).compositionPickerView_didSelectComposition_(arg0, arg1, /)`
+- `GSNode (instance).compositionPickerView_draggingEnteredComposition_sender_(arg0, arg1, arg2, /)`
+- `GSNode (instance).compositionPickerView_keyDown_(arg0, arg1, /)`
+- `GSNode (instance).compositionPickerView_performDragOperationOnComposition_sender_(arg0, arg1, arg2, /)`
+- `GSNode (instance).compositionPickerView_willSelectComposition_(arg0, arg1, /)`
+- `GSNode (instance).conformsToProtocol_(arg0, /)`
+- `GSNode (instance).copy()`
+- `GSNode (instance).copyRenderedTextureForCGLContext_pixelFormat_bounds_isFlipped_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).copyScriptingValue_forKey_withProperties_(arg0, arg1, arg2, /)`
+- `GSNode (instance).copyWithZone_(arg0, /)`
+- `GSNode (instance).countOfAttributes()`
+- `GSNode (instance).countOfTempData()`
+- `GSNode (instance).countOfUserData()`
+- `GSNode (instance).createImageWithOptions_(arg0, /)`
+- `GSNode (instance).createKeyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSNode (instance).createOptimizedProviderWithTransformation_cropping_(arg0, arg1, /)`
+- `GSNode (instance).dealloc()`
+- `GSNode (instance).debugDescription()`
+- `GSNode (instance).description()`
+- `GSNode (instance).descriptionAtIndent_(arg0, /)`
+- `GSNode (instance).dictionaryWithValuesForKeys_(arg0, /)`
+- `GSNode (instance).didChangeValueForKey_(arg0, /)`
+- `GSNode (instance).didChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSNode (instance).didChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSNode (instance).doesContain_(arg0, /)`
+- `GSNode (instance).doesNotRecognizeSelector_(arg0, /)`
+- `GSNode (instance).doubleValueSafe()`
+- `GSNode (instance).doubleValueSafe_(arg0, /)`
+- `GSNode (instance).drawInPen_(arg0, /)`
+- `GSNode (instance).drawInPen_openPen_secondaryPen_extraHandles_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).drawInView_(arg0, /)`
+- `GSNode (instance).drawSimpleInPen_(arg0, /)`
+- `GSNode (instance).elementDidChange_(arg0, /)`
+- `GSNode (instance).elementString()`
+- `GSNode (instance).encodeWithCAMLWriter_(arg0, /)`
+- `GSNode (instance).encodeWithCoder_(arg0, /)`
+- `GSNode (instance).entityName()`
+- `GSNode (instance).exposedBindings()`
+- `GSNode (instance).fastBounds()`
+- `GSNode (instance).fastBoundsTransform_(arg0, /)`
+- `GSNode (instance).finalize()`
+- `GSNode (instance).finishObserving()`
+- `GSNode (instance).flushKeyBindings()`
+- `GSNode (instance).font()`
+- `GSNode (instance).forwardInvocation_(arg0, /)`
+- `GSNode (instance).forwardingTargetForSelector_(arg0, /)`
+- `GSNode (instance).fp__ivarDescriptionForClass_(arg0, /)`
+- `GSNode (instance).fp__methodDescriptionForClass_(arg0, /)`
+- `GSNode (instance).fp_ivarDescription()`
+- `GSNode (instance).fp_methodDescription()`
+- `GSNode (instance).fp_shortMethodDescription()`
+- `GSNode (instance).getHandleRect_scale_(arg0, arg1, /)`
+- `GSNode (instance).getPositionsFromShape_(arg0, /)`
+- `GSNode (instance).getStrokeSettingsWidth_height_pos_capStart_capEnd_join_fill_mask_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, /)`
+- `GSNode (instance).handleQueryWithUnboundKey_(arg0, /)`
+- `GSNode (instance).handleTakeValue_forUnboundKey_(arg0, arg1, /)`
+- `GSNode (instance).hash()`
+- `GSNode (instance).hitTest_(arg0, /)`
+- `GSNode (instance).hitTest_tolerance_(arg0, arg1, /)`
+- `GSNode (instance).if_setValueIfNonNil_forKey_(arg0, arg1, /)`
+- `GSNode (instance).if_setValueIfYES_forKey_(arg0, arg1, /)`
+- `GSNode (instance).ikInMainLoopWait_(arg0, /)`
+- `GSNode (instance).imageBrowser_didValidateVisibleCellsAtIndexes_(arg0, arg1, /)`
+- `GSNode (instance).imageBrowser_willDisplayCellsAtIndexes_(arg0, arg1, /)`
+- `GSNode (instance).imageSubtitle()`
+- `GSNode (instance).imageTitle()`
+- `GSNode (instance).imageToDrawForCell_(arg0, /)`
+- `GSNode (instance).implementsSelector_(arg0, /)`
+- `GSNode (instance).infoForBinding_(arg0, /)`
+- `GSNode (instance).init()`
+- `GSNode (instance).initWithArray_format_(arg0, arg1, /)`
+- `GSNode (instance).initWithCoder_(arg0, /)`
+- `GSNode (instance).initWithDescription_(arg0, /)`
+- `GSNode (instance).initWithDict_format_(arg0, arg1, /)`
+- `GSNode (instance).initWithElementString_(arg0, /)`
+- `GSNode (instance).initWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSNode (instance).initWithPosition_type_connection_(arg0, arg1, arg2, /)`
+- `GSNode (instance).insertValue_atIndex_inPropertyWithKey_(arg0, arg1, arg2, /)`
+- `GSNode (instance).insertValue_inPropertyWithKey_(arg0, arg1, /)`
+- `GSNode (instance).int64ValueSafe()`
+- `GSNode (instance).int64ValueSafe_(arg0, /)`
+- `GSNode (instance).inverseForRelationshipKey_(arg0, /)`
+- `GSNode (instance).isCaseInsensitiveLike_(arg0, /)`
+- `GSNode (instance).isEqualToNode_(arg0, /)`
+- `GSNode (instance).isEqualToShape_(arg0, /)`
+- `GSNode (instance).isEqualTo_(arg0, /)`
+- `GSNode (instance).isEqual_(arg0, /)`
+- `GSNode (instance).isFault()`
+- `GSNode (instance).isGreaterThanOrEqualTo_(arg0, /)`
+- `GSNode (instance).isGreaterThan_(arg0, /)`
+- `GSNode (instance).isKindOfClass_(arg0, /)`
+- `GSNode (instance).isLessThanOrEqualTo_(arg0, /)`
+- `GSNode (instance).isLessThan_(arg0, /)`
+- `GSNode (instance).isLike_(arg0, /)`
+- `GSNode (instance).isLocked()`
+- `GSNode (instance).isMemberOfClass_(arg0, /)`
+- `GSNode (instance).isNSArray__()`
+- `GSNode (instance).isNSCFConstantString__()`
+- `GSNode (instance).isNSData__()`
+- `GSNode (instance).isNSDate__()`
+- `GSNode (instance).isNSDictionary__()`
+- `GSNode (instance).isNSNumber__()`
+- `GSNode (instance).isNSObject__()`
+- `GSNode (instance).isNSOrderedSet__()`
+- `GSNode (instance).isNSSet__()`
+- `GSNode (instance).isNSString__()`
+- `GSNode (instance).isNSTimeZone__()`
+- `GSNode (instance).isNSValue__()`
+- `GSNode (instance).isNotEqualTo_(arg0, /)`
+- `GSNode (instance).isNull()`
+- `GSNode (instance).isProxy()`
+- `GSNode (instance).isSmooth()`
+- `GSNode (instance).isToManyKey_(arg0, /)`
+- `GSNode (instance).keyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSNode (instance).makeLocked()`
+- `GSNode (instance).makeNodeFirst()`
+- `GSNode (instance).makeSmooth()`
+- `GSNode (instance).makeUnlocked()`
+- `GSNode (instance).methodDescriptionForSelector_(arg0, /)`
+- `GSNode (instance).methodForSelector_(arg0, /)`
+- `GSNode (instance).methodSignatureForSelector_(arg0, /)`
+- `GSNode (instance).moveElementUndoName()`
+- `GSNode (instance).moveWithPoint_(arg0, /)`
+- `GSNode (instance).mr_formattedDebugDescription()`
+- `GSNode (instance).mutableArrayValueForKeyPath_(arg0, /)`
+- `GSNode (instance).mutableArrayValueForKey_(arg0, /)`
+- `GSNode (instance).mutableCopy()`
+- `GSNode (instance).mutableCopyWithZone_(arg0, /)`
+- `GSNode (instance).mutableOrderedSetValueForKeyPath_(arg0, /)`
+- `GSNode (instance).mutableOrderedSetValueForKey_(arg0, /)`
+- `GSNode (instance).mutableSetValueForKeyPath_(arg0, /)`
+- `GSNode (instance).mutableSetValueForKey_(arg0, /)`
+- `GSNode (instance).my_compactDescription()`
+- `GSNode (instance).newScriptingObjectOfClass_forValueForKey_withContentsValue_properties_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).newTaggedNSStringWithASCIIBytes__length__(arg0, arg1, /)`
+- `GSNode (instance).nextOncurveNode()`
+- `GSNode (instance).nodeIndex()`
+- `GSNode (instance).objectSpecifier()`
+- `GSNode (instance).observationInfo()`
+- `GSNode (instance).observeValueForKeyPath_ofObject_change_context_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).optionDescriptionsForBinding_(arg0, /)`
+- `GSNode (instance).ownsDestinationObjectsForRelationshipKey_(arg0, /)`
+- `GSNode (instance).parentPath()`
+- `GSNode (instance).pep_afterDelay_(arg0, /)`
+- `GSNode (instance).pep_getInvocation_(arg0, /)`
+- `GSNode (instance).pep_onMainThread()`
+- `GSNode (instance).pep_onMainThreadIfNecessary()`
+- `GSNode (instance).pep_onOperationQueue_(arg0, /)`
+- `GSNode (instance).pep_onOperationQueue_priority_(arg0, arg1, /)`
+- `GSNode (instance).pep_onThread_(arg0, /)`
+- `GSNode (instance).pep_onThread_immediateForMatchingThread_(arg0, arg1, /)`
+- `GSNode (instance).performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSNode (instance).performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSNode (instance).performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).performSelector_(arg0, /)`
+- `GSNode (instance).performSelector_object_afterDelay_(arg0, arg1, arg2, /)`
+- `GSNode (instance).performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSNode (instance).performSelector_withObject_(arg0, arg1, /)`
+- `GSNode (instance).performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSNode (instance).performSelector_withObject_afterDelay_ignoreMenuTracking_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).performSelector_withObject_withObject_(arg0, arg1, arg2, /)`
+- `GSNode (instance).pkaxRespondsToSelector_fromExtrasProtocol_(arg0, arg1, /)`
+- `GSNode (instance).pkaxValueForKey_(arg0, /)`
+- `GSNode (instance).positionForLayerWidth_(arg0, /)`
+- `GSNode (instance).positionPrecise()`
+- `GSNode (instance).positionPreciseForLayerWidth_(arg0, /)`
+- `GSNode (instance).postRead_format_(arg0, arg1, /)`
+- `GSNode (instance).prepareForInterfaceBuilder()`
+- `GSNode (instance).previousOncurveNode()`
+- `GSNode (instance).propertyListValueFormat_(arg0, /)`
+- `GSNode (instance).pyobjc_performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSNode (instance).pyobjc_performSelectorOnMainThread_withObject_(arg0, arg1, /)`
+- `GSNode (instance).pyobjc_performSelectorOnMainThread_withObject_modes_(arg0, arg1, arg2, /)`
+- `GSNode (instance).pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSNode (instance).pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).pyobjc_performSelector_onThread_withObject_(arg0, arg1, arg2, /)`
+- `GSNode (instance).pyobjc_performSelector_onThread_withObject_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).pyobjc_performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).pyobjc_performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSNode (instance).pyobjc_performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSNode (instance).pyobjc_performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).readLineWithGlyphsParser_(arg0, /)`
+- `GSNode (instance).readListWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSNode (instance).receiveObservedError_(arg0, /)`
+- `GSNode (instance).receiveObservedValue_(arg0, /)`
+- `GSNode (instance).release()`
+- `GSNode (instance).releaseRenderedTexture_forCGLContext_(arg0, arg1, /)`
+- `GSNode (instance).removeAttributeForKey_(arg0, /)`
+- `GSNode (instance).removeObject_fromBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSNode (instance).removeObject_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSNode (instance).removeObservation_(arg0, /)`
+- `GSNode (instance).removeObservation_forObservableKeyPath_(arg0, arg1, /)`
+- `GSNode (instance).removeObserver_forKeyPath_(arg0, arg1, /)`
+- `GSNode (instance).removeObserver_forKeyPath_context_(arg0, arg1, arg2, /)`
+- `GSNode (instance).removeUserDataForKey_(arg0, /)`
+- `GSNode (instance).removeValueAtIndex_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSNode (instance).renderToBuffer_withBytesPerRow_pixelFormat_forBounds_(arg0, arg1, arg2, arg3, /)`
+- `GSNode (instance).renderWithCGLContext_forBounds_(arg0, arg1, /)`
+- `GSNode (instance).replaceValueAtIndex_inPropertyWithKey_withValue_(arg0, arg1, arg2, /)`
+- `GSNode (instance).replacementObjectForArchiver_(arg0, /)`
+- `GSNode (instance).replacementObjectForCoder_(arg0, /)`
+- `GSNode (instance).replacementObjectForKeyedArchiver_(arg0, /)`
+- `GSNode (instance).replacementObjectForPortCoder_(arg0, /)`
+- `GSNode (instance).resolveForwardingConflictWithPreviousMetadata_forKey_(arg0, arg1, /)`
+- `GSNode (instance).respondsToSelector_(arg0, /)`
+- `GSNode (instance).retain()`
+- `GSNode (instance).retainCount()`
+- `GSNode (instance).retainWeakReference()`
+- `GSNode (instance).roundToGridFast_(arg0, /)`
+- `GSNode (instance).roundToGrid_(arg0, /)`
+- `GSNode (instance).safari_isNSBoolean()`
+- `GSNode (instance).safari_postKVONotificationsForKey_aroundBlock_(arg0, arg1, /)`
+- `GSNode (instance).safari_removeDeallocationSentinelForObserver_(arg0, /)`
+- `GSNode (instance).safari_setDeallocationSentinelForObserver_(arg0, /)`
+- `GSNode (instance).safari_setDeallocationSentinelForObserver_withContext_(arg0, arg1, /)`
+- `GSNode (instance).saveToFile_format_error_(arg0, arg1, arg2, /)`
+- `GSNode (instance).scaleAttributes_(arg0, /)`
+- `GSNode (instance).scriptingProperties()`
+- `GSNode (instance).scriptingValueForSpecifier_(arg0, /)`
+- `GSNode (instance).self()`
+- `GSNode (instance).setAccessibilityBrailleMapRenderRegion_(arg0, /)`
+- `GSNode (instance).setAccessibilityBrailleMapRenderer_(arg0, /)`
+- `GSNode (instance).setAssociatedObject_(arg0, /)`
+- `GSNode (instance).setAttribute_forKey_(arg0, arg1, /)`
+- `GSNode (instance).setAttributes_(arg0, /)`
+- `GSNode (instance).setAttributes_format_(arg0, arg1, /)`
+- `GSNode (instance).setConnection_(arg0, /)`
+- `GSNode (instance).setLocked_(arg0, /)`
+- `GSNode (instance).setNilValueForKey_(arg0, /)`
+- `GSNode (instance).setObservationInfo_(arg0, /)`
+- `GSNode (instance).setObservation_forObservingKeyPath_(arg0, arg1, /)`
+- `GSNode (instance).setOrientation_(arg0, /)`
+- `GSNode (instance).setParent_(arg0, /)`
+- `GSNode (instance).setPositionFast_(arg0, /)`
+- `GSNode (instance).setPositionFast_round_(arg0, arg1, /)`
+- `GSNode (instance).setPosition_(arg0, /)`
+- `GSNode (instance).setPosition_forLayerWidth_(arg0, arg1, /)`
+- `GSNode (instance).setPropertyListValue_format_(arg0, arg1, /)`
+- `GSNode (instance).setScriptingProperties_(arg0, /)`
+- `GSNode (instance).setTempData_(arg0, /)`
+- `GSNode (instance).setTempData_forKey_(arg0, arg1, /)`
+- `GSNode (instance).setTypeString_(arg0, /)`
+- `GSNode (instance).setType_(arg0, /)`
+- `GSNode (instance).setUserData_(arg0, /)`
+- `GSNode (instance).setUserData_forKey_(arg0, arg1, /)`
+- `GSNode (instance).setUserInterfaceItemIdentifier_(arg0, /)`
+- `GSNode (instance).setValue_forKeyPath_(arg0, arg1, /)`
+- `GSNode (instance).setValue_forKey_(arg0, arg1, /)`
+- `GSNode (instance).setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSNode (instance).setValuesForKeysWithDictionary_(arg0, /)`
+- `GSNode (instance).setX_(arg0, /)`
+- `GSNode (instance).setY_(arg0, /)`
+- `GSNode (instance).settingsView_clearSettingForKey_(arg0, arg1, /)`
+- `GSNode (instance).settingsView_renameKey_toKey_(arg0, arg1, arg2, /)`
+- `GSNode (instance).settingsView_setSetting_forKey_(arg0, arg1, arg2, /)`
+- `GSNode (instance).settingsView_settingForKey_(arg0, arg1, /)`
+- `GSNode (instance).settingsView_shouldRenameKey_(arg0, arg1, /)`
+- `GSNode (instance).shapeType()`
+- `GSNode (instance).shouldColorMatch()`
+- `GSNode (instance).storedValueForKey_(arg0, /)`
+- `GSNode (instance).stringValueSafe()`
+- `GSNode (instance).stringValueSafe_(arg0, /)`
+- `GSNode (instance).superclass()`
+- `GSNode (instance).supportedBufferPixelFormats()`
+- `GSNode (instance).supportedRenderedTexturePixelFormats()`
+- `GSNode (instance).supportsBSXPCSecureCoding()`
+- `GSNode (instance).supportsRBSXPCSecureCoding()`
+- `GSNode (instance).takeStoredValue_forKey_(arg0, arg1, /)`
+- `GSNode (instance).takeStoredValuesFromDictionary_(arg0, /)`
+- `GSNode (instance).takeValue_forKeyPath_(arg0, arg1, /)`
+- `GSNode (instance).takeValue_forKey_(arg0, arg1, /)`
+- `GSNode (instance).takeValuesFromDictionary_(arg0, /)`
+- `GSNode (instance).tempData()`
+- `GSNode (instance).tempDataForKey_(arg0, /)`
+- `GSNode (instance).toManyRelationshipKeys()`
+- `GSNode (instance).toOneRelationshipKeys()`
+- `GSNode (instance).toggleConnection()`
+- `GSNode (instance).toggleConnection_(arg0, /)`
+- `GSNode (instance).transformFast_round_(arg0, arg1, /)`
+- `GSNode (instance).transform_(arg0, /)`
+- `GSNode (instance).transform_selection_(arg0, arg1, /)`
+- `GSNode (instance).typeString()`
+- `GSNode (instance).typeTag()`
+- `GSNode (instance).un_safeBoolValue()`
+- `GSNode (instance).unableToSetNilForKey_(arg0, /)`
+- `GSNode (instance).unbind_(arg0, /)`
+- `GSNode (instance).undoManager()`
+- `GSNode (instance).undoManagerCheck()`
+- `GSNode (instance).userDataForKey_(arg0, /)`
+- `GSNode (instance).userInterfaceItemIdentifier()`
+- `GSNode (instance).utf8ValueSafe()`
+- `GSNode (instance).utf8ValueSafe_(arg0, /)`
+- `GSNode (instance).validateTakeValue_forKeyPath_(arg0, arg1, /)`
+- `GSNode (instance).validateValue_forKeyPath_error_(arg0, arg1, arg2, /)`
+- `GSNode (instance).validateValue_forKey_(arg0, arg1, /)`
+- `GSNode (instance).validateValue_forKey_error_(arg0, arg1, arg2, /)`
+- `GSNode (instance).valueAtIndex_inPropertyWithKey_(arg0, arg1, /)`
+- `GSNode (instance).valueClassForBinding_(arg0, /)`
+- `GSNode (instance).valueForKeyPath_(arg0, /)`
+- `GSNode (instance).valueForKey_(arg0, /)`
+- `GSNode (instance).valueForUndefinedKey_(arg0, /)`
+- `GSNode (instance).valueWithName_inPropertyWithKey_(arg0, arg1, /)`
+- `GSNode (instance).valueWithUniqueID_inPropertyWithKey_(arg0, arg1, /)`
+- `GSNode (instance).valuesForKeys_(arg0, /)`
+- `GSNode (instance).vk_loggingDescription()`
+- `GSNode (instance).vk_loggingIdentifier()`
+- `GSNode (instance).vk_prettyLoggingDescription()`
+- `GSNode (instance).willChangeValueForKey_(arg0, /)`
+- `GSNode (instance).willChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSNode (instance).willChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSNode (instance).zone()`

@@ -1,0 +1,1352 @@
+# GSGlyph — a glyph (container of layers)
+**Use when:** you need a glyph’s name, metadata, or its layers across masters.
+**Key APIs:** `name`, `layers`, `anchors`
+**Do:** resolve the active glyph via `glyph = layer.parent`; iterate `glyph.layers` for per-master work.
+**Don’t:** assume a single layer per glyph; don’t use font-level undo.
+**Keywords:** GSGlyph, layers, anchors, glyph.name, glyph.layers
+
+## Attributes
+
+- `GSGlyph.bottomKerningGroup`  *(type: property)*
+- `GSGlyph.bottomKerningGroup`  *(type: property)*
+- `GSGlyph.bottomKerningKey`  *(type: property)*
+- `GSGlyph.bottomMetricsKey`  *(type: property)*
+- `GSGlyph.bottomMetricsKey`  *(type: property)*
+- `GSGlyph.case`  *(type: property)*
+- `GSGlyph.case`  *(type: property)*
+- `GSGlyph.category`  *(type: property)*
+- `GSGlyph.category`  *(type: property)*
+- `GSGlyph.color`  *(type: property)*
+- `GSGlyph.color`  *(type: property)*
+- `GSGlyph.colorObject`  *(type: property)*
+- `GSGlyph.direction`  *(type: property)*
+- `GSGlyph.direction`  *(type: property)*
+- `GSGlyph.export`  *(type: property)*
+- `GSGlyph.export`  *(type: property)*
+- `GSGlyph.font`  *(type: property)*
+- `GSGlyph.font`  *(type: property)*
+- `GSGlyph.glyphInfo`  *(type: property)*
+- `GSGlyph.id`  *(type: property)*
+- `GSGlyph.id`  *(type: property)*
+- `GSGlyph.lastChange`  *(type: property)*
+- `GSGlyph.lastChange`  *(type: property)*
+- `GSGlyph.layers`  *(type: property)*
+- `GSGlyph.layers`  *(type: property)*
+- `GSGlyph.leftKerningGroup`  *(type: property)*
+- `GSGlyph.leftKerningGroup`  *(type: property)*
+- `GSGlyph.leftKerningKey`  *(type: property)*
+- `GSGlyph.leftMetricsKey`  *(type: property)*
+- `GSGlyph.leftMetricsKey`  *(type: property)*
+- `GSGlyph.locked`  *(type: property)*
+- `GSGlyph.locked`  *(type: property)*
+- `GSGlyph.mastersCompatible`  *(type: property)*
+- `GSGlyph.mastersCompatible`  *(type: property)*
+- `GSGlyph.name`  *(type: property)*
+- `GSGlyph.name`  *(type: property)*
+- `GSGlyph.note`  *(type: property)*
+- `GSGlyph.note`  *(type: property)*
+- `GSGlyph.parent`  *(type: property)*
+- `GSGlyph.parent`  *(type: property)*
+- `GSGlyph.production`  *(type: property)*
+- `GSGlyph.production`  *(type: property)*
+- `GSGlyph.productionName`  *(type: property)*
+- `GSGlyph.rightKerningGroup`  *(type: property)*
+- `GSGlyph.rightKerningGroup`  *(type: property)*
+- `GSGlyph.rightKerningKey`  *(type: property)*
+- `GSGlyph.rightMetricsKey`  *(type: property)*
+- `GSGlyph.rightMetricsKey`  *(type: property)*
+- `GSGlyph.script`  *(type: property)*
+- `GSGlyph.script`  *(type: property)*
+- `GSGlyph.selected`  *(type: property)*
+- `GSGlyph.smartComponentAxes`  *(type: property)*
+- `GSGlyph.sortName`  *(type: property)*
+- `GSGlyph.sortName`  *(type: property)*
+- `GSGlyph.sortNameKeep`  *(type: property)*
+- `GSGlyph.sortNameKeep`  *(type: property)*
+- `GSGlyph.storeCase`  *(type: property)*
+- `GSGlyph.storeCase`  *(type: property)*
+- `GSGlyph.storeCategory`  *(type: property)*
+- `GSGlyph.storeCategory`  *(type: property)*
+- `GSGlyph.storeDirection`  *(type: property)*
+- `GSGlyph.storeDirection`  *(type: property)*
+- `GSGlyph.storeProductionName`  *(type: property)*
+- `GSGlyph.storeScript`  *(type: property)*
+- `GSGlyph.storeScript`  *(type: property)*
+- `GSGlyph.storeSortName`  *(type: property)*
+- `GSGlyph.storeSortName`  *(type: property)*
+- `GSGlyph.storeSubCategory`  *(type: property)*
+- `GSGlyph.storeSubCategory`  *(type: property)*
+- `GSGlyph.string`  *(type: property)*
+- `GSGlyph.subCategory`  *(type: property)*
+- `GSGlyph.subCategory`  *(type: property)*
+- `GSGlyph.tags`  *(type: property)*
+- `GSGlyph.tags`  *(type: property)*
+- `GSGlyph.topKerningGroup`  *(type: property)*
+- `GSGlyph.topKerningGroup`  *(type: property)*
+- `GSGlyph.topKerningKey`  *(type: property)*
+- `GSGlyph.topMetricsKey`  *(type: property)*
+- `GSGlyph.topMetricsKey`  *(type: property)*
+- `GSGlyph.unicode`  *(type: property)*
+- `GSGlyph.unicode`  *(type: property)*
+- `GSGlyph.unicodes`  *(type: property)*
+- `GSGlyph.unicodes`  *(type: property)*
+- `GSGlyph.userData`  *(type: property)*
+- `GSGlyph.userData`  *(type: property)*
+- `GSGlyph.widthMetricsKey`  *(type: property)*
+- `GSGlyph.widthMetricsKey`  *(type: property)*
+- `GSGlyph (instance).bottomKerningGroup`  *(type: NoneType)*
+- `GSGlyph (instance).bottomKerningKey`  *(type: pyobjc_unicode)*
+- `GSGlyph (instance).bottomMetricsKey`  *(type: NoneType)*
+- `GSGlyph (instance).case`  *(type: int)*
+- `GSGlyph (instance).category`  *(type: NoneType)*
+- `GSGlyph (instance).color`  *(type: NoneType)*
+- `GSGlyph (instance).colorObject`  *(type: NoneType)*
+- `GSGlyph (instance).direction`  *(type: int)*
+- `GSGlyph (instance).export`  *(type: bool)*
+- `GSGlyph (instance).font`  *(type: NoneType)*
+- `GSGlyph (instance).id`  *(type: str)*
+- `GSGlyph (instance).lastChange`  *(type: NoneType)*
+- `GSGlyph (instance).layers`  *(type: GlyphLayerProxy)*
+- `GSGlyph (instance).leftKerningGroup`  *(type: NoneType)*
+- `GSGlyph (instance).leftKerningKey`  *(type: pyobjc_unicode)*
+- `GSGlyph (instance).leftMetricsKey`  *(type: NoneType)*
+- `GSGlyph (instance).locked`  *(type: bool)*
+- `GSGlyph (instance).mastersCompatible`  *(type: bool)*
+- `GSGlyph (instance).name`  *(type: pyobjc_unicode)*
+- `GSGlyph (instance).note`  *(type: NoneType)*
+- `GSGlyph (instance).parent`  *(type: NoneType)*
+- `GSGlyph (instance).production`  *(type: NoneType)*
+- `GSGlyph (instance).productionName`  *(type: NoneType)*
+- `GSGlyph (instance).rightKerningGroup`  *(type: NoneType)*
+- `GSGlyph (instance).rightKerningKey`  *(type: pyobjc_unicode)*
+- `GSGlyph (instance).rightMetricsKey`  *(type: NoneType)*
+- `GSGlyph (instance).script`  *(type: NoneType)*
+- `GSGlyph (instance).smartComponentAxes`  *(type: GlyphSmartComponentAxesProxy)*
+- `GSGlyph (instance).sortName`  *(type: NoneType)*
+- `GSGlyph (instance).sortNameKeep`  *(type: NoneType)*
+- `GSGlyph (instance).storeCase`  *(type: bool)*
+- `GSGlyph (instance).storeCategory`  *(type: bool)*
+- `GSGlyph (instance).storeDirection`  *(type: bool)*
+- `GSGlyph (instance).storeProductionName`  *(type: bool)*
+- `GSGlyph (instance).storeScript`  *(type: bool)*
+- `GSGlyph (instance).storeSortName`  *(type: bool)*
+- `GSGlyph (instance).storeSubCategory`  *(type: bool)*
+- `GSGlyph (instance).string`  *(type: pyobjc_unicode)*
+- `GSGlyph (instance).subCategory`  *(type: NoneType)*
+- `GSGlyph (instance).tags`  *(type: GlyphsTagsProxy)*
+- `GSGlyph (instance).topKerningGroup`  *(type: NoneType)*
+- `GSGlyph (instance).topKerningKey`  *(type: pyobjc_unicode)*
+- `GSGlyph (instance).topMetricsKey`  *(type: NoneType)*
+- `GSGlyph (instance).unicode`  *(type: NoneType)*
+- `GSGlyph (instance).unicodes`  *(type: NoneType)*
+- `GSGlyph (instance).userData`  *(type: UserDataProxy)*
+- `GSGlyph (instance).widthMetricsKey`  *(type: NoneType)*
+
+## Methods
+
+- `GSGlyph..cxx_destruct()`
+- `GSGlyph.CAMLType()`
+- `GSGlyph.CAMLTypeForKey_(arg0, /)`
+- `GSGlyph.CAMLTypeSupportedForKey_(arg0, /)`
+- `GSGlyph.CA_addValue_multipliedBy_(arg0, arg1, /)`
+- `GSGlyph.CA_archivingValueForKey_(arg0, /)`
+- `GSGlyph.CA_copyNumericValue_(arg0, /)`
+- `GSGlyph.CA_copyRenderValue()`
+- `GSGlyph.CA_copyRenderValueWithColorspace_(arg0, /)`
+- `GSGlyph.CA_distanceToValue_(arg0, /)`
+- `GSGlyph.CA_interpolateValue_byFraction_(arg0, arg1, /)`
+- `GSGlyph.CA_interpolateValues___interpolator_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.CA_numericValueCount()`
+- `GSGlyph.CA_prepareRenderValue()`
+- `GSGlyph.CA_roundToIntegerFromValue_(arg0, /)`
+- `GSGlyph.CA_validateValue_forKey_(arg0, arg1, /)`
+- `GSGlyph.CKAssignToContainerWithID_(arg0, /)`
+- `GSGlyph.CKDescription()`
+- `GSGlyph.CKDescriptionPropertiesWithPublic_private_shouldExpand_(arg0, arg1, arg2, /)`
+- `GSGlyph.CKDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSGlyph.CKExpandedDescription()`
+- `GSGlyph.CKHashedDescription()`
+- `GSGlyph.CKObjectDescriptionRedact_(arg0, /)`
+- `GSGlyph.CKObjectDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSGlyph.CKPropertiesDescription()`
+- `GSGlyph.CKPropertiesDescriptionStringFromProperties_(arg0, /)`
+- `GSGlyph.CKRedactedDescription()`
+- `GSGlyph.CKSingleLineDescription()`
+- `GSGlyph.CKUnredactedDescription()`
+- `GSGlyph.IKImageRepresentationWithType_(arg0, /)`
+- `GSGlyph.NSLifeguard_autorelease()`
+- `GSGlyph.NSRepresentation()`
+- `GSGlyph.NSRepresentation()`
+- `GSGlyph.NS_addTiledLayerDescendent_(arg0, /)`
+- `GSGlyph.NS_observationForKeyPath_options_block_(arg0, arg1, arg2, /)`
+- `GSGlyph.NS_observationForKeyPaths_options_block_(arg0, arg1, arg2, /)`
+- `GSGlyph.NS_removeTiledLayerDescendent_(arg0, /)`
+- `GSGlyph.NS_tiledLayerVisibleRect()`
+- `GSGlyph.RBSIsXPCObject()`
+- `GSGlyph.SCNUI_name()`
+- `GSGlyph.SCN_setupDisplayLinkWithQueue_screen_policy_(arg0, arg1, arg2, /)`
+- `GSGlyph.abCaseInsensitiveIsEqual_(arg0, /)`
+- `GSGlyph.abDictionaryWithValuesForKeyPaths_(arg0, /)`
+- `GSGlyph.abRemoveObserverIgnoringExceptions_forKeyPath_(arg0, arg1, /)`
+- `GSGlyph.accessibilityAddTemporaryChild_(arg0, /)`
+- `GSGlyph.accessibilityAllowsOverriddenAttributesWhenIgnored()`
+- `GSGlyph.accessibilityArrayAttributeCount_(arg0, /)`
+- `GSGlyph.accessibilityArrayAttributeValues_index_maxCount_(arg0, arg1, arg2, /)`
+- `GSGlyph.accessibilityAttributeValue_forParameter_(arg0, arg1, /)`
+- `GSGlyph.accessibilityAttributedValueForStringAttributeAttributeForParameter_(arg0, /)`
+- `GSGlyph.accessibilityBrailleMapRenderRegion()`
+- `GSGlyph.accessibilityBrailleMapRenderer()`
+- `GSGlyph.accessibilityDecodeOverriddenAttributes_(arg0, /)`
+- `GSGlyph.accessibilityEncodeOverriddenAttributes_(arg0, /)`
+- `GSGlyph.accessibilityIndexForChildUIElementAttributeForParameter_(arg0, /)`
+- `GSGlyph.accessibilityIndexOfChild_(arg0, /)`
+- `GSGlyph.accessibilityOverriddenAttributes()`
+- `GSGlyph.accessibilityParameterizedAttributeNames()`
+- `GSGlyph.accessibilityPerformShowMenuOfChild_(arg0, /)`
+- `GSGlyph.accessibilityPresenterProcessIdentifier()`
+- `GSGlyph.accessibilityRemoveTemporaryChild_(arg0, /)`
+- `GSGlyph.accessibilityReplaceRange_withText_(arg0, arg1, /)`
+- `GSGlyph.accessibilitySetOverrideValue_forAttribute_(arg0, arg1, /)`
+- `GSGlyph.accessibilitySetPresenterProcessIdentifier_(arg0, /)`
+- `GSGlyph.accessibilityShouldSendNotification_(arg0, /)`
+- `GSGlyph.accessibilityShouldUseUniqueId()`
+- `GSGlyph.accessibilitySupportsCustomElementData()`
+- `GSGlyph.accessibilitySupportsNotifications()`
+- `GSGlyph.accessibilitySupportsOverriddenAttributes()`
+- `GSGlyph.accessibilityTemporaryChildren()`
+- `GSGlyph.accessibilityVisibleArea()`
+- `GSGlyph.addChainedObservers_(arg0, /)`
+- `GSGlyph.addInflections_curveError_error_(arg0, arg1, arg2, /)`
+- `GSGlyph.addObject_toBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSGlyph.addObject_toPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph.addObservationTransformer_(arg0, /)`
+- `GSGlyph.addObserverBlock_(arg0, /)`
+- `GSGlyph.addObserver_(arg0, /)`
+- `GSGlyph.addObserver_forKeyPath_options_context_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.addObserver_forObservableKeyPath_(arg0, arg1, /)`
+- `GSGlyph.addPartsSetting_(arg0, /)`
+- `GSGlyph.addTag_(arg0, /)`
+- `GSGlyph.addUnicode_(arg0, /)`
+- `GSGlyph.addUserData_(arg0, /)`
+- `GSGlyph.addVariationsToComposites_suffix_rules_substitutions_error_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSGlyph.akToolbarButtonItemType()`
+- `GSGlyph.allPropertyKeys()`
+- `GSGlyph.allowsWeakReference()`
+- `GSGlyph.applyGlyphInfoFast_changeName_changeUnicode_(arg0, arg1, arg2, /)`
+- `GSGlyph.applyGlyphInfo_changeName_changeUnicode_(arg0, arg1, arg2, /)`
+- `GSGlyph.associatedObject()`
+- `GSGlyph.attributeKeys()`
+- `GSGlyph.autoContentAccessingProxy()`
+- `GSGlyph.autorelease()`
+- `GSGlyph.awakeAfterUsingCoder_(arg0, /)`
+- `GSGlyph.awakeFromNib()`
+- `GSGlyph.baseGlyphs()`
+- `GSGlyph.baseString()`
+- `GSGlyph.beginUndo(self)`
+- `GSGlyph.bind_toObject_withKeyPath_options_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.boolValueSafe()`
+- `GSGlyph.boolValueSafe_(arg0, /)`
+- `GSGlyph.bottomKerningGroupId()`
+- `GSGlyph.bs_isPlistableType()`
+- `GSGlyph.bs_secureEncoded()`
+- `GSGlyph.canRenderWithCGLContext_(arg0, /)`
+- `GSGlyph.changeCount()`
+- `GSGlyph.charName()`
+- `GSGlyph.charString()`
+- `GSGlyph.charStrings()`
+- `GSGlyph.ck_bindInStatement_atIndex_(arg0, arg1, /)`
+- `GSGlyph.cksqlcs_appendSQLConstantValueToString_(arg0, /)`
+- `GSGlyph.cksqlcs_archivedObjectBindingValue_(arg0, /)`
+- `GSGlyph.cksqlcs_bindArchivedObject_index_db_(arg0, arg1, arg2, /)`
+- `GSGlyph.cksqlcs_bindBlob_index_db_(arg0, arg1, arg2, /)`
+- `GSGlyph.cksqlcs_bindDouble_index_db_(arg0, arg1, arg2, /)`
+- `GSGlyph.cksqlcs_bindInt64_index_db_(arg0, arg1, arg2, /)`
+- `GSGlyph.cksqlcs_bindText_index_db_(arg0, arg1, arg2, /)`
+- `GSGlyph.cksqlcs_blobBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSGlyph.cksqlcs_doubleBindingValue_(arg0, /)`
+- `GSGlyph.cksqlcs_int64BindingValue_(arg0, /)`
+- `GSGlyph.cksqlcs_textBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSGlyph.classCode()`
+- `GSGlyph.classDescription()`
+- `GSGlyph.classDescriptionForDestinationKey_(arg0, /)`
+- `GSGlyph.classForArchiver()`
+- `GSGlyph.classForCoder()`
+- `GSGlyph.classForKeyedArchiver()`
+- `GSGlyph.classForPortCoder()`
+- `GSGlyph.className()`
+- `GSGlyph.class__()`
+- `GSGlyph.cleanUpAndValidatePaths_error_(arg0, arg1, /)`
+- `GSGlyph.clearProperties()`
+- `GSGlyph.coalescedPerformSelector_(arg0, /)`
+- `GSGlyph.coerceValueForScriptingProperties_(arg0, /)`
+- `GSGlyph.coerceValue_forKey_(arg0, arg1, /)`
+- `GSGlyph.collectBraceLayerIDsMasters_allKeys_(arg0, arg1, /)`
+- `GSGlyph.colorIndex()`
+- `GSGlyph.compositionParameterView_didChangeParameterWithKey_(arg0, arg1, /)`
+- `GSGlyph.compositionParameterView_shouldDisplayParameterWithKey_attributes_(arg0, arg1, arg2, /)`
+- `GSGlyph.compositionPickerViewDidStartAnimating_(arg0, /)`
+- `GSGlyph.compositionPickerViewWillStopAnimating_(arg0, /)`
+- `GSGlyph.compositionPickerView_didLoadComposition_(arg0, arg1, /)`
+- `GSGlyph.compositionPickerView_didSelectComposition_(arg0, arg1, /)`
+- `GSGlyph.compositionPickerView_draggingEnteredComposition_sender_(arg0, arg1, arg2, /)`
+- `GSGlyph.compositionPickerView_keyDown_(arg0, arg1, /)`
+- `GSGlyph.compositionPickerView_performDragOperationOnComposition_sender_(arg0, arg1, arg2, /)`
+- `GSGlyph.compositionPickerView_willSelectComposition_(arg0, arg1, /)`
+- `GSGlyph.conformsToProtocol_(arg0, /)`
+- `GSGlyph.convertToCompatibleTrueTypeWithError_error_(arg0, arg1, /)`
+- `GSGlyph.copy()`
+- `GSGlyph.copyRenderedTextureForCGLContext_pixelFormat_bounds_isFlipped_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.copyScriptingValue_forKey_withProperties_(arg0, arg1, arg2, /)`
+- `GSGlyph.copyThin_options_(arg0, arg1, /)`
+- `GSGlyph.copyWithZone_(arg0, /)`
+- `GSGlyph.countOfLayers()`
+- `GSGlyph.countOfPartsSettings()`
+- `GSGlyph.countOfTags()`
+- `GSGlyph.countOfUnicodes()`
+- `GSGlyph.countOfUserData()`
+- `GSGlyph.createImageWithOptions_(arg0, /)`
+- `GSGlyph.createKeyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSGlyph.createOptimizedProviderWithTransformation_cropping_(arg0, arg1, /)`
+- `GSGlyph.dealloc()`
+- `GSGlyph.dealloc()`
+- `GSGlyph.debugDescription()`
+- `GSGlyph.decomposeAndCleanupError_(arg0, /)`
+- `GSGlyph.decomposeBracketLayersSubstitutions_error_(arg0, arg1, /)`
+- `GSGlyph.decomposeSpecialComponents_(arg0, /)`
+- `GSGlyph.decomposedInterpolate_(arg0, /)`
+- `GSGlyph.description()`
+- `GSGlyph.description()`
+- `GSGlyph.description()`
+- `GSGlyph.descriptionAtIndent_(arg0, /)`
+- `GSGlyph.dictionaryWithValuesForKeys_(arg0, /)`
+- `GSGlyph.didChangeValueForKey_(arg0, /)`
+- `GSGlyph.didChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSGlyph.didChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSGlyph.didPresentErrorWithRecovery_contextInfo_(arg0, arg1, /)`
+- `GSGlyph.document()`
+- `GSGlyph.doesContain_(arg0, /)`
+- `GSGlyph.doesNotRecognizeSelector_(arg0, /)`
+- `GSGlyph.doesNotRecognizeSelector_(arg0, /)`
+- `GSGlyph.doubleValueSafe()`
+- `GSGlyph.doubleValueSafe_(arg0, /)`
+- `GSGlyph.duplicate(self, name=None)`
+- `GSGlyph.encodeWithCAMLWriter_(arg0, /)`
+- `GSGlyph.encodeWithCoder_(arg0, /)`
+- `GSGlyph.endUndo(self)`
+- `GSGlyph.ensureHintsInLayer_layers_masters_font_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.ensureValidName_(arg0, /)`
+- `GSGlyph.entityName()`
+- `GSGlyph.exposedBindings()`
+- `GSGlyph.finalize()`
+- `GSGlyph.finishObserving()`
+- `GSGlyph.flushKeyBindings()`
+- `GSGlyph.forcedLayerGroupIdsSeenLayers_(arg0, /)`
+- `GSGlyph.forwardInvocation_(arg0, /)`
+- `GSGlyph.forwardingTargetForSelector_(arg0, /)`
+- `GSGlyph.fp__ivarDescriptionForClass_(arg0, /)`
+- `GSGlyph.fp__methodDescriptionForClass_(arg0, /)`
+- `GSGlyph.fp_ivarDescription()`
+- `GSGlyph.fp_methodDescription()`
+- `GSGlyph.fp_shortMethodDescription()`
+- `GSGlyph.glyphDataEntryString(self)`
+- `GSGlyph.glyphId()`
+- `GSGlyph.handleQueryWithUnboundKey_(arg0, /)`
+- `GSGlyph.handleTakeValue_forUnboundKey_(arg0, arg1, /)`
+- `GSGlyph.hasAlignedWidth()`
+- `GSGlyph.hasAnnotations()`
+- `GSGlyph.hasBraceLayer()`
+- `GSGlyph.hasBracketLayer()`
+- `GSGlyph.hasComponents()`
+- `GSGlyph.hasCorners()`
+- `GSGlyph.hasCustomGlyphInfo()`
+- `GSGlyph.hasHints()`
+- `GSGlyph.hasPostScriptHints()`
+- `GSGlyph.hasSpecialLayers()`
+- `GSGlyph.hasTrueTypeHints()`
+- `GSGlyph.hash()`
+- `GSGlyph.if_setValueIfNonNil_forKey_(arg0, arg1, /)`
+- `GSGlyph.if_setValueIfYES_forKey_(arg0, arg1, /)`
+- `GSGlyph.ikInMainLoopWait_(arg0, /)`
+- `GSGlyph.imageBrowser_didValidateVisibleCellsAtIndexes_(arg0, arg1, /)`
+- `GSGlyph.imageBrowser_willDisplayCellsAtIndexes_(arg0, arg1, /)`
+- `GSGlyph.imageSubtitle()`
+- `GSGlyph.imageTitle()`
+- `GSGlyph.imageToDrawForCell_(arg0, /)`
+- `GSGlyph.implementsSelector_(arg0, /)`
+- `GSGlyph.indexOfObjectInTags_(arg0, /)`
+- `GSGlyph.infoForBinding_(arg0, /)`
+- `GSGlyph.init()`
+- `GSGlyph.init()`
+- `GSGlyph.initFast()`
+- `GSGlyph.initLock()`
+- `GSGlyph.initWithCoder_(arg0, /)`
+- `GSGlyph.initWithDict_format_(arg0, arg1, /)`
+- `GSGlyph.initWithFile_format_error_(arg0, arg1, arg2, /)`
+- `GSGlyph.initWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSGlyph.insertObject_inLayersArrayAtIndex_(arg0, arg1, /)`
+- `GSGlyph.insertObject_inPartsSettingsAtIndex_(arg0, arg1, /)`
+- `GSGlyph.insertObject_inTagsAtIndex_(arg0, arg1, /)`
+- `GSGlyph.insertUnicode_atIndex_(arg0, arg1, /)`
+- `GSGlyph.insertValue_atIndex_inPropertyWithKey_(arg0, arg1, arg2, /)`
+- `GSGlyph.insertValue_inPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph.int64ValueSafe()`
+- `GSGlyph.int64ValueSafe_(arg0, /)`
+- `GSGlyph.interpolateSmartLayer_instance_targetGlyph_(arg0, arg1, arg2, /)`
+- `GSGlyph.interpolate_error_(arg0, arg1, /)`
+- `GSGlyph.interpolate_keepSmart_error_(arg0, arg1, arg2, /)`
+- `GSGlyph.interpolate_masters_decompose_error_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.interpolate_masters_keepSmart_smartSettings_layerName_additionalLayers_error_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, /)`
+- `GSGlyph.inverseForRelationshipKey_(arg0, /)`
+- `GSGlyph.isAligned()`
+- `GSGlyph.isAnyColorGlyph()`
+- `GSGlyph.isAppleColorGlyph()`
+- `GSGlyph.isCJK()`
+- `GSGlyph.isCaseInsensitiveLike_(arg0, /)`
+- `GSGlyph.isColorPaletteGlyph()`
+- `GSGlyph.isCornerGlyph()`
+- `GSGlyph.isEqualToGlyph_(arg0, /)`
+- `GSGlyph.isEqualTo_(arg0, /)`
+- `GSGlyph.isEqual_(arg0, /)`
+- `GSGlyph.isFault()`
+- `GSGlyph.isFullColorGlyph()`
+- `GSGlyph.isGreaterThanOrEqualTo_(arg0, /)`
+- `GSGlyph.isGreaterThan_(arg0, /)`
+- `GSGlyph.isHangulKeyGlyph()`
+- `GSGlyph.isIcon()`
+- `GSGlyph.isKindOfClass_(arg0, /)`
+- `GSGlyph.isLessThanOrEqualTo_(arg0, /)`
+- `GSGlyph.isLessThan_(arg0, /)`
+- `GSGlyph.isLike_(arg0, /)`
+- `GSGlyph.isMemberOfClass_(arg0, /)`
+- `GSGlyph.isNSArray__()`
+- `GSGlyph.isNSCFConstantString__()`
+- `GSGlyph.isNSData__()`
+- `GSGlyph.isNSDate__()`
+- `GSGlyph.isNSDictionary__()`
+- `GSGlyph.isNSNumber__()`
+- `GSGlyph.isNSObject__()`
+- `GSGlyph.isNSOrderedSet__()`
+- `GSGlyph.isNSSet__()`
+- `GSGlyph.isNSString__()`
+- `GSGlyph.isNSTimeZone__()`
+- `GSGlyph.isNSValue__()`
+- `GSGlyph.isNotEqualTo_(arg0, /)`
+- `GSGlyph.isNull()`
+- `GSGlyph.isProxy()`
+- `GSGlyph.isSFSymbol()`
+- `GSGlyph.isSVGColorGlyph()`
+- `GSGlyph.isSmartGlyph()`
+- `GSGlyph.isToManyKey_(arg0, /)`
+- `GSGlyph.justLocked()`
+- `GSGlyph.keyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSGlyph.lastOperation()`
+- `GSGlyph.lastOperationInterval()`
+- `GSGlyph.layer0()`
+- `GSGlyph.layerForIdFast_(arg0, /)`
+- `GSGlyph.layerForId_(arg0, /)`
+- `GSGlyph.layerForKey_masterId_(arg0, arg1, /)`
+- `GSGlyph.layerForName_(arg0, /)`
+- `GSGlyph.layerForName_masterId_(arg0, arg1, /)`
+- `GSGlyph.layerGroups()`
+- `GSGlyph.layerGroups_layerGroups_axesValues_layers_seenLayers_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSGlyph.layerGroups_masters_error_(arg0, arg1, arg2, /)`
+- `GSGlyph.layerNearestToPosition_associatedMasterId_onlyBraceLayer_tolerance_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.layersArray()`
+- `GSGlyph.layersForName_masterIDs_(arg0, arg1, /)`
+- `GSGlyph.leftKerningGroupId()`
+- `GSGlyph.loadDict_(arg0, /)`
+- `GSGlyph.localizedCaseString()`
+- `GSGlyph.lockReadAllLayersShapes()`
+- `GSGlyph.lockReadGlyph()`
+- `GSGlyph.lockWriteGlyph()`
+- `GSGlyph.mastersCompatibleForLayerIds_(arg0, /)`
+- `GSGlyph.mastersCompatibleForLayers_(arg0, /)`
+- `GSGlyph.methodDescriptionForSelector_(arg0, /)`
+- `GSGlyph.methodForSelector_(arg0, /)`
+- `GSGlyph.methodSignatureForSelector_(arg0, /)`
+- `GSGlyph.methodSignatureForSelector_(arg0, /)`
+- `GSGlyph.mr_formattedDebugDescription()`
+- `GSGlyph.mutableArrayValueForKeyPath_(arg0, /)`
+- `GSGlyph.mutableArrayValueForKey_(arg0, /)`
+- `GSGlyph.mutableCopy()`
+- `GSGlyph.mutableCopyWithZone_(arg0, /)`
+- `GSGlyph.mutableCopyWithZone_(arg0, /)`
+- `GSGlyph.mutableOrderedSetValueForKeyPath_(arg0, /)`
+- `GSGlyph.mutableOrderedSetValueForKey_(arg0, /)`
+- `GSGlyph.mutableSetValueForKeyPath_(arg0, /)`
+- `GSGlyph.mutableSetValueForKey_(arg0, /)`
+- `GSGlyph.my_compactDescription()`
+- `GSGlyph.newScriptingObjectOfClass_forValueForKey_withContentsValue_properties_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.newScriptingObjectOfClass_forValueForKey_withContentsValue_properties_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.newTaggedNSStringWithASCIIBytes__length__(arg0, arg1, /)`
+- `GSGlyph.nextKerningGroupForDirection_(arg0, /)`
+- `GSGlyph.nextKerningGroupIDforDirection_(arg0, /)`
+- `GSGlyph.nextLayerId_layerPos_onAxis_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.objectInLayersAtIndex_(arg0, /)`
+- `GSGlyph.objectInPartsSettingsAtIndex_(arg0, /)`
+- `GSGlyph.objectInTagsAtIndex_(arg0, /)`
+- `GSGlyph.objectSpecifier()`
+- `GSGlyph.objectSpecifier()`
+- `GSGlyph.observationInfo()`
+- `GSGlyph.observeValueForKeyPath_ofObject_change_context_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.optionDescriptionsForBinding_(arg0, /)`
+- `GSGlyph.outlineHasChanges()`
+- `GSGlyph.ownsDestinationObjectsForRelationshipKey_(arg0, /)`
+- `GSGlyph.partsSettings()`
+- `GSGlyph.pep_afterDelay_(arg0, /)`
+- `GSGlyph.pep_getInvocation_(arg0, /)`
+- `GSGlyph.pep_onMainThread()`
+- `GSGlyph.pep_onMainThreadIfNecessary()`
+- `GSGlyph.pep_onOperationQueue_(arg0, /)`
+- `GSGlyph.pep_onOperationQueue_priority_(arg0, arg1, /)`
+- `GSGlyph.pep_onThread_(arg0, /)`
+- `GSGlyph.pep_onThread_immediateForMatchingThread_(arg0, arg1, /)`
+- `GSGlyph.performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSGlyph.performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSGlyph.performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.performSelector_(arg0, /)`
+- `GSGlyph.performSelector_object_afterDelay_(arg0, arg1, arg2, /)`
+- `GSGlyph.performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSGlyph.performSelector_withObject_(arg0, arg1, /)`
+- `GSGlyph.performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSGlyph.performSelector_withObject_afterDelay_ignoreMenuTracking_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.performSelector_withObject_withObject_(arg0, arg1, arg2, /)`
+- `GSGlyph.pkaxRespondsToSelector_fromExtrasProtocol_(arg0, arg1, /)`
+- `GSGlyph.pkaxValueForKey_(arg0, /)`
+- `GSGlyph.plainMetricsKey_(arg0, /)`
+- `GSGlyph.prepareForInterfaceBuilder()`
+- `GSGlyph.previousKerningGroupForDirection_(arg0, /)`
+- `GSGlyph.previousKerningGroupIDforDirection_(arg0, /)`
+- `GSGlyph.propertyListValueFormat_(arg0, /)`
+- `GSGlyph.propertyListValueFormat_options_(arg0, arg1, /)`
+- `GSGlyph.pyobjc_performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSGlyph.pyobjc_performSelectorOnMainThread_withObject_(arg0, arg1, /)`
+- `GSGlyph.pyobjc_performSelectorOnMainThread_withObject_modes_(arg0, arg1, arg2, /)`
+- `GSGlyph.pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSGlyph.pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.pyobjc_performSelector_onThread_withObject_(arg0, arg1, arg2, /)`
+- `GSGlyph.pyobjc_performSelector_onThread_withObject_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.pyobjc_performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.pyobjc_performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSGlyph.pyobjc_performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSGlyph.pyobjc_performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.receiveObservedError_(arg0, /)`
+- `GSGlyph.receiveObservedValue_(arg0, /)`
+- `GSGlyph.release()`
+- `GSGlyph.releaseRenderedTexture_forCGLContext_(arg0, arg1, /)`
+- `GSGlyph.removeLayerForId_(arg0, /)`
+- `GSGlyph.removeObjectFromLayersArrayAtIndex_(arg0, /)`
+- `GSGlyph.removeObjectFromPartsSettingsAtIndex_(arg0, /)`
+- `GSGlyph.removeObjectFromTagsAtIndex_(arg0, /)`
+- `GSGlyph.removeObjectFromTags_(arg0, /)`
+- `GSGlyph.removeObject_fromBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSGlyph.removeObject_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph.removeObservation_(arg0, /)`
+- `GSGlyph.removeObservation_forObservableKeyPath_(arg0, arg1, /)`
+- `GSGlyph.removeObserver_forKeyPath_(arg0, arg1, /)`
+- `GSGlyph.removeObserver_forKeyPath_context_(arg0, arg1, arg2, /)`
+- `GSGlyph.removeUnicode_(arg0, /)`
+- `GSGlyph.removeUserDataForKey_(arg0, /)`
+- `GSGlyph.removeValueAtIndex_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph.renderToBuffer_withBytesPerRow_pixelFormat_forBounds_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.renderWithCGLContext_forBounds_(arg0, arg1, /)`
+- `GSGlyph.replaceLayersWithInterpolation_(arg0, /)`
+- `GSGlyph.replaceObjectInPartsSettingsAtIndex_withObject_(arg0, arg1, /)`
+- `GSGlyph.replaceObjectInTagsAtIndex_withObject_(arg0, arg1, /)`
+- `GSGlyph.replaceValueAtIndex_inPropertyWithKey_withValue_(arg0, arg1, arg2, /)`
+- `GSGlyph.replacementObjectForArchiver_(arg0, /)`
+- `GSGlyph.replacementObjectForCoder_(arg0, /)`
+- `GSGlyph.replacementObjectForKeyedArchiver_(arg0, /)`
+- `GSGlyph.replacementObjectForPortCoder_(arg0, /)`
+- `GSGlyph.resetLayerKeys()`
+- `GSGlyph.resetMasterCompatibilityCheckStatus()`
+- `GSGlyph.resolveForwardingConflictWithPreviousMetadata_forKey_(arg0, arg1, /)`
+- `GSGlyph.respondsToSelector_(arg0, /)`
+- `GSGlyph.retain()`
+- `GSGlyph.retainCount()`
+- `GSGlyph.retainWeakReference()`
+- `GSGlyph.rightKerningGroupId()`
+- `GSGlyph.safari_isNSBoolean()`
+- `GSGlyph.safari_postKVONotificationsForKey_aroundBlock_(arg0, arg1, /)`
+- `GSGlyph.safari_removeDeallocationSentinelForObserver_(arg0, /)`
+- `GSGlyph.safari_setDeallocationSentinelForObserver_(arg0, /)`
+- `GSGlyph.safari_setDeallocationSentinelForObserver_withContext_(arg0, arg1, /)`
+- `GSGlyph.saveToFile_format_options_error_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.scriptingProperties()`
+- `GSGlyph.scriptingValueForSpecifier_(arg0, /)`
+- `GSGlyph.self()`
+- `GSGlyph.setAccessibilityBrailleMapRenderRegion_(arg0, /)`
+- `GSGlyph.setAccessibilityBrailleMapRenderer_(arg0, /)`
+- `GSGlyph.setAssociatedObject_(arg0, /)`
+- `GSGlyph.setBaseGlyphs_(arg0, /)`
+- `GSGlyph.setBaseString_(arg0, /)`
+- `GSGlyph.setBottomKerningGroupId_(arg0, /)`
+- `GSGlyph.setBottomKerningGroup_(arg0, /)`
+- `GSGlyph.setBottomMetricsKey_(arg0, /)`
+- `GSGlyph.setCaseFast_(arg0, /)`
+- `GSGlyph.setCase_(arg0, /)`
+- `GSGlyph.setCategory_(arg0, /)`
+- `GSGlyph.setChangeCount_(arg0, /)`
+- `GSGlyph.setColorIndex_(arg0, /)`
+- `GSGlyph.setColor_(arg0, /)`
+- `GSGlyph.setDirection_(arg0, /)`
+- `GSGlyph.setExport_(arg0, /)`
+- `GSGlyph.setGlyphId_(arg0, /)`
+- `GSGlyph.setId_(arg0, /)`
+- `GSGlyph.setIsCJK_(arg0, /)`
+- `GSGlyph.setJustLocked_(arg0, /)`
+- `GSGlyph.setLastChange_(arg0, /)`
+- `GSGlyph.setLastOperationInterval_(arg0, /)`
+- `GSGlyph.setLastOperation_(arg0, /)`
+- `GSGlyph.setLayerFast_forId_(arg0, arg1, /)`
+- `GSGlyph.setLayer_forId_(arg0, arg1, /)`
+- `GSGlyph.setLayers_(arg0, /)`
+- `GSGlyph.setLeftKerningGroupId_(arg0, /)`
+- `GSGlyph.setLeftKerningGroup_(arg0, /)`
+- `GSGlyph.setLeftMetricsKey_(arg0, /)`
+- `GSGlyph.setLockedFast_(arg0, /)`
+- `GSGlyph.setLocked_(arg0, /)`
+- `GSGlyph.setNameFastCache_(arg0, /)`
+- `GSGlyph.setNameFast_(arg0, /)`
+- `GSGlyph.setName_(arg0, /)`
+- `GSGlyph.setName_changeName_(arg0, arg1, /)`
+- `GSGlyph.setName_changeName_update_validate_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph.setNextKerningGroupID_forDirection_(arg0, arg1, /)`
+- `GSGlyph.setNextKerningGroup_forDirection_(arg0, arg1, /)`
+- `GSGlyph.setNilValueForKey_(arg0, /)`
+- `GSGlyph.setNote_(arg0, /)`
+- `GSGlyph.setObservationInfo_(arg0, /)`
+- `GSGlyph.setObservation_forObservingKeyPath_(arg0, arg1, /)`
+- `GSGlyph.setParent_(arg0, /)`
+- `GSGlyph.setPartsSettings_(arg0, /)`
+- `GSGlyph.setPlainMetricsKey_side_(arg0, arg1, /)`
+- `GSGlyph.setPreviousKerningGroupID_forDirection_(arg0, arg1, /)`
+- `GSGlyph.setPreviousKerningGroup_forDirection_(arg0, arg1, /)`
+- `GSGlyph.setProduction_(arg0, /)`
+- `GSGlyph.setRightKerningGroupId_(arg0, /)`
+- `GSGlyph.setRightKerningGroup_(arg0, /)`
+- `GSGlyph.setRightMetricsKey_(arg0, /)`
+- `GSGlyph.setScript_(arg0, /)`
+- `GSGlyph.setScriptingProperties_(arg0, /)`
+- `GSGlyph.setSortNameKeep_(arg0, /)`
+- `GSGlyph.setSortName_(arg0, /)`
+- `GSGlyph.setStoreCase_(arg0, /)`
+- `GSGlyph.setStoreCategory_(arg0, /)`
+- `GSGlyph.setStoreDirection_(arg0, /)`
+- `GSGlyph.setStoreProduction_(arg0, /)`
+- `GSGlyph.setStoreScript_(arg0, /)`
+- `GSGlyph.setStoreSortName_(arg0, /)`
+- `GSGlyph.setStoreSubCategory_(arg0, /)`
+- `GSGlyph.setSubCategory_(arg0, /)`
+- `GSGlyph.setTagsArray_(arg0, /)`
+- `GSGlyph.setTags_(arg0, /)`
+- `GSGlyph.setTempData_(arg0, /)`
+- `GSGlyph.setTempData_forKey_(arg0, arg1, /)`
+- `GSGlyph.setTopKerningGroupId_(arg0, /)`
+- `GSGlyph.setTopKerningGroup_(arg0, /)`
+- `GSGlyph.setTopMetricsKey_(arg0, /)`
+- `GSGlyph.setUndoManagerCheck_(arg0, /)`
+- `GSGlyph.setUndoManager_(arg0, /)`
+- `GSGlyph.setUnicode_(arg0, /)`
+- `GSGlyph.setUnicodesArray_(arg0, /)`
+- `GSGlyph.setUnicodesFast_(arg0, /)`
+- `GSGlyph.setUnicodes_(arg0, /)`
+- `GSGlyph.setUserData_(arg0, /)`
+- `GSGlyph.setUserData_forKey_(arg0, arg1, /)`
+- `GSGlyph.setUserInterfaceItemIdentifier_(arg0, /)`
+- `GSGlyph.setValue_forKeyPath_(arg0, arg1, /)`
+- `GSGlyph.setValue_forKey_(arg0, arg1, /)`
+- `GSGlyph.setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSGlyph.setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSGlyph.setValuesForKeysWithDictionary_(arg0, /)`
+- `GSGlyph.setVertOriginMetricsKey_(arg0, /)`
+- `GSGlyph.setVertWidthMetricsKey_(arg0, /)`
+- `GSGlyph.setWidthMetricsKey_(arg0, /)`
+- `GSGlyph.settingsView_clearSettingForKey_(arg0, arg1, /)`
+- `GSGlyph.settingsView_renameKey_toKey_(arg0, arg1, arg2, /)`
+- `GSGlyph.settingsView_setSetting_forKey_(arg0, arg1, arg2, /)`
+- `GSGlyph.settingsView_settingForKey_(arg0, arg1, /)`
+- `GSGlyph.settingsView_shouldRenameKey_(arg0, arg1, /)`
+- `GSGlyph.shouldColorMatch()`
+- `GSGlyph.sortLayers_(arg0, /)`
+- `GSGlyph.sortedLayers()`
+- `GSGlyph.startUpdates()`
+- `GSGlyph.stopUpdates()`
+- `GSGlyph.storeProduction()`
+- `GSGlyph.storedValueForKey_(arg0, /)`
+- `GSGlyph.stringValueSafe()`
+- `GSGlyph.stringValueSafe_(arg0, /)`
+- `GSGlyph.superclass()`
+- `GSGlyph.supportedBufferPixelFormats()`
+- `GSGlyph.supportedRenderedTexturePixelFormats()`
+- `GSGlyph.supportsBSXPCSecureCoding()`
+- `GSGlyph.supportsRBSXPCSecureCoding()`
+- `GSGlyph.tagsArray()`
+- `GSGlyph.tagsString()`
+- `GSGlyph.takeStoredValue_forKey_(arg0, arg1, /)`
+- `GSGlyph.takeStoredValuesFromDictionary_(arg0, /)`
+- `GSGlyph.takeValue_forKeyPath_(arg0, arg1, /)`
+- `GSGlyph.takeValue_forKey_(arg0, arg1, /)`
+- `GSGlyph.takeValuesFromDictionary_(arg0, /)`
+- `GSGlyph.tempData()`
+- `GSGlyph.tempDataForKey_(arg0, /)`
+- `GSGlyph.toManyRelationshipKeys()`
+- `GSGlyph.toOneRelationshipKeys()`
+- `GSGlyph.topKerningGroupId()`
+- `GSGlyph.transferHintsFromLayer_to_(arg0, arg1, /)`
+- `GSGlyph.transferKerningToGlyph_avoidCrossKerning_(arg0, arg1, /)`
+- `GSGlyph.un_safeBoolValue()`
+- `GSGlyph.unableToSetNilForKey_(arg0, /)`
+- `GSGlyph.unbind_(arg0, /)`
+- `GSGlyph.undoManager()`
+- `GSGlyph.undoManagerCheck()`
+- `GSGlyph.unicodeChar()`
+- `GSGlyph.unicodeString()`
+- `GSGlyph.unicodesArray()`
+- `GSGlyph.unlockReadAllLayersShapes()`
+- `GSGlyph.unlockReadGlyph()`
+- `GSGlyph.unlockWriteGlyph()`
+- `GSGlyph.updateChangeCount_(arg0, /)`
+- `GSGlyph.updateGlyphInfo(self, changeName=True)`
+- `GSGlyph.userDataForKey_(arg0, /)`
+- `GSGlyph.userInterfaceItemIdentifier()`
+- `GSGlyph.utf8ValueSafe()`
+- `GSGlyph.utf8ValueSafe_(arg0, /)`
+- `GSGlyph.validateBottomKerningGroup_error_(arg0, arg1, /)`
+- `GSGlyph.validateKerningGroup_error_(arg0, arg1, /)`
+- `GSGlyph.validateLeftKerningGroup_error_(arg0, arg1, /)`
+- `GSGlyph.validateLeftMetricsKey_error_(arg0, arg1, /)`
+- `GSGlyph.validateMetricsKey_error_(arg0, arg1, /)`
+- `GSGlyph.validateName_(arg0, /)`
+- `GSGlyph.validateName_error_(arg0, arg1, /)`
+- `GSGlyph.validateRightKerningGroup_error_(arg0, arg1, /)`
+- `GSGlyph.validateRightMetricsKey_error_(arg0, arg1, /)`
+- `GSGlyph.validateTakeValue_forKeyPath_(arg0, arg1, /)`
+- `GSGlyph.validateTopKerningGroup_error_(arg0, arg1, /)`
+- `GSGlyph.validateUnicode_error_(arg0, arg1, /)`
+- `GSGlyph.validateUnicodesArray_error_(arg0, arg1, /)`
+- `GSGlyph.validateValue_forKeyPath_error_(arg0, arg1, arg2, /)`
+- `GSGlyph.validateValue_forKey_(arg0, arg1, /)`
+- `GSGlyph.validateValue_forKey_error_(arg0, arg1, arg2, /)`
+- `GSGlyph.validateVertOriginMetricsKey_error_(arg0, arg1, /)`
+- `GSGlyph.validateVertWidthMetricsKey_error_(arg0, arg1, /)`
+- `GSGlyph.validateWidthMetricsKey_error_(arg0, arg1, /)`
+- `GSGlyph.valueAtIndex_inPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph.valueClassForBinding_(arg0, /)`
+- `GSGlyph.valueForKeyPath_(arg0, /)`
+- `GSGlyph.valueForKey_(arg0, /)`
+- `GSGlyph.valueForUndefinedKey_(arg0, /)`
+- `GSGlyph.valueForUndefinedKey_(arg0, /)`
+- `GSGlyph.valueInLayersArrayWithName_(arg0, /)`
+- `GSGlyph.valueInLayersArrayWithUniqueID_(arg0, /)`
+- `GSGlyph.valueWithName_inPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph.valueWithUniqueID_inPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph.valuesForKeys_(arg0, /)`
+- `GSGlyph.vertOriginMetricsKey()`
+- `GSGlyph.vertWidthMetricsKey()`
+- `GSGlyph.vk_loggingDescription()`
+- `GSGlyph.vk_loggingIdentifier()`
+- `GSGlyph.vk_prettyLoggingDescription()`
+- `GSGlyph.willChangeValueForKey_(arg0, /)`
+- `GSGlyph.willChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSGlyph.willChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSGlyph.zone()`
+- `GSGlyph (instance)..cxx_destruct()`
+- `GSGlyph (instance).CAMLType()`
+- `GSGlyph (instance).CAMLTypeForKey_(arg0, /)`
+- `GSGlyph (instance).CAMLTypeSupportedForKey_(arg0, /)`
+- `GSGlyph (instance).CA_addValue_multipliedBy_(arg0, arg1, /)`
+- `GSGlyph (instance).CA_archivingValueForKey_(arg0, /)`
+- `GSGlyph (instance).CA_copyNumericValue_(arg0, /)`
+- `GSGlyph (instance).CA_copyRenderValue()`
+- `GSGlyph (instance).CA_copyRenderValueWithColorspace_(arg0, /)`
+- `GSGlyph (instance).CA_distanceToValue_(arg0, /)`
+- `GSGlyph (instance).CA_interpolateValue_byFraction_(arg0, arg1, /)`
+- `GSGlyph (instance).CA_interpolateValues___interpolator_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).CA_numericValueCount()`
+- `GSGlyph (instance).CA_prepareRenderValue()`
+- `GSGlyph (instance).CA_roundToIntegerFromValue_(arg0, /)`
+- `GSGlyph (instance).CA_validateValue_forKey_(arg0, arg1, /)`
+- `GSGlyph (instance).CKAssignToContainerWithID_(arg0, /)`
+- `GSGlyph (instance).CKDescription()`
+- `GSGlyph (instance).CKDescriptionPropertiesWithPublic_private_shouldExpand_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).CKDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSGlyph (instance).CKExpandedDescription()`
+- `GSGlyph (instance).CKHashedDescription()`
+- `GSGlyph (instance).CKObjectDescriptionRedact_(arg0, /)`
+- `GSGlyph (instance).CKObjectDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSGlyph (instance).CKPropertiesDescription()`
+- `GSGlyph (instance).CKPropertiesDescriptionStringFromProperties_(arg0, /)`
+- `GSGlyph (instance).CKRedactedDescription()`
+- `GSGlyph (instance).CKSingleLineDescription()`
+- `GSGlyph (instance).CKUnredactedDescription()`
+- `GSGlyph (instance).IKImageRepresentationWithType_(arg0, /)`
+- `GSGlyph (instance).NSLifeguard_autorelease()`
+- `GSGlyph (instance).NSRepresentation()`
+- `GSGlyph (instance).NS_addTiledLayerDescendent_(arg0, /)`
+- `GSGlyph (instance).NS_observationForKeyPath_options_block_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).NS_observationForKeyPaths_options_block_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).NS_removeTiledLayerDescendent_(arg0, /)`
+- `GSGlyph (instance).NS_tiledLayerVisibleRect()`
+- `GSGlyph (instance).RBSIsXPCObject()`
+- `GSGlyph (instance).SCNUI_name()`
+- `GSGlyph (instance).SCN_setupDisplayLinkWithQueue_screen_policy_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).abCaseInsensitiveIsEqual_(arg0, /)`
+- `GSGlyph (instance).abDictionaryWithValuesForKeyPaths_(arg0, /)`
+- `GSGlyph (instance).abRemoveObserverIgnoringExceptions_forKeyPath_(arg0, arg1, /)`
+- `GSGlyph (instance).accessibilityAddTemporaryChild_(arg0, /)`
+- `GSGlyph (instance).accessibilityAllowsOverriddenAttributesWhenIgnored()`
+- `GSGlyph (instance).accessibilityArrayAttributeCount_(arg0, /)`
+- `GSGlyph (instance).accessibilityArrayAttributeValues_index_maxCount_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).accessibilityAttributeValue_forParameter_(arg0, arg1, /)`
+- `GSGlyph (instance).accessibilityAttributedValueForStringAttributeAttributeForParameter_(arg0, /)`
+- `GSGlyph (instance).accessibilityBrailleMapRenderRegion()`
+- `GSGlyph (instance).accessibilityBrailleMapRenderer()`
+- `GSGlyph (instance).accessibilityDecodeOverriddenAttributes_(arg0, /)`
+- `GSGlyph (instance).accessibilityEncodeOverriddenAttributes_(arg0, /)`
+- `GSGlyph (instance).accessibilityIndexForChildUIElementAttributeForParameter_(arg0, /)`
+- `GSGlyph (instance).accessibilityIndexOfChild_(arg0, /)`
+- `GSGlyph (instance).accessibilityOverriddenAttributes()`
+- `GSGlyph (instance).accessibilityParameterizedAttributeNames()`
+- `GSGlyph (instance).accessibilityPerformShowMenuOfChild_(arg0, /)`
+- `GSGlyph (instance).accessibilityPresenterProcessIdentifier()`
+- `GSGlyph (instance).accessibilityRemoveTemporaryChild_(arg0, /)`
+- `GSGlyph (instance).accessibilityReplaceRange_withText_(arg0, arg1, /)`
+- `GSGlyph (instance).accessibilitySetOverrideValue_forAttribute_(arg0, arg1, /)`
+- `GSGlyph (instance).accessibilitySetPresenterProcessIdentifier_(arg0, /)`
+- `GSGlyph (instance).accessibilityShouldSendNotification_(arg0, /)`
+- `GSGlyph (instance).accessibilityShouldUseUniqueId()`
+- `GSGlyph (instance).accessibilitySupportsCustomElementData()`
+- `GSGlyph (instance).accessibilitySupportsNotifications()`
+- `GSGlyph (instance).accessibilitySupportsOverriddenAttributes()`
+- `GSGlyph (instance).accessibilityTemporaryChildren()`
+- `GSGlyph (instance).accessibilityVisibleArea()`
+- `GSGlyph (instance).addChainedObservers_(arg0, /)`
+- `GSGlyph (instance).addInflections_curveError_error_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).addObject_toBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSGlyph (instance).addObject_toPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph (instance).addObservationTransformer_(arg0, /)`
+- `GSGlyph (instance).addObserverBlock_(arg0, /)`
+- `GSGlyph (instance).addObserver_(arg0, /)`
+- `GSGlyph (instance).addObserver_forKeyPath_options_context_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).addObserver_forObservableKeyPath_(arg0, arg1, /)`
+- `GSGlyph (instance).addPartsSetting_(arg0, /)`
+- `GSGlyph (instance).addTag_(arg0, /)`
+- `GSGlyph (instance).addUnicode_(arg0, /)`
+- `GSGlyph (instance).addUserData_(arg0, /)`
+- `GSGlyph (instance).addVariationsToComposites_suffix_rules_substitutions_error_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSGlyph (instance).akToolbarButtonItemType()`
+- `GSGlyph (instance).allPropertyKeys()`
+- `GSGlyph (instance).allowsWeakReference()`
+- `GSGlyph (instance).applyGlyphInfoFast_changeName_changeUnicode_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).applyGlyphInfo_changeName_changeUnicode_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).associatedObject()`
+- `GSGlyph (instance).attributeKeys()`
+- `GSGlyph (instance).autoContentAccessingProxy()`
+- `GSGlyph (instance).autorelease()`
+- `GSGlyph (instance).awakeAfterUsingCoder_(arg0, /)`
+- `GSGlyph (instance).awakeFromNib()`
+- `GSGlyph (instance).baseGlyphs()`
+- `GSGlyph (instance).baseString()`
+- `GSGlyph (instance).beginUndo()`
+- `GSGlyph (instance).bind_toObject_withKeyPath_options_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).boolValueSafe()`
+- `GSGlyph (instance).boolValueSafe_(arg0, /)`
+- `GSGlyph (instance).bottomKerningGroupId()`
+- `GSGlyph (instance).bs_isPlistableType()`
+- `GSGlyph (instance).bs_secureEncoded()`
+- `GSGlyph (instance).canRenderWithCGLContext_(arg0, /)`
+- `GSGlyph (instance).changeCount()`
+- `GSGlyph (instance).charName()`
+- `GSGlyph (instance).charString()`
+- `GSGlyph (instance).charStrings()`
+- `GSGlyph (instance).ck_bindInStatement_atIndex_(arg0, arg1, /)`
+- `GSGlyph (instance).cksqlcs_appendSQLConstantValueToString_(arg0, /)`
+- `GSGlyph (instance).cksqlcs_archivedObjectBindingValue_(arg0, /)`
+- `GSGlyph (instance).cksqlcs_bindArchivedObject_index_db_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).cksqlcs_bindBlob_index_db_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).cksqlcs_bindDouble_index_db_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).cksqlcs_bindInt64_index_db_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).cksqlcs_bindText_index_db_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).cksqlcs_blobBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).cksqlcs_doubleBindingValue_(arg0, /)`
+- `GSGlyph (instance).cksqlcs_int64BindingValue_(arg0, /)`
+- `GSGlyph (instance).cksqlcs_textBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).classCode()`
+- `GSGlyph (instance).classDescription()`
+- `GSGlyph (instance).classDescriptionForDestinationKey_(arg0, /)`
+- `GSGlyph (instance).classForArchiver()`
+- `GSGlyph (instance).classForCoder()`
+- `GSGlyph (instance).classForKeyedArchiver()`
+- `GSGlyph (instance).classForPortCoder()`
+- `GSGlyph (instance).className()`
+- `GSGlyph (instance).class__()`
+- `GSGlyph (instance).cleanUpAndValidatePaths_error_(arg0, arg1, /)`
+- `GSGlyph (instance).clearProperties()`
+- `GSGlyph (instance).coalescedPerformSelector_(arg0, /)`
+- `GSGlyph (instance).coerceValueForScriptingProperties_(arg0, /)`
+- `GSGlyph (instance).coerceValue_forKey_(arg0, arg1, /)`
+- `GSGlyph (instance).collectBraceLayerIDsMasters_allKeys_(arg0, arg1, /)`
+- `GSGlyph (instance).colorIndex()`
+- `GSGlyph (instance).compositionParameterView_didChangeParameterWithKey_(arg0, arg1, /)`
+- `GSGlyph (instance).compositionParameterView_shouldDisplayParameterWithKey_attributes_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).compositionPickerViewDidStartAnimating_(arg0, /)`
+- `GSGlyph (instance).compositionPickerViewWillStopAnimating_(arg0, /)`
+- `GSGlyph (instance).compositionPickerView_didLoadComposition_(arg0, arg1, /)`
+- `GSGlyph (instance).compositionPickerView_didSelectComposition_(arg0, arg1, /)`
+- `GSGlyph (instance).compositionPickerView_draggingEnteredComposition_sender_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).compositionPickerView_keyDown_(arg0, arg1, /)`
+- `GSGlyph (instance).compositionPickerView_performDragOperationOnComposition_sender_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).compositionPickerView_willSelectComposition_(arg0, arg1, /)`
+- `GSGlyph (instance).conformsToProtocol_(arg0, /)`
+- `GSGlyph (instance).convertToCompatibleTrueTypeWithError_error_(arg0, arg1, /)`
+- `GSGlyph (instance).copy()`
+- `GSGlyph (instance).copyRenderedTextureForCGLContext_pixelFormat_bounds_isFlipped_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).copyScriptingValue_forKey_withProperties_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).copyThin_options_(arg0, arg1, /)`
+- `GSGlyph (instance).copyWithZone_(arg0, /)`
+- `GSGlyph (instance).countOfLayers()`
+- `GSGlyph (instance).countOfPartsSettings()`
+- `GSGlyph (instance).countOfTags()`
+- `GSGlyph (instance).countOfUnicodes()`
+- `GSGlyph (instance).countOfUserData()`
+- `GSGlyph (instance).createImageWithOptions_(arg0, /)`
+- `GSGlyph (instance).createKeyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSGlyph (instance).createOptimizedProviderWithTransformation_cropping_(arg0, arg1, /)`
+- `GSGlyph (instance).dealloc()`
+- `GSGlyph (instance).debugDescription()`
+- `GSGlyph (instance).decomposeAndCleanupError_(arg0, /)`
+- `GSGlyph (instance).decomposeBracketLayersSubstitutions_error_(arg0, arg1, /)`
+- `GSGlyph (instance).decomposeSpecialComponents_(arg0, /)`
+- `GSGlyph (instance).decomposedInterpolate_(arg0, /)`
+- `GSGlyph (instance).description()`
+- `GSGlyph (instance).descriptionAtIndent_(arg0, /)`
+- `GSGlyph (instance).dictionaryWithValuesForKeys_(arg0, /)`
+- `GSGlyph (instance).didChangeValueForKey_(arg0, /)`
+- `GSGlyph (instance).didChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).didChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).didPresentErrorWithRecovery_contextInfo_(arg0, arg1, /)`
+- `GSGlyph (instance).document()`
+- `GSGlyph (instance).doesContain_(arg0, /)`
+- `GSGlyph (instance).doesNotRecognizeSelector_(arg0, /)`
+- `GSGlyph (instance).doubleValueSafe()`
+- `GSGlyph (instance).doubleValueSafe_(arg0, /)`
+- `GSGlyph (instance).duplicate(name=None)`
+- `GSGlyph (instance).encodeWithCAMLWriter_(arg0, /)`
+- `GSGlyph (instance).encodeWithCoder_(arg0, /)`
+- `GSGlyph (instance).endUndo()`
+- `GSGlyph (instance).ensureHintsInLayer_layers_masters_font_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).ensureValidName_(arg0, /)`
+- `GSGlyph (instance).entityName()`
+- `GSGlyph (instance).exposedBindings()`
+- `GSGlyph (instance).finalize()`
+- `GSGlyph (instance).finishObserving()`
+- `GSGlyph (instance).flushKeyBindings()`
+- `GSGlyph (instance).forcedLayerGroupIdsSeenLayers_(arg0, /)`
+- `GSGlyph (instance).forwardInvocation_(arg0, /)`
+- `GSGlyph (instance).forwardingTargetForSelector_(arg0, /)`
+- `GSGlyph (instance).fp__ivarDescriptionForClass_(arg0, /)`
+- `GSGlyph (instance).fp__methodDescriptionForClass_(arg0, /)`
+- `GSGlyph (instance).fp_ivarDescription()`
+- `GSGlyph (instance).fp_methodDescription()`
+- `GSGlyph (instance).fp_shortMethodDescription()`
+- `GSGlyph (instance).glyphDataEntryString()`
+- `GSGlyph (instance).glyphId()`
+- `GSGlyph (instance).handleQueryWithUnboundKey_(arg0, /)`
+- `GSGlyph (instance).handleTakeValue_forUnboundKey_(arg0, arg1, /)`
+- `GSGlyph (instance).hasAlignedWidth()`
+- `GSGlyph (instance).hasAnnotations()`
+- `GSGlyph (instance).hasBraceLayer()`
+- `GSGlyph (instance).hasBracketLayer()`
+- `GSGlyph (instance).hasComponents()`
+- `GSGlyph (instance).hasCorners()`
+- `GSGlyph (instance).hasCustomGlyphInfo()`
+- `GSGlyph (instance).hasHints()`
+- `GSGlyph (instance).hasPostScriptHints()`
+- `GSGlyph (instance).hasSpecialLayers()`
+- `GSGlyph (instance).hasTrueTypeHints()`
+- `GSGlyph (instance).hash()`
+- `GSGlyph (instance).if_setValueIfNonNil_forKey_(arg0, arg1, /)`
+- `GSGlyph (instance).if_setValueIfYES_forKey_(arg0, arg1, /)`
+- `GSGlyph (instance).ikInMainLoopWait_(arg0, /)`
+- `GSGlyph (instance).imageBrowser_didValidateVisibleCellsAtIndexes_(arg0, arg1, /)`
+- `GSGlyph (instance).imageBrowser_willDisplayCellsAtIndexes_(arg0, arg1, /)`
+- `GSGlyph (instance).imageSubtitle()`
+- `GSGlyph (instance).imageTitle()`
+- `GSGlyph (instance).imageToDrawForCell_(arg0, /)`
+- `GSGlyph (instance).implementsSelector_(arg0, /)`
+- `GSGlyph (instance).indexOfObjectInTags_(arg0, /)`
+- `GSGlyph (instance).infoForBinding_(arg0, /)`
+- `GSGlyph (instance).init()`
+- `GSGlyph (instance).initFast()`
+- `GSGlyph (instance).initLock()`
+- `GSGlyph (instance).initWithCoder_(arg0, /)`
+- `GSGlyph (instance).initWithDict_format_(arg0, arg1, /)`
+- `GSGlyph (instance).initWithFile_format_error_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).initWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSGlyph (instance).insertObject_inLayersArrayAtIndex_(arg0, arg1, /)`
+- `GSGlyph (instance).insertObject_inPartsSettingsAtIndex_(arg0, arg1, /)`
+- `GSGlyph (instance).insertObject_inTagsAtIndex_(arg0, arg1, /)`
+- `GSGlyph (instance).insertUnicode_atIndex_(arg0, arg1, /)`
+- `GSGlyph (instance).insertValue_atIndex_inPropertyWithKey_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).insertValue_inPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph (instance).int64ValueSafe()`
+- `GSGlyph (instance).int64ValueSafe_(arg0, /)`
+- `GSGlyph (instance).interpolateSmartLayer_instance_targetGlyph_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).interpolate_error_(arg0, arg1, /)`
+- `GSGlyph (instance).interpolate_keepSmart_error_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).interpolate_masters_decompose_error_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).interpolate_masters_keepSmart_smartSettings_layerName_additionalLayers_error_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, /)`
+- `GSGlyph (instance).inverseForRelationshipKey_(arg0, /)`
+- `GSGlyph (instance).isAligned()`
+- `GSGlyph (instance).isAnyColorGlyph()`
+- `GSGlyph (instance).isAppleColorGlyph()`
+- `GSGlyph (instance).isCJK()`
+- `GSGlyph (instance).isCaseInsensitiveLike_(arg0, /)`
+- `GSGlyph (instance).isColorPaletteGlyph()`
+- `GSGlyph (instance).isCornerGlyph()`
+- `GSGlyph (instance).isEqualToGlyph_(arg0, /)`
+- `GSGlyph (instance).isEqualTo_(arg0, /)`
+- `GSGlyph (instance).isEqual_(arg0, /)`
+- `GSGlyph (instance).isFault()`
+- `GSGlyph (instance).isFullColorGlyph()`
+- `GSGlyph (instance).isGreaterThanOrEqualTo_(arg0, /)`
+- `GSGlyph (instance).isGreaterThan_(arg0, /)`
+- `GSGlyph (instance).isHangulKeyGlyph()`
+- `GSGlyph (instance).isIcon()`
+- `GSGlyph (instance).isKindOfClass_(arg0, /)`
+- `GSGlyph (instance).isLessThanOrEqualTo_(arg0, /)`
+- `GSGlyph (instance).isLessThan_(arg0, /)`
+- `GSGlyph (instance).isLike_(arg0, /)`
+- `GSGlyph (instance).isMemberOfClass_(arg0, /)`
+- `GSGlyph (instance).isNSArray__()`
+- `GSGlyph (instance).isNSCFConstantString__()`
+- `GSGlyph (instance).isNSData__()`
+- `GSGlyph (instance).isNSDate__()`
+- `GSGlyph (instance).isNSDictionary__()`
+- `GSGlyph (instance).isNSNumber__()`
+- `GSGlyph (instance).isNSObject__()`
+- `GSGlyph (instance).isNSOrderedSet__()`
+- `GSGlyph (instance).isNSSet__()`
+- `GSGlyph (instance).isNSString__()`
+- `GSGlyph (instance).isNSTimeZone__()`
+- `GSGlyph (instance).isNSValue__()`
+- `GSGlyph (instance).isNotEqualTo_(arg0, /)`
+- `GSGlyph (instance).isNull()`
+- `GSGlyph (instance).isProxy()`
+- `GSGlyph (instance).isSFSymbol()`
+- `GSGlyph (instance).isSVGColorGlyph()`
+- `GSGlyph (instance).isSmartGlyph()`
+- `GSGlyph (instance).isToManyKey_(arg0, /)`
+- `GSGlyph (instance).justLocked()`
+- `GSGlyph (instance).keyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSGlyph (instance).lastOperation()`
+- `GSGlyph (instance).lastOperationInterval()`
+- `GSGlyph (instance).layer0()`
+- `GSGlyph (instance).layerForIdFast_(arg0, /)`
+- `GSGlyph (instance).layerForId_(arg0, /)`
+- `GSGlyph (instance).layerForKey_masterId_(arg0, arg1, /)`
+- `GSGlyph (instance).layerForName_(arg0, /)`
+- `GSGlyph (instance).layerForName_masterId_(arg0, arg1, /)`
+- `GSGlyph (instance).layerGroups()`
+- `GSGlyph (instance).layerGroups_layerGroups_axesValues_layers_seenLayers_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSGlyph (instance).layerGroups_masters_error_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).layerNearestToPosition_associatedMasterId_onlyBraceLayer_tolerance_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).layersArray()`
+- `GSGlyph (instance).layersForName_masterIDs_(arg0, arg1, /)`
+- `GSGlyph (instance).leftKerningGroupId()`
+- `GSGlyph (instance).loadDict_(arg0, /)`
+- `GSGlyph (instance).localizedCaseString()`
+- `GSGlyph (instance).lockReadAllLayersShapes()`
+- `GSGlyph (instance).lockReadGlyph()`
+- `GSGlyph (instance).lockWriteGlyph()`
+- `GSGlyph (instance).mastersCompatibleForLayerIds_(arg0, /)`
+- `GSGlyph (instance).mastersCompatibleForLayers_(arg0, /)`
+- `GSGlyph (instance).methodDescriptionForSelector_(arg0, /)`
+- `GSGlyph (instance).methodForSelector_(arg0, /)`
+- `GSGlyph (instance).methodSignatureForSelector_(arg0, /)`
+- `GSGlyph (instance).mr_formattedDebugDescription()`
+- `GSGlyph (instance).mutableArrayValueForKeyPath_(arg0, /)`
+- `GSGlyph (instance).mutableArrayValueForKey_(arg0, /)`
+- `GSGlyph (instance).mutableCopy()`
+- `GSGlyph (instance).mutableCopyWithZone_(arg0, /)`
+- `GSGlyph (instance).mutableOrderedSetValueForKeyPath_(arg0, /)`
+- `GSGlyph (instance).mutableOrderedSetValueForKey_(arg0, /)`
+- `GSGlyph (instance).mutableSetValueForKeyPath_(arg0, /)`
+- `GSGlyph (instance).mutableSetValueForKey_(arg0, /)`
+- `GSGlyph (instance).my_compactDescription()`
+- `GSGlyph (instance).newScriptingObjectOfClass_forValueForKey_withContentsValue_properties_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).newTaggedNSStringWithASCIIBytes__length__(arg0, arg1, /)`
+- `GSGlyph (instance).nextKerningGroupForDirection_(arg0, /)`
+- `GSGlyph (instance).nextKerningGroupIDforDirection_(arg0, /)`
+- `GSGlyph (instance).nextLayerId_layerPos_onAxis_direction_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).objectInLayersAtIndex_(arg0, /)`
+- `GSGlyph (instance).objectInPartsSettingsAtIndex_(arg0, /)`
+- `GSGlyph (instance).objectInTagsAtIndex_(arg0, /)`
+- `GSGlyph (instance).objectSpecifier()`
+- `GSGlyph (instance).observationInfo()`
+- `GSGlyph (instance).observeValueForKeyPath_ofObject_change_context_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).optionDescriptionsForBinding_(arg0, /)`
+- `GSGlyph (instance).outlineHasChanges()`
+- `GSGlyph (instance).ownsDestinationObjectsForRelationshipKey_(arg0, /)`
+- `GSGlyph (instance).partsSettings()`
+- `GSGlyph (instance).pep_afterDelay_(arg0, /)`
+- `GSGlyph (instance).pep_getInvocation_(arg0, /)`
+- `GSGlyph (instance).pep_onMainThread()`
+- `GSGlyph (instance).pep_onMainThreadIfNecessary()`
+- `GSGlyph (instance).pep_onOperationQueue_(arg0, /)`
+- `GSGlyph (instance).pep_onOperationQueue_priority_(arg0, arg1, /)`
+- `GSGlyph (instance).pep_onThread_(arg0, /)`
+- `GSGlyph (instance).pep_onThread_immediateForMatchingThread_(arg0, arg1, /)`
+- `GSGlyph (instance).performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSGlyph (instance).performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).performSelector_(arg0, /)`
+- `GSGlyph (instance).performSelector_object_afterDelay_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSGlyph (instance).performSelector_withObject_(arg0, arg1, /)`
+- `GSGlyph (instance).performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).performSelector_withObject_afterDelay_ignoreMenuTracking_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).performSelector_withObject_withObject_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).pkaxRespondsToSelector_fromExtrasProtocol_(arg0, arg1, /)`
+- `GSGlyph (instance).pkaxValueForKey_(arg0, /)`
+- `GSGlyph (instance).plainMetricsKey_(arg0, /)`
+- `GSGlyph (instance).prepareForInterfaceBuilder()`
+- `GSGlyph (instance).previousKerningGroupForDirection_(arg0, /)`
+- `GSGlyph (instance).previousKerningGroupIDforDirection_(arg0, /)`
+- `GSGlyph (instance).propertyListValueFormat_(arg0, /)`
+- `GSGlyph (instance).propertyListValueFormat_options_(arg0, arg1, /)`
+- `GSGlyph (instance).pyobjc_performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSGlyph (instance).pyobjc_performSelectorOnMainThread_withObject_(arg0, arg1, /)`
+- `GSGlyph (instance).pyobjc_performSelectorOnMainThread_withObject_modes_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).pyobjc_performSelector_onThread_withObject_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).pyobjc_performSelector_onThread_withObject_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).pyobjc_performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).pyobjc_performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSGlyph (instance).pyobjc_performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).pyobjc_performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).receiveObservedError_(arg0, /)`
+- `GSGlyph (instance).receiveObservedValue_(arg0, /)`
+- `GSGlyph (instance).release()`
+- `GSGlyph (instance).releaseRenderedTexture_forCGLContext_(arg0, arg1, /)`
+- `GSGlyph (instance).removeLayerForId_(arg0, /)`
+- `GSGlyph (instance).removeObjectFromLayersArrayAtIndex_(arg0, /)`
+- `GSGlyph (instance).removeObjectFromPartsSettingsAtIndex_(arg0, /)`
+- `GSGlyph (instance).removeObjectFromTagsAtIndex_(arg0, /)`
+- `GSGlyph (instance).removeObjectFromTags_(arg0, /)`
+- `GSGlyph (instance).removeObject_fromBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSGlyph (instance).removeObject_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph (instance).removeObservation_(arg0, /)`
+- `GSGlyph (instance).removeObservation_forObservableKeyPath_(arg0, arg1, /)`
+- `GSGlyph (instance).removeObserver_forKeyPath_(arg0, arg1, /)`
+- `GSGlyph (instance).removeObserver_forKeyPath_context_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).removeUnicode_(arg0, /)`
+- `GSGlyph (instance).removeUserDataForKey_(arg0, /)`
+- `GSGlyph (instance).removeValueAtIndex_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph (instance).renderToBuffer_withBytesPerRow_pixelFormat_forBounds_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).renderWithCGLContext_forBounds_(arg0, arg1, /)`
+- `GSGlyph (instance).replaceLayersWithInterpolation_(arg0, /)`
+- `GSGlyph (instance).replaceObjectInPartsSettingsAtIndex_withObject_(arg0, arg1, /)`
+- `GSGlyph (instance).replaceObjectInTagsAtIndex_withObject_(arg0, arg1, /)`
+- `GSGlyph (instance).replaceValueAtIndex_inPropertyWithKey_withValue_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).replacementObjectForArchiver_(arg0, /)`
+- `GSGlyph (instance).replacementObjectForCoder_(arg0, /)`
+- `GSGlyph (instance).replacementObjectForKeyedArchiver_(arg0, /)`
+- `GSGlyph (instance).replacementObjectForPortCoder_(arg0, /)`
+- `GSGlyph (instance).resetLayerKeys()`
+- `GSGlyph (instance).resetMasterCompatibilityCheckStatus()`
+- `GSGlyph (instance).resolveForwardingConflictWithPreviousMetadata_forKey_(arg0, arg1, /)`
+- `GSGlyph (instance).respondsToSelector_(arg0, /)`
+- `GSGlyph (instance).retain()`
+- `GSGlyph (instance).retainCount()`
+- `GSGlyph (instance).retainWeakReference()`
+- `GSGlyph (instance).rightKerningGroupId()`
+- `GSGlyph (instance).safari_isNSBoolean()`
+- `GSGlyph (instance).safari_postKVONotificationsForKey_aroundBlock_(arg0, arg1, /)`
+- `GSGlyph (instance).safari_removeDeallocationSentinelForObserver_(arg0, /)`
+- `GSGlyph (instance).safari_setDeallocationSentinelForObserver_(arg0, /)`
+- `GSGlyph (instance).safari_setDeallocationSentinelForObserver_withContext_(arg0, arg1, /)`
+- `GSGlyph (instance).saveToFile_format_options_error_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).scriptingProperties()`
+- `GSGlyph (instance).scriptingValueForSpecifier_(arg0, /)`
+- `GSGlyph (instance).self()`
+- `GSGlyph (instance).setAccessibilityBrailleMapRenderRegion_(arg0, /)`
+- `GSGlyph (instance).setAccessibilityBrailleMapRenderer_(arg0, /)`
+- `GSGlyph (instance).setAssociatedObject_(arg0, /)`
+- `GSGlyph (instance).setBaseGlyphs_(arg0, /)`
+- `GSGlyph (instance).setBaseString_(arg0, /)`
+- `GSGlyph (instance).setBottomKerningGroupId_(arg0, /)`
+- `GSGlyph (instance).setBottomKerningGroup_(arg0, /)`
+- `GSGlyph (instance).setBottomMetricsKey_(arg0, /)`
+- `GSGlyph (instance).setCaseFast_(arg0, /)`
+- `GSGlyph (instance).setCase_(arg0, /)`
+- `GSGlyph (instance).setCategory_(arg0, /)`
+- `GSGlyph (instance).setChangeCount_(arg0, /)`
+- `GSGlyph (instance).setColorIndex_(arg0, /)`
+- `GSGlyph (instance).setColor_(arg0, /)`
+- `GSGlyph (instance).setDirection_(arg0, /)`
+- `GSGlyph (instance).setExport_(arg0, /)`
+- `GSGlyph (instance).setGlyphId_(arg0, /)`
+- `GSGlyph (instance).setId_(arg0, /)`
+- `GSGlyph (instance).setIsCJK_(arg0, /)`
+- `GSGlyph (instance).setJustLocked_(arg0, /)`
+- `GSGlyph (instance).setLastChange_(arg0, /)`
+- `GSGlyph (instance).setLastOperationInterval_(arg0, /)`
+- `GSGlyph (instance).setLastOperation_(arg0, /)`
+- `GSGlyph (instance).setLayerFast_forId_(arg0, arg1, /)`
+- `GSGlyph (instance).setLayer_forId_(arg0, arg1, /)`
+- `GSGlyph (instance).setLayers_(arg0, /)`
+- `GSGlyph (instance).setLeftKerningGroupId_(arg0, /)`
+- `GSGlyph (instance).setLeftKerningGroup_(arg0, /)`
+- `GSGlyph (instance).setLeftMetricsKey_(arg0, /)`
+- `GSGlyph (instance).setLockedFast_(arg0, /)`
+- `GSGlyph (instance).setLocked_(arg0, /)`
+- `GSGlyph (instance).setNameFastCache_(arg0, /)`
+- `GSGlyph (instance).setNameFast_(arg0, /)`
+- `GSGlyph (instance).setName_(arg0, /)`
+- `GSGlyph (instance).setName_changeName_(arg0, arg1, /)`
+- `GSGlyph (instance).setName_changeName_update_validate_(arg0, arg1, arg2, arg3, /)`
+- `GSGlyph (instance).setNextKerningGroupID_forDirection_(arg0, arg1, /)`
+- `GSGlyph (instance).setNextKerningGroup_forDirection_(arg0, arg1, /)`
+- `GSGlyph (instance).setNilValueForKey_(arg0, /)`
+- `GSGlyph (instance).setNote_(arg0, /)`
+- `GSGlyph (instance).setObservationInfo_(arg0, /)`
+- `GSGlyph (instance).setObservation_forObservingKeyPath_(arg0, arg1, /)`
+- `GSGlyph (instance).setParent_(arg0, /)`
+- `GSGlyph (instance).setPartsSettings_(arg0, /)`
+- `GSGlyph (instance).setPlainMetricsKey_side_(arg0, arg1, /)`
+- `GSGlyph (instance).setPreviousKerningGroupID_forDirection_(arg0, arg1, /)`
+- `GSGlyph (instance).setPreviousKerningGroup_forDirection_(arg0, arg1, /)`
+- `GSGlyph (instance).setProduction_(arg0, /)`
+- `GSGlyph (instance).setRightKerningGroupId_(arg0, /)`
+- `GSGlyph (instance).setRightKerningGroup_(arg0, /)`
+- `GSGlyph (instance).setRightMetricsKey_(arg0, /)`
+- `GSGlyph (instance).setScript_(arg0, /)`
+- `GSGlyph (instance).setScriptingProperties_(arg0, /)`
+- `GSGlyph (instance).setSortNameKeep_(arg0, /)`
+- `GSGlyph (instance).setSortName_(arg0, /)`
+- `GSGlyph (instance).setStoreCase_(arg0, /)`
+- `GSGlyph (instance).setStoreCategory_(arg0, /)`
+- `GSGlyph (instance).setStoreDirection_(arg0, /)`
+- `GSGlyph (instance).setStoreProduction_(arg0, /)`
+- `GSGlyph (instance).setStoreScript_(arg0, /)`
+- `GSGlyph (instance).setStoreSortName_(arg0, /)`
+- `GSGlyph (instance).setStoreSubCategory_(arg0, /)`
+- `GSGlyph (instance).setSubCategory_(arg0, /)`
+- `GSGlyph (instance).setTagsArray_(arg0, /)`
+- `GSGlyph (instance).setTags_(arg0, /)`
+- `GSGlyph (instance).setTempData_(arg0, /)`
+- `GSGlyph (instance).setTempData_forKey_(arg0, arg1, /)`
+- `GSGlyph (instance).setTopKerningGroupId_(arg0, /)`
+- `GSGlyph (instance).setTopKerningGroup_(arg0, /)`
+- `GSGlyph (instance).setTopMetricsKey_(arg0, /)`
+- `GSGlyph (instance).setUndoManagerCheck_(arg0, /)`
+- `GSGlyph (instance).setUndoManager_(arg0, /)`
+- `GSGlyph (instance).setUnicode_(arg0, /)`
+- `GSGlyph (instance).setUnicodesArray_(arg0, /)`
+- `GSGlyph (instance).setUnicodesFast_(arg0, /)`
+- `GSGlyph (instance).setUnicodes_(arg0, /)`
+- `GSGlyph (instance).setUserData_(arg0, /)`
+- `GSGlyph (instance).setUserData_forKey_(arg0, arg1, /)`
+- `GSGlyph (instance).setUserInterfaceItemIdentifier_(arg0, /)`
+- `GSGlyph (instance).setValue_forKeyPath_(arg0, arg1, /)`
+- `GSGlyph (instance).setValue_forKey_(arg0, arg1, /)`
+- `GSGlyph (instance).setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSGlyph (instance).setValuesForKeysWithDictionary_(arg0, /)`
+- `GSGlyph (instance).setVertOriginMetricsKey_(arg0, /)`
+- `GSGlyph (instance).setVertWidthMetricsKey_(arg0, /)`
+- `GSGlyph (instance).setWidthMetricsKey_(arg0, /)`
+- `GSGlyph (instance).settingsView_clearSettingForKey_(arg0, arg1, /)`
+- `GSGlyph (instance).settingsView_renameKey_toKey_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).settingsView_setSetting_forKey_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).settingsView_settingForKey_(arg0, arg1, /)`
+- `GSGlyph (instance).settingsView_shouldRenameKey_(arg0, arg1, /)`
+- `GSGlyph (instance).shouldColorMatch()`
+- `GSGlyph (instance).sortLayers_(arg0, /)`
+- `GSGlyph (instance).sortedLayers()`
+- `GSGlyph (instance).startUpdates()`
+- `GSGlyph (instance).stopUpdates()`
+- `GSGlyph (instance).storeProduction()`
+- `GSGlyph (instance).storedValueForKey_(arg0, /)`
+- `GSGlyph (instance).stringValueSafe()`
+- `GSGlyph (instance).stringValueSafe_(arg0, /)`
+- `GSGlyph (instance).superclass()`
+- `GSGlyph (instance).supportedBufferPixelFormats()`
+- `GSGlyph (instance).supportedRenderedTexturePixelFormats()`
+- `GSGlyph (instance).supportsBSXPCSecureCoding()`
+- `GSGlyph (instance).supportsRBSXPCSecureCoding()`
+- `GSGlyph (instance).tagsArray()`
+- `GSGlyph (instance).tagsString()`
+- `GSGlyph (instance).takeStoredValue_forKey_(arg0, arg1, /)`
+- `GSGlyph (instance).takeStoredValuesFromDictionary_(arg0, /)`
+- `GSGlyph (instance).takeValue_forKeyPath_(arg0, arg1, /)`
+- `GSGlyph (instance).takeValue_forKey_(arg0, arg1, /)`
+- `GSGlyph (instance).takeValuesFromDictionary_(arg0, /)`
+- `GSGlyph (instance).tempData()`
+- `GSGlyph (instance).tempDataForKey_(arg0, /)`
+- `GSGlyph (instance).toManyRelationshipKeys()`
+- `GSGlyph (instance).toOneRelationshipKeys()`
+- `GSGlyph (instance).topKerningGroupId()`
+- `GSGlyph (instance).transferHintsFromLayer_to_(arg0, arg1, /)`
+- `GSGlyph (instance).transferKerningToGlyph_avoidCrossKerning_(arg0, arg1, /)`
+- `GSGlyph (instance).un_safeBoolValue()`
+- `GSGlyph (instance).unableToSetNilForKey_(arg0, /)`
+- `GSGlyph (instance).unbind_(arg0, /)`
+- `GSGlyph (instance).undoManager()`
+- `GSGlyph (instance).undoManagerCheck()`
+- `GSGlyph (instance).unicodeChar()`
+- `GSGlyph (instance).unicodeString()`
+- `GSGlyph (instance).unicodesArray()`
+- `GSGlyph (instance).unlockReadAllLayersShapes()`
+- `GSGlyph (instance).unlockReadGlyph()`
+- `GSGlyph (instance).unlockWriteGlyph()`
+- `GSGlyph (instance).updateChangeCount_(arg0, /)`
+- `GSGlyph (instance).updateGlyphInfo(changeName=True)`
+- `GSGlyph (instance).userDataForKey_(arg0, /)`
+- `GSGlyph (instance).userInterfaceItemIdentifier()`
+- `GSGlyph (instance).utf8ValueSafe()`
+- `GSGlyph (instance).utf8ValueSafe_(arg0, /)`
+- `GSGlyph (instance).validateBottomKerningGroup_error_(arg0, arg1, /)`
+- `GSGlyph (instance).validateKerningGroup_error_(arg0, arg1, /)`
+- `GSGlyph (instance).validateLeftKerningGroup_error_(arg0, arg1, /)`
+- `GSGlyph (instance).validateLeftMetricsKey_error_(arg0, arg1, /)`
+- `GSGlyph (instance).validateMetricsKey_error_(arg0, arg1, /)`
+- `GSGlyph (instance).validateName_(arg0, /)`
+- `GSGlyph (instance).validateName_error_(arg0, arg1, /)`
+- `GSGlyph (instance).validateRightKerningGroup_error_(arg0, arg1, /)`
+- `GSGlyph (instance).validateRightMetricsKey_error_(arg0, arg1, /)`
+- `GSGlyph (instance).validateTakeValue_forKeyPath_(arg0, arg1, /)`
+- `GSGlyph (instance).validateTopKerningGroup_error_(arg0, arg1, /)`
+- `GSGlyph (instance).validateUnicode_error_(arg0, arg1, /)`
+- `GSGlyph (instance).validateUnicodesArray_error_(arg0, arg1, /)`
+- `GSGlyph (instance).validateValue_forKeyPath_error_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).validateValue_forKey_(arg0, arg1, /)`
+- `GSGlyph (instance).validateValue_forKey_error_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).validateVertOriginMetricsKey_error_(arg0, arg1, /)`
+- `GSGlyph (instance).validateVertWidthMetricsKey_error_(arg0, arg1, /)`
+- `GSGlyph (instance).validateWidthMetricsKey_error_(arg0, arg1, /)`
+- `GSGlyph (instance).valueAtIndex_inPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph (instance).valueClassForBinding_(arg0, /)`
+- `GSGlyph (instance).valueForKeyPath_(arg0, /)`
+- `GSGlyph (instance).valueForKey_(arg0, /)`
+- `GSGlyph (instance).valueForUndefinedKey_(arg0, /)`
+- `GSGlyph (instance).valueInLayersArrayWithName_(arg0, /)`
+- `GSGlyph (instance).valueInLayersArrayWithUniqueID_(arg0, /)`
+- `GSGlyph (instance).valueWithName_inPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph (instance).valueWithUniqueID_inPropertyWithKey_(arg0, arg1, /)`
+- `GSGlyph (instance).valuesForKeys_(arg0, /)`
+- `GSGlyph (instance).vertOriginMetricsKey()`
+- `GSGlyph (instance).vertWidthMetricsKey()`
+- `GSGlyph (instance).vk_loggingDescription()`
+- `GSGlyph (instance).vk_loggingIdentifier()`
+- `GSGlyph (instance).vk_prettyLoggingDescription()`
+- `GSGlyph (instance).willChangeValueForKey_(arg0, /)`
+- `GSGlyph (instance).willChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).willChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSGlyph (instance).zone()`

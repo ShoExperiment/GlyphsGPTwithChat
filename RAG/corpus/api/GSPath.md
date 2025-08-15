@@ -1,0 +1,1118 @@
+# GSPath — an outline path in a layer
+**Use when:** creating/inspecting a path and its nodes.
+**Key APIs:** `nodes`, `closed`, `direction`
+**Do:** detect paths via `isinstance(shape, GSPath)` (preferred) or `getattr(shape,"shapeType",None)==1`.
+**Don’t:** assume `shapeType` always exists; check with `hasattr` or fallback detection.
+**Keywords:** GSPath, nodes, closed, shapeType, path, outline
+
+
+## Attributes
+
+- `GSPath.attributes`  *(type: property)*
+- `GSPath.attributes`  *(type: property)*
+- `GSPath.bezierPath`  *(type: property)*
+- `GSPath.bezierPath`  *(type: property)*
+- `GSPath.bounds`  *(type: property)*
+- `GSPath.bounds`  *(type: property)*
+- `GSPath.bounds`  *(type: property)*
+- `GSPath.closed`  *(type: property)*
+- `GSPath.closed`  *(type: property)*
+- `GSPath.direction`  *(type: property)*
+- `GSPath.direction`  *(type: property)*
+- `GSPath.locked`  *(type: property)*
+- `GSPath.locked`  *(type: property)*
+- `GSPath.nodes`  *(type: property)*
+- `GSPath.nodes`  *(type: property)*
+- `GSPath.parent`  *(type: property)*
+- `GSPath.parent`  *(type: property)*
+- `GSPath.segments`  *(type: property)*
+- `GSPath.segments`  *(type: property)*
+- `GSPath.selected`  *(type: property)*
+- `GSPath.shapeType`  *(type: property)*
+- `GSPath.shapeType`  *(type: property)*
+- `GSPath.shapeType`  *(type: property)*
+- `GSPath.tempData`  *(type: property)*
+- `GSPath.tempData`  *(type: property)*
+- `GSPath (instance).attributes`  *(type: AttributesProxy)*
+- `GSPath (instance).bezierPath`  *(type: NoneType)*
+- `GSPath (instance).bounds`  *(type: CGRect)*
+- `GSPath (instance).closed`  *(type: bool)*
+- `GSPath (instance).direction`  *(type: int)*
+- `GSPath (instance).locked`  *(type: bool)*
+- `GSPath (instance).nodes`  *(type: PathNodesProxy)*
+- `GSPath (instance).parent`  *(type: NoneType)*
+- `GSPath (instance).segments`  *(type: PathSegmentsProxy)*
+- `GSPath (instance).shapeType`  *(type: int)*
+- `GSPath (instance).tempData`  *(type: TempDataProxy)*
+
+## Methods
+
+- `GSPath..cxx_destruct()`
+- `GSPath..cxx_destruct()`
+- `GSPath.CAMLType()`
+- `GSPath.CAMLTypeForKey_(arg0, /)`
+- `GSPath.CAMLTypeSupportedForKey_(arg0, /)`
+- `GSPath.CA_addValue_multipliedBy_(arg0, arg1, /)`
+- `GSPath.CA_archivingValueForKey_(arg0, /)`
+- `GSPath.CA_copyNumericValue_(arg0, /)`
+- `GSPath.CA_copyRenderValue()`
+- `GSPath.CA_copyRenderValueWithColorspace_(arg0, /)`
+- `GSPath.CA_distanceToValue_(arg0, /)`
+- `GSPath.CA_interpolateValue_byFraction_(arg0, arg1, /)`
+- `GSPath.CA_interpolateValues___interpolator_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.CA_numericValueCount()`
+- `GSPath.CA_prepareRenderValue()`
+- `GSPath.CA_roundToIntegerFromValue_(arg0, /)`
+- `GSPath.CA_validateValue_forKey_(arg0, arg1, /)`
+- `GSPath.CKAssignToContainerWithID_(arg0, /)`
+- `GSPath.CKDescription()`
+- `GSPath.CKDescriptionPropertiesWithPublic_private_shouldExpand_(arg0, arg1, arg2, /)`
+- `GSPath.CKDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSPath.CKExpandedDescription()`
+- `GSPath.CKHashedDescription()`
+- `GSPath.CKObjectDescriptionRedact_(arg0, /)`
+- `GSPath.CKObjectDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSPath.CKPropertiesDescription()`
+- `GSPath.CKPropertiesDescriptionStringFromProperties_(arg0, /)`
+- `GSPath.CKRedactedDescription()`
+- `GSPath.CKSingleLineDescription()`
+- `GSPath.CKUnredactedDescription()`
+- `GSPath.IKImageRepresentationWithType_(arg0, /)`
+- `GSPath.NSLifeguard_autorelease()`
+- `GSPath.NSRepresentation()`
+- `GSPath.NSRepresentation()`
+- `GSPath.NS_addTiledLayerDescendent_(arg0, /)`
+- `GSPath.NS_observationForKeyPath_options_block_(arg0, arg1, arg2, /)`
+- `GSPath.NS_observationForKeyPaths_options_block_(arg0, arg1, arg2, /)`
+- `GSPath.NS_removeTiledLayerDescendent_(arg0, /)`
+- `GSPath.NS_tiledLayerVisibleRect()`
+- `GSPath.RBSIsXPCObject()`
+- `GSPath.SCNUI_name()`
+- `GSPath.SCN_setupDisplayLinkWithQueue_screen_policy_(arg0, arg1, arg2, /)`
+- `GSPath.abCaseInsensitiveIsEqual_(arg0, /)`
+- `GSPath.abDictionaryWithValuesForKeyPaths_(arg0, /)`
+- `GSPath.abRemoveObserverIgnoringExceptions_forKeyPath_(arg0, arg1, /)`
+- `GSPath.accessibilityAddTemporaryChild_(arg0, /)`
+- `GSPath.accessibilityAllowsOverriddenAttributesWhenIgnored()`
+- `GSPath.accessibilityArrayAttributeCount_(arg0, /)`
+- `GSPath.accessibilityArrayAttributeValues_index_maxCount_(arg0, arg1, arg2, /)`
+- `GSPath.accessibilityAttributeValue_forParameter_(arg0, arg1, /)`
+- `GSPath.accessibilityAttributedValueForStringAttributeAttributeForParameter_(arg0, /)`
+- `GSPath.accessibilityBrailleMapRenderRegion()`
+- `GSPath.accessibilityBrailleMapRenderer()`
+- `GSPath.accessibilityDecodeOverriddenAttributes_(arg0, /)`
+- `GSPath.accessibilityEncodeOverriddenAttributes_(arg0, /)`
+- `GSPath.accessibilityIndexForChildUIElementAttributeForParameter_(arg0, /)`
+- `GSPath.accessibilityIndexOfChild_(arg0, /)`
+- `GSPath.accessibilityOverriddenAttributes()`
+- `GSPath.accessibilityParameterizedAttributeNames()`
+- `GSPath.accessibilityPerformShowMenuOfChild_(arg0, /)`
+- `GSPath.accessibilityPresenterProcessIdentifier()`
+- `GSPath.accessibilityRemoveTemporaryChild_(arg0, /)`
+- `GSPath.accessibilityReplaceRange_withText_(arg0, arg1, /)`
+- `GSPath.accessibilitySetOverrideValue_forAttribute_(arg0, arg1, /)`
+- `GSPath.accessibilitySetPresenterProcessIdentifier_(arg0, /)`
+- `GSPath.accessibilityShouldSendNotification_(arg0, /)`
+- `GSPath.accessibilityShouldUseUniqueId()`
+- `GSPath.accessibilitySupportsCustomElementData()`
+- `GSPath.accessibilitySupportsNotifications()`
+- `GSPath.accessibilitySupportsOverriddenAttributes()`
+- `GSPath.accessibilityTemporaryChildren()`
+- `GSPath.accessibilityVisibleArea()`
+- `GSPath.addChainedObservers_(arg0, /)`
+- `GSPath.addCurveFastWithOff1_off2_end_connection_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.addCurveWithOff1_off2_end_connection_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.addExtremes_checkSelection_(arg0, arg1, /)`
+- `GSPath.addInflections()`
+- `GSPath.addNodeFastWithPosition_type_connection_(arg0, arg1, arg2, /)`
+- `GSPath.addNodeFast_(arg0, /)`
+- `GSPath.addNodeWithPosition_type_connection_(arg0, arg1, arg2, /)`
+- `GSPath.addNode_(arg0, /)`
+- `GSPath.addNodesAtExtremes(self, force=False, checkSelection=False)`
+- `GSPath.addNodes_(arg0, /)`
+- `GSPath.addObject_toBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSPath.addObject_toPropertyWithKey_(arg0, arg1, /)`
+- `GSPath.addObservationTransformer_(arg0, /)`
+- `GSPath.addObserverBlock_(arg0, /)`
+- `GSPath.addObserver_(arg0, /)`
+- `GSPath.addObserver_forKeyPath_options_context_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.addObserver_forObservableKeyPath_(arg0, arg1, /)`
+- `GSPath.adjustCorner_slantOrigin_cDirectionIn_cDirectionOut_cornerHint_nodes_nodeCount_nDirectionIn_nDirectionOut_direction_needsFlipping_pDirection_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, /)`
+- `GSPath.akToolbarButtonItemType()`
+- `GSPath.allPropertyKeys()`
+- `GSPath.allowsWeakReference()`
+- `GSPath.applyTransform(self, transformStruct)`
+- `GSPath.area()`
+- `GSPath.associatedObject()`
+- `GSPath.attemptRecoveryFromError_optionIndex_delegate_didRecoverSelector_contextInfo_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSPath.attributeForKey_(arg0, /)`
+- `GSPath.attributeKeys()`
+- `GSPath.autoContentAccessingProxy()`
+- `GSPath.autorelease()`
+- `GSPath.awakeAfterUsingCoder_(arg0, /)`
+- `GSPath.awakeFromNib()`
+- `GSPath.bind_toObject_withKeyPath_options_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.boolValueSafe()`
+- `GSPath.boolValueSafe_(arg0, /)`
+- `GSPath.bs_isPlistableType()`
+- `GSPath.bs_secureEncoded()`
+- `GSPath.canRenderWithCGLContext_(arg0, /)`
+- `GSPath.checkConnectionForNode_(arg0, /)`
+- `GSPath.checkConnections()`
+- `GSPath.ck_bindInStatement_atIndex_(arg0, arg1, /)`
+- `GSPath.cksqlcs_appendSQLConstantValueToString_(arg0, /)`
+- `GSPath.cksqlcs_archivedObjectBindingValue_(arg0, /)`
+- `GSPath.cksqlcs_bindArchivedObject_index_db_(arg0, arg1, arg2, /)`
+- `GSPath.cksqlcs_bindBlob_index_db_(arg0, arg1, arg2, /)`
+- `GSPath.cksqlcs_bindDouble_index_db_(arg0, arg1, arg2, /)`
+- `GSPath.cksqlcs_bindInt64_index_db_(arg0, arg1, arg2, /)`
+- `GSPath.cksqlcs_bindText_index_db_(arg0, arg1, arg2, /)`
+- `GSPath.cksqlcs_blobBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSPath.cksqlcs_doubleBindingValue_(arg0, /)`
+- `GSPath.cksqlcs_int64BindingValue_(arg0, /)`
+- `GSPath.cksqlcs_textBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSPath.classCode()`
+- `GSPath.classDescription()`
+- `GSPath.classDescriptionForDestinationKey_(arg0, /)`
+- `GSPath.classForArchiver()`
+- `GSPath.classForCoder()`
+- `GSPath.classForKeyedArchiver()`
+- `GSPath.classForPortCoder()`
+- `GSPath.className()`
+- `GSPath.class__()`
+- `GSPath.cleanUp()`
+- `GSPath.cleanUpGrid_(arg0, /)`
+- `GSPath.clearProperties()`
+- `GSPath.coalescedPerformSelector_(arg0, /)`
+- `GSPath.coerceValueForScriptingProperties_(arg0, /)`
+- `GSPath.coerceValue_forKey_(arg0, arg1, /)`
+- `GSPath.collectExtraShapes_transform_scale_extraPaths_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.compareHash()`
+- `GSPath.compareString()`
+- `GSPath.compositionParameterView_didChangeParameterWithKey_(arg0, arg1, /)`
+- `GSPath.compositionParameterView_shouldDisplayParameterWithKey_attributes_(arg0, arg1, arg2, /)`
+- `GSPath.compositionPickerViewDidStartAnimating_(arg0, /)`
+- `GSPath.compositionPickerViewWillStopAnimating_(arg0, /)`
+- `GSPath.compositionPickerView_didLoadComposition_(arg0, arg1, /)`
+- `GSPath.compositionPickerView_didSelectComposition_(arg0, arg1, /)`
+- `GSPath.compositionPickerView_draggingEnteredComposition_sender_(arg0, arg1, arg2, /)`
+- `GSPath.compositionPickerView_keyDown_(arg0, arg1, /)`
+- `GSPath.compositionPickerView_performDragOperationOnComposition_sender_(arg0, arg1, arg2, /)`
+- `GSPath.compositionPickerView_willSelectComposition_(arg0, arg1, /)`
+- `GSPath.conformsToProtocol_(arg0, /)`
+- `GSPath.containsNode_(arg0, /)`
+- `GSPath.convertSpecialToBezier()`
+- `GSPath.convertToCubic()`
+- `GSPath.convertToQuadratic()`
+- `GSPath.copy()`
+- `GSPath.copyRenderedTextureForCGLContext_pixelFormat_bounds_isFlipped_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.copyScriptingValue_forKey_withProperties_(arg0, arg1, arg2, /)`
+- `GSPath.copyWithZone_(arg0, /)`
+- `GSPath.copyWithZone_(arg0, /)`
+- `GSPath.cornerHintAtIndex_cornerHints_(arg0, arg1, /)`
+- `GSPath.count()`
+- `GSPath.countOfAttributes()`
+- `GSPath.countOfNodes()`
+- `GSPath.countOfTempData()`
+- `GSPath.createImageWithOptions_(arg0, /)`
+- `GSPath.createKeyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSPath.createOptimizedProviderWithTransformation_cropping_(arg0, arg1, /)`
+- `GSPath.dealloc()`
+- `GSPath.dealloc()`
+- `GSPath.debugDescription()`
+- `GSPath.decomposeCorner_(arg0, /)`
+- `GSPath.description()`
+- `GSPath.description()`
+- `GSPath.description()`
+- `GSPath.descriptionAtIndent_(arg0, /)`
+- `GSPath.dictionaryWithValuesForKeys_(arg0, /)`
+- `GSPath.didChangeValueForKey_(arg0, /)`
+- `GSPath.didChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSPath.didChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSPath.doesContain_(arg0, /)`
+- `GSPath.doesNotRecognizeSelector_(arg0, /)`
+- `GSPath.doesNotRecognizeSelector_(arg0, /)`
+- `GSPath.doubleValueSafe()`
+- `GSPath.doubleValueSafe_(arg0, /)`
+- `GSPath.draw(self, pen)`
+- `GSPath.drawBrushWithPen_inNodes_inCount_cornerLayer_cornerHint_isFirst_secondPen_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, /)`
+- `GSPath.drawCapOldWithPen_inNodes_inCount_outNodes_outCount_cornerLayer_cornerHint_isFirst_extraPaths_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, /)`
+- `GSPath.drawCapWithPen_inNodes_inCount_outNodes_outCount_cornerLayer_cornerHint_isFirst_extraPaths_secondPen_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, /)`
+- `GSPath.drawCornerOutline_startTransform_endTransform_cornerLayer_cornerPath_inCount_inNodes_isFirst_pen_cornerHighlightPath_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, /)`
+- `GSPath.drawCornerWithPen_inNodes_inCount_outNodes_outCount_cornerLayer_cornerHint_isFirst_extraPaths_secondPen_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, /)`
+- `GSPath.drawInPen_(arg0, /)`
+- `GSPath.drawInPen_(arg0, /)`
+- `GSPath.drawInPen_openPen_secondaryPen_extraHandles_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.drawInPen_openPen_secondaryPen_extraHandles_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.drawPoints(self, pen)`
+- `GSPath.drawSegmentComponentWithPen_inNodes_inCount_cornerLayer_cornerHint_isFirst_secondPen_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, /)`
+- `GSPath.drawSimpleInPen_(arg0, /)`
+- `GSPath.drawSimpleInPen_(arg0, /)`
+- `GSPath.elementDidChange_(arg0, /)`
+- `GSPath.elementDidChange_(arg0, /)`
+- `GSPath.enclosesPath_(arg0, /)`
+- `GSPath.encodeWithCAMLWriter_(arg0, /)`
+- `GSPath.encodeWithCoder_(arg0, /)`
+- `GSPath.encodeWithCoder_(arg0, /)`
+- `GSPath.endNode()`
+- `GSPath.entityName()`
+- `GSPath.expandedStroke()`
+- `GSPath.exposedBindings()`
+- `GSPath.fastBounds()`
+- `GSPath.fastBounds()`
+- `GSPath.fastBoundsTransform_(arg0, /)`
+- `GSPath.fastBoundsTransform_(arg0, /)`
+- `GSPath.finalize()`
+- `GSPath.findHint_forPoint_index_(arg0, arg1, arg2, /)`
+- `GSPath.findMinNode()`
+- `GSPath.findRequiredNodeIndexes_gridLength_(arg0, arg1, /)`
+- `GSPath.findStartNode()`
+- `GSPath.finishObserving()`
+- `GSPath.firstOncurveNodeIndex()`
+- `GSPath.flattenedOutlines()`
+- `GSPath.flattenedPath()`
+- `GSPath.flushKeyBindings()`
+- `GSPath.font()`
+- `GSPath.forwardInvocation_(arg0, /)`
+- `GSPath.forwardingTargetForSelector_(arg0, /)`
+- `GSPath.fp__ivarDescriptionForClass_(arg0, /)`
+- `GSPath.fp__methodDescriptionForClass_(arg0, /)`
+- `GSPath.fp_ivarDescription()`
+- `GSPath.fp_methodDescription()`
+- `GSPath.fp_shortMethodDescription()`
+- `GSPath.getCornerLayer_font_(arg0, arg1, /)`
+- `GSPath.getPositionsFromShape_(arg0, /)`
+- `GSPath.getPositionsFromShape_(arg0, /)`
+- `GSPath.getStrokeSettingsWidth_height_pos_capStart_capEnd_join_fill_mask_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, /)`
+- `GSPath.glyph()`
+- `GSPath.gridLength()`
+- `GSPath.handleQueryWithUnboundKey_(arg0, /)`
+- `GSPath.handleTakeValue_forUnboundKey_(arg0, arg1, /)`
+- `GSPath.hasHobbyCurve()`
+- `GSPath.hasTrueTypeCurve()`
+- `GSPath.hasTrueTypeOutline()`
+- `GSPath.hash()`
+- `GSPath.if_setValueIfNonNil_forKey_(arg0, arg1, /)`
+- `GSPath.if_setValueIfYES_forKey_(arg0, arg1, /)`
+- `GSPath.ikInMainLoopWait_(arg0, /)`
+- `GSPath.imageBrowser_didValidateVisibleCellsAtIndexes_(arg0, arg1, /)`
+- `GSPath.imageBrowser_willDisplayCellsAtIndexes_(arg0, arg1, /)`
+- `GSPath.imageSubtitle()`
+- `GSPath.imageTitle()`
+- `GSPath.imageToDrawForCell_(arg0, /)`
+- `GSPath.implementsSelector_(arg0, /)`
+- `GSPath.indexOfNode_(arg0, /)`
+- `GSPath.indexOfTTStartNode()`
+- `GSPath.infoForBinding_(arg0, /)`
+- `GSPath.init()`
+- `GSPath.init()`
+- `GSPath.initWithCoder_(arg0, /)`
+- `GSPath.initWithDict_format_(arg0, arg1, /)`
+- `GSPath.initWithDict_format_(arg0, arg1, /)`
+- `GSPath.initWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSPath.initWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSPath.initWithPathString_(arg0, /)`
+- `GSPath.insertNodeWithPathTime_(arg0, /)`
+- `GSPath.insertNode_atIndex_(arg0, arg1, /)`
+- `GSPath.insertObject_inNodesAtIndex_(arg0, arg1, /)`
+- `GSPath.insertValue_atIndex_inPropertyWithKey_(arg0, arg1, arg2, /)`
+- `GSPath.insertValue_inPropertyWithKey_(arg0, arg1, /)`
+- `GSPath.int64ValueSafe()`
+- `GSPath.int64ValueSafe_(arg0, /)`
+- `GSPath.intersectionsWithLineFrom_to_(arg0, arg1, /)`
+- `GSPath.inverseForRelationshipKey_(arg0, /)`
+- `GSPath.isCaseInsensitiveLike_(arg0, /)`
+- `GSPath.isEqualToPath_(arg0, /)`
+- `GSPath.isEqualToShape_(arg0, /)`
+- `GSPath.isEqualToShape_(arg0, /)`
+- `GSPath.isEqualTo_(arg0, /)`
+- `GSPath.isEqual_(arg0, /)`
+- `GSPath.isFault()`
+- `GSPath.isGreaterThanOrEqualTo_(arg0, /)`
+- `GSPath.isGreaterThan_(arg0, /)`
+- `GSPath.isKindOfClass_(arg0, /)`
+- `GSPath.isLessThanOrEqualTo_(arg0, /)`
+- `GSPath.isLessThan_(arg0, /)`
+- `GSPath.isLike_(arg0, /)`
+- `GSPath.isLocked()`
+- `GSPath.isMemberOfClass_(arg0, /)`
+- `GSPath.isNSArray__()`
+- `GSPath.isNSCFConstantString__()`
+- `GSPath.isNSData__()`
+- `GSPath.isNSDate__()`
+- `GSPath.isNSDictionary__()`
+- `GSPath.isNSNumber__()`
+- `GSPath.isNSObject__()`
+- `GSPath.isNSOrderedSet__()`
+- `GSPath.isNSSet__()`
+- `GSPath.isNSString__()`
+- `GSPath.isNSTimeZone__()`
+- `GSPath.isNSValue__()`
+- `GSPath.isNotEqualTo_(arg0, /)`
+- `GSPath.isNull()`
+- `GSPath.isProxy()`
+- `GSPath.isToManyKey_(arg0, /)`
+- `GSPath.keyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSPath.layer()`
+- `GSPath.length()`
+- `GSPath.makeCornerFirstNodeIndex_endNodeIndex_(arg0, arg1, /)`
+- `GSPath.makeHobbyInPen_(arg0, /)`
+- `GSPath.makeLocked()`
+- `GSPath.makeNodeFirst_(arg0, /)`
+- `GSPath.makeUnlocked()`
+- `GSPath.methodDescriptionForSelector_(arg0, /)`
+- `GSPath.methodForSelector_(arg0, /)`
+- `GSPath.methodSignatureForSelector_(arg0, /)`
+- `GSPath.methodSignatureForSelector_(arg0, /)`
+- `GSPath.moveWithPoint_(arg0, /)`
+- `GSPath.moveWithPoint_(arg0, /)`
+- `GSPath.mr_formattedDebugDescription()`
+- `GSPath.mutableArrayValueForKeyPath_(arg0, /)`
+- `GSPath.mutableArrayValueForKey_(arg0, /)`
+- `GSPath.mutableCopy()`
+- `GSPath.mutableCopyWithZone_(arg0, /)`
+- `GSPath.mutableCopyWithZone_(arg0, /)`
+- `GSPath.mutableOrderedSetValueForKeyPath_(arg0, /)`
+- `GSPath.mutableOrderedSetValueForKey_(arg0, /)`
+- `GSPath.mutableSetValueForKeyPath_(arg0, /)`
+- `GSPath.mutableSetValueForKey_(arg0, /)`
+- `GSPath.my_compactDescription()`
+- `GSPath.nDirection_cornerOrigin_nodes_count_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.nearestNodeWithPathTime_(arg0, /)`
+- `GSPath.nearestPointOnPath_pathTime_(arg0, arg1, /)`
+- `GSPath.newScriptingObjectOfClass_forValueForKey_withContentsValue_properties_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.newTaggedNSStringWithASCIIBytes__length__(arg0, arg1, /)`
+- `GSPath.nextOncurveNodeFromIndex_(arg0, /)`
+- `GSPath.nodeAtIndex_(arg0, /)`
+- `GSPath.nodeIndexForHash_callback_(arg0, arg1, /)`
+- `GSPath.normalizedCornerLayer_scale_reversed_transform_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.objectSpecifier()`
+- `GSPath.objectSpecifier()`
+- `GSPath.observationInfo()`
+- `GSPath.observeValueForKeyPath_ofObject_change_context_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.observeValueForKeyPath_ofObject_change_context_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.openCornerAtNode_offset_(arg0, arg1, /)`
+- `GSPath.optionDescriptionsForBinding_(arg0, /)`
+- `GSPath.orientationTransform_cornerType_cDirectionIn_cDirectionOut_cOriginIn_cOriginOut_nDirectionIn_nDirectionOut_nOriginIn_nOriginOut_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, /)`
+- `GSPath.ownsDestinationObjectsForRelationshipKey_(arg0, /)`
+- `GSPath.parseGlyphsLine_format_(arg0, arg1, /)`
+- `GSPath.pep_afterDelay_(arg0, /)`
+- `GSPath.pep_getInvocation_(arg0, /)`
+- `GSPath.pep_onMainThread()`
+- `GSPath.pep_onMainThreadIfNecessary()`
+- `GSPath.pep_onOperationQueue_(arg0, /)`
+- `GSPath.pep_onOperationQueue_priority_(arg0, arg1, /)`
+- `GSPath.pep_onThread_(arg0, /)`
+- `GSPath.pep_onThread_immediateForMatchingThread_(arg0, arg1, /)`
+- `GSPath.performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSPath.performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSPath.performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.performSelector_(arg0, /)`
+- `GSPath.performSelector_object_afterDelay_(arg0, arg1, arg2, /)`
+- `GSPath.performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSPath.performSelector_withObject_(arg0, arg1, /)`
+- `GSPath.performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSPath.performSelector_withObject_afterDelay_ignoreMenuTracking_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.performSelector_withObject_withObject_(arg0, arg1, arg2, /)`
+- `GSPath.pkaxRespondsToSelector_fromExtrasProtocol_(arg0, arg1, /)`
+- `GSPath.pkaxValueForKey_(arg0, /)`
+- `GSPath.pointAtPathTime_(arg0, /)`
+- `GSPath.position()`
+- `GSPath.positionAtIndex_(arg0, /)`
+- `GSPath.positionPrecise()`
+- `GSPath.postRead_format_(arg0, arg1, /)`
+- `GSPath.prepareForInterfaceBuilder()`
+- `GSPath.prepareSegmentHint_cornerLayer_cornerPath_endAngle_endBrushPoint_endPathPoint_inCount_inNodes_startAngle_startBrushPoint_startPathPoint_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, /)`
+- `GSPath.previousOncurveNodeFromIndex_(arg0, /)`
+- `GSPath.propertyListValueFormat_(arg0, /)`
+- `GSPath.propertyListValueFormat_(arg0, /)`
+- `GSPath.pyobjc_performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSPath.pyobjc_performSelectorOnMainThread_withObject_(arg0, arg1, /)`
+- `GSPath.pyobjc_performSelectorOnMainThread_withObject_modes_(arg0, arg1, arg2, /)`
+- `GSPath.pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSPath.pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.pyobjc_performSelector_onThread_withObject_(arg0, arg1, arg2, /)`
+- `GSPath.pyobjc_performSelector_onThread_withObject_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.pyobjc_performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.pyobjc_performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSPath.pyobjc_performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSPath.pyobjc_performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.qcurvePointListAtNodeIndex_qCurveSegment_count_(arg0, arg1, arg2, /)`
+- `GSPath.receiveObservedError_(arg0, /)`
+- `GSPath.receiveObservedValue_(arg0, /)`
+- `GSPath.release()`
+- `GSPath.releaseRenderedTexture_forCGLContext_(arg0, arg1, /)`
+- `GSPath.removeAttributeForKey_(arg0, /)`
+- `GSPath.removeDuplicateNodes()`
+- `GSPath.removeNodeAtIndex_(arg0, /)`
+- `GSPath.removeNodeCheckKeepShape_(arg0, /)`
+- `GSPath.removeNodeCheckKeepShape_normalizeHandles_(arg0, arg1, /)`
+- `GSPath.removeNodeCheckKeepShape_normalizeHandles_error_(arg0, arg1, arg2, /)`
+- `GSPath.removeNodeCheck_(arg0, /)`
+- `GSPath.removeNodeFast_(arg0, /)`
+- `GSPath.removeNode_(arg0, /)`
+- `GSPath.removeNodes_(arg0, /)`
+- `GSPath.removeObjectFromNodesAtIndex_(arg0, /)`
+- `GSPath.removeObject_fromBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSPath.removeObject_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSPath.removeObservation_(arg0, /)`
+- `GSPath.removeObservation_forObservableKeyPath_(arg0, arg1, /)`
+- `GSPath.removeObserver_forKeyPath_(arg0, arg1, /)`
+- `GSPath.removeObserver_forKeyPath_context_(arg0, arg1, arg2, /)`
+- `GSPath.removeOutsideOverlap_nextNode_overNextNode_nodeIndex_inNodes_inCount_outNodes_outCount_secondPen_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, /)`
+- `GSPath.removeOutsideOverlaps_(arg0, /)`
+- `GSPath.removeValueAtIndex_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSPath.renderToBuffer_withBytesPerRow_pixelFormat_forBounds_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.renderWithCGLContext_forBounds_(arg0, arg1, /)`
+- `GSPath.replaceObjectInNodesAtIndex_withObject_(arg0, arg1, /)`
+- `GSPath.replaceValueAtIndex_inPropertyWithKey_withValue_(arg0, arg1, arg2, /)`
+- `GSPath.replacementObjectForArchiver_(arg0, /)`
+- `GSPath.replacementObjectForCoder_(arg0, /)`
+- `GSPath.replacementObjectForKeyedArchiver_(arg0, /)`
+- `GSPath.replacementObjectForPortCoder_(arg0, /)`
+- `GSPath.resolveForwardingConflictWithPreviousMetadata_forKey_(arg0, arg1, /)`
+- `GSPath.respondsToSelector_(arg0, /)`
+- `GSPath.retain()`
+- `GSPath.retainCount()`
+- `GSPath.retainWeakReference()`
+- `GSPath.reverse()`
+- `GSPath.reverseFast()`
+- `GSPath.roundToGridFast_(arg0, /)`
+- `GSPath.roundToGridFast_(arg0, /)`
+- `GSPath.roundToGrid_(arg0, /)`
+- `GSPath.roundToGrid_(arg0, /)`
+- `GSPath.safari_isNSBoolean()`
+- `GSPath.safari_postKVONotificationsForKey_aroundBlock_(arg0, arg1, /)`
+- `GSPath.safari_removeDeallocationSentinelForObserver_(arg0, /)`
+- `GSPath.safari_setDeallocationSentinelForObserver_(arg0, /)`
+- `GSPath.safari_setDeallocationSentinelForObserver_withContext_(arg0, arg1, /)`
+- `GSPath.saveToFile_format_compact_error_(arg0, arg1, arg2, arg3, /)`
+- `GSPath.saveToFile_format_error_(arg0, arg1, arg2, /)`
+- `GSPath.saveToFile_format_error_(arg0, arg1, arg2, /)`
+- `GSPath.scaleAttributes_(arg0, /)`
+- `GSPath.scriptingProperties()`
+- `GSPath.scriptingValueForSpecifier_(arg0, /)`
+- `GSPath.segmentAtIndex_(arg0, /)`
+- `GSPath.self()`
+- `GSPath.setAccessibilityBrailleMapRenderRegion_(arg0, /)`
+- `GSPath.setAccessibilityBrailleMapRenderer_(arg0, /)`
+- `GSPath.setAssociatedObject_(arg0, /)`
+- `GSPath.setAttribute_forKey_(arg0, arg1, /)`
+- `GSPath.setAttributes_(arg0, /)`
+- `GSPath.setAttributes_format_(arg0, arg1, /)`
+- `GSPath.setClosePath_(arg0, /)`
+- `GSPath.setClosePath_fixStartNode_(arg0, arg1, /)`
+- `GSPath.setClosed_(arg0, /)`
+- `GSPath.setLocked_(arg0, /)`
+- `GSPath.setLocked_shadow_withPoint_(arg0, arg1, arg2, /)`
+- `GSPath.setLocked_withPoint_(arg0, arg1, /)`
+- `GSPath.setMirrored_withCenterPoint_oppositePoint_(arg0, arg1, arg2, /)`
+- `GSPath.setNilValueForKey_(arg0, /)`
+- `GSPath.setNodesFast_(arg0, /)`
+- `GSPath.setNodes_(arg0, /)`
+- `GSPath.setObservationInfo_(arg0, /)`
+- `GSPath.setObservation_forObservingKeyPath_(arg0, arg1, /)`
+- `GSPath.setParent_(arg0, /)`
+- `GSPath.setPositionFast_(arg0, /)`
+- `GSPath.setPositionFast_round_(arg0, arg1, /)`
+- `GSPath.setPosition_(arg0, /)`
+- `GSPath.setScriptingProperties_(arg0, /)`
+- `GSPath.setSegments_(arg0, /)`
+- `GSPath.setShadowIn_(arg0, /)`
+- `GSPath.setShadow_(arg0, /)`
+- `GSPath.setSmooth_withCenterNode_oppositeNode_(arg0, arg1, arg2, /)`
+- `GSPath.setSmooth_withCenterPoint_oppositePoint_(arg0, arg1, arg2, /)`
+- `GSPath.setTempData_(arg0, /)`
+- `GSPath.setTempData_forKey_(arg0, arg1, /)`
+- `GSPath.setUserInterfaceItemIdentifier_(arg0, /)`
+- `GSPath.setValue_forKeyPath_(arg0, arg1, /)`
+- `GSPath.setValue_forKey_(arg0, arg1, /)`
+- `GSPath.setValue_forKey_(arg0, arg1, /)`
+- `GSPath.setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSPath.setValuesForKeysWithDictionary_(arg0, /)`
+- `GSPath.settingsView_clearSettingForKey_(arg0, arg1, /)`
+- `GSPath.settingsView_renameKey_toKey_(arg0, arg1, arg2, /)`
+- `GSPath.settingsView_setSetting_forKey_(arg0, arg1, arg2, /)`
+- `GSPath.settingsView_settingForKey_(arg0, arg1, /)`
+- `GSPath.settingsView_shouldRenameKey_(arg0, arg1, /)`
+- `GSPath.shadow()`
+- `GSPath.shadowIn()`
+- `GSPath.shortenSegment_count_smoothTransform_transform_cornerPoint_cornerOrigin_(arg0, arg1, arg2, arg3, arg4, arg5, /)`
+- `GSPath.shouldColorMatch()`
+- `GSPath.startNode()`
+- `GSPath.storedValueForKey_(arg0, /)`
+- `GSPath.stringValueSafe()`
+- `GSPath.stringValueSafe_(arg0, /)`
+- `GSPath.superclass()`
+- `GSPath.supportedBufferPixelFormats()`
+- `GSPath.supportedRenderedTexturePixelFormats()`
+- `GSPath.supportsBSXPCSecureCoding()`
+- `GSPath.supportsRBSXPCSecureCoding()`
+- `GSPath.takeStoredValue_forKey_(arg0, arg1, /)`
+- `GSPath.takeStoredValuesFromDictionary_(arg0, /)`
+- `GSPath.takeValue_forKeyPath_(arg0, arg1, /)`
+- `GSPath.takeValue_forKey_(arg0, arg1, /)`
+- `GSPath.takeValuesFromDictionary_(arg0, /)`
+- `GSPath.tangentAngleAtNodeAtIndex_direction_(arg0, arg1, /)`
+- `GSPath.tangentAngleAtNode_direction_(arg0, arg1, /)`
+- `GSPath.tempDataForKey_(arg0, /)`
+- `GSPath.toManyRelationshipKeys()`
+- `GSPath.toOneRelationshipKeys()`
+- `GSPath.transformFast_round_(arg0, arg1, /)`
+- `GSPath.transformFast_round_(arg0, arg1, /)`
+- `GSPath.transformForHash_(arg0, /)`
+- `GSPath.transform_(arg0, /)`
+- `GSPath.transform_(arg0, /)`
+- `GSPath.transform_selection_(arg0, arg1, /)`
+- `GSPath.transform_selection_(arg0, arg1, /)`
+- `GSPath.un_safeBoolValue()`
+- `GSPath.unableToSetNilForKey_(arg0, /)`
+- `GSPath.unbind_(arg0, /)`
+- `GSPath.undoManager()`
+- `GSPath.undoManager()`
+- `GSPath.undoManagerCheck()`
+- `GSPath.undoManagerCheck()`
+- `GSPath.unitVectorAtNodeAtIndex_(arg0, /)`
+- `GSPath.unitVectorAtNodeAtIndex_direction_(arg0, arg1, /)`
+- `GSPath.userInterfaceItemIdentifier()`
+- `GSPath.utf8ValueSafe()`
+- `GSPath.utf8ValueSafe_(arg0, /)`
+- `GSPath.validateTakeValue_forKeyPath_(arg0, arg1, /)`
+- `GSPath.validateValue_forKeyPath_error_(arg0, arg1, arg2, /)`
+- `GSPath.validateValue_forKey_(arg0, arg1, /)`
+- `GSPath.validateValue_forKey_error_(arg0, arg1, arg2, /)`
+- `GSPath.valueAtIndex_inPropertyWithKey_(arg0, arg1, /)`
+- `GSPath.valueClassForBinding_(arg0, /)`
+- `GSPath.valueForKeyPath_(arg0, /)`
+- `GSPath.valueForKey_(arg0, /)`
+- `GSPath.valueForKey_(arg0, /)`
+- `GSPath.valueForUndefinedKey_(arg0, /)`
+- `GSPath.valueWithName_inPropertyWithKey_(arg0, arg1, /)`
+- `GSPath.valueWithUniqueID_inPropertyWithKey_(arg0, arg1, /)`
+- `GSPath.valuesForKeys_(arg0, /)`
+- `GSPath.vk_loggingDescription()`
+- `GSPath.vk_loggingIdentifier()`
+- `GSPath.vk_prettyLoggingDescription()`
+- `GSPath.willChangeValueForKey_(arg0, /)`
+- `GSPath.willChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSPath.willChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSPath.zone()`
+- `GSPath (instance)..cxx_destruct()`
+- `GSPath (instance).CAMLType()`
+- `GSPath (instance).CAMLTypeForKey_(arg0, /)`
+- `GSPath (instance).CAMLTypeSupportedForKey_(arg0, /)`
+- `GSPath (instance).CA_addValue_multipliedBy_(arg0, arg1, /)`
+- `GSPath (instance).CA_archivingValueForKey_(arg0, /)`
+- `GSPath (instance).CA_copyNumericValue_(arg0, /)`
+- `GSPath (instance).CA_copyRenderValue()`
+- `GSPath (instance).CA_copyRenderValueWithColorspace_(arg0, /)`
+- `GSPath (instance).CA_distanceToValue_(arg0, /)`
+- `GSPath (instance).CA_interpolateValue_byFraction_(arg0, arg1, /)`
+- `GSPath (instance).CA_interpolateValues___interpolator_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).CA_numericValueCount()`
+- `GSPath (instance).CA_prepareRenderValue()`
+- `GSPath (instance).CA_roundToIntegerFromValue_(arg0, /)`
+- `GSPath (instance).CA_validateValue_forKey_(arg0, arg1, /)`
+- `GSPath (instance).CKAssignToContainerWithID_(arg0, /)`
+- `GSPath (instance).CKDescription()`
+- `GSPath (instance).CKDescriptionPropertiesWithPublic_private_shouldExpand_(arg0, arg1, arg2, /)`
+- `GSPath (instance).CKDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSPath (instance).CKExpandedDescription()`
+- `GSPath (instance).CKHashedDescription()`
+- `GSPath (instance).CKObjectDescriptionRedact_(arg0, /)`
+- `GSPath (instance).CKObjectDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSPath (instance).CKPropertiesDescription()`
+- `GSPath (instance).CKPropertiesDescriptionStringFromProperties_(arg0, /)`
+- `GSPath (instance).CKRedactedDescription()`
+- `GSPath (instance).CKSingleLineDescription()`
+- `GSPath (instance).CKUnredactedDescription()`
+- `GSPath (instance).IKImageRepresentationWithType_(arg0, /)`
+- `GSPath (instance).NSLifeguard_autorelease()`
+- `GSPath (instance).NSRepresentation()`
+- `GSPath (instance).NS_addTiledLayerDescendent_(arg0, /)`
+- `GSPath (instance).NS_observationForKeyPath_options_block_(arg0, arg1, arg2, /)`
+- `GSPath (instance).NS_observationForKeyPaths_options_block_(arg0, arg1, arg2, /)`
+- `GSPath (instance).NS_removeTiledLayerDescendent_(arg0, /)`
+- `GSPath (instance).NS_tiledLayerVisibleRect()`
+- `GSPath (instance).RBSIsXPCObject()`
+- `GSPath (instance).SCNUI_name()`
+- `GSPath (instance).SCN_setupDisplayLinkWithQueue_screen_policy_(arg0, arg1, arg2, /)`
+- `GSPath (instance).abCaseInsensitiveIsEqual_(arg0, /)`
+- `GSPath (instance).abDictionaryWithValuesForKeyPaths_(arg0, /)`
+- `GSPath (instance).abRemoveObserverIgnoringExceptions_forKeyPath_(arg0, arg1, /)`
+- `GSPath (instance).accessibilityAddTemporaryChild_(arg0, /)`
+- `GSPath (instance).accessibilityAllowsOverriddenAttributesWhenIgnored()`
+- `GSPath (instance).accessibilityArrayAttributeCount_(arg0, /)`
+- `GSPath (instance).accessibilityArrayAttributeValues_index_maxCount_(arg0, arg1, arg2, /)`
+- `GSPath (instance).accessibilityAttributeValue_forParameter_(arg0, arg1, /)`
+- `GSPath (instance).accessibilityAttributedValueForStringAttributeAttributeForParameter_(arg0, /)`
+- `GSPath (instance).accessibilityBrailleMapRenderRegion()`
+- `GSPath (instance).accessibilityBrailleMapRenderer()`
+- `GSPath (instance).accessibilityDecodeOverriddenAttributes_(arg0, /)`
+- `GSPath (instance).accessibilityEncodeOverriddenAttributes_(arg0, /)`
+- `GSPath (instance).accessibilityIndexForChildUIElementAttributeForParameter_(arg0, /)`
+- `GSPath (instance).accessibilityIndexOfChild_(arg0, /)`
+- `GSPath (instance).accessibilityOverriddenAttributes()`
+- `GSPath (instance).accessibilityParameterizedAttributeNames()`
+- `GSPath (instance).accessibilityPerformShowMenuOfChild_(arg0, /)`
+- `GSPath (instance).accessibilityPresenterProcessIdentifier()`
+- `GSPath (instance).accessibilityRemoveTemporaryChild_(arg0, /)`
+- `GSPath (instance).accessibilityReplaceRange_withText_(arg0, arg1, /)`
+- `GSPath (instance).accessibilitySetOverrideValue_forAttribute_(arg0, arg1, /)`
+- `GSPath (instance).accessibilitySetPresenterProcessIdentifier_(arg0, /)`
+- `GSPath (instance).accessibilityShouldSendNotification_(arg0, /)`
+- `GSPath (instance).accessibilityShouldUseUniqueId()`
+- `GSPath (instance).accessibilitySupportsCustomElementData()`
+- `GSPath (instance).accessibilitySupportsNotifications()`
+- `GSPath (instance).accessibilitySupportsOverriddenAttributes()`
+- `GSPath (instance).accessibilityTemporaryChildren()`
+- `GSPath (instance).accessibilityVisibleArea()`
+- `GSPath (instance).addChainedObservers_(arg0, /)`
+- `GSPath (instance).addCurveFastWithOff1_off2_end_connection_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).addCurveWithOff1_off2_end_connection_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).addExtremes_checkSelection_(arg0, arg1, /)`
+- `GSPath (instance).addInflections()`
+- `GSPath (instance).addNodeFastWithPosition_type_connection_(arg0, arg1, arg2, /)`
+- `GSPath (instance).addNodeFast_(arg0, /)`
+- `GSPath (instance).addNodeWithPosition_type_connection_(arg0, arg1, arg2, /)`
+- `GSPath (instance).addNode_(arg0, /)`
+- `GSPath (instance).addNodesAtExtremes(force=False, checkSelection=False)`
+- `GSPath (instance).addNodes_(arg0, /)`
+- `GSPath (instance).addObject_toBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSPath (instance).addObject_toPropertyWithKey_(arg0, arg1, /)`
+- `GSPath (instance).addObservationTransformer_(arg0, /)`
+- `GSPath (instance).addObserverBlock_(arg0, /)`
+- `GSPath (instance).addObserver_(arg0, /)`
+- `GSPath (instance).addObserver_forKeyPath_options_context_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).addObserver_forObservableKeyPath_(arg0, arg1, /)`
+- `GSPath (instance).adjustCorner_slantOrigin_cDirectionIn_cDirectionOut_cornerHint_nodes_nodeCount_nDirectionIn_nDirectionOut_direction_needsFlipping_pDirection_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, /)`
+- `GSPath (instance).akToolbarButtonItemType()`
+- `GSPath (instance).allPropertyKeys()`
+- `GSPath (instance).allowsWeakReference()`
+- `GSPath (instance).applyTransform(transformStruct)`
+- `GSPath (instance).area()`
+- `GSPath (instance).associatedObject()`
+- `GSPath (instance).attemptRecoveryFromError_optionIndex_delegate_didRecoverSelector_contextInfo_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSPath (instance).attributeForKey_(arg0, /)`
+- `GSPath (instance).attributeKeys()`
+- `GSPath (instance).autoContentAccessingProxy()`
+- `GSPath (instance).autorelease()`
+- `GSPath (instance).awakeAfterUsingCoder_(arg0, /)`
+- `GSPath (instance).awakeFromNib()`
+- `GSPath (instance).bind_toObject_withKeyPath_options_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).boolValueSafe()`
+- `GSPath (instance).boolValueSafe_(arg0, /)`
+- `GSPath (instance).bs_isPlistableType()`
+- `GSPath (instance).bs_secureEncoded()`
+- `GSPath (instance).canRenderWithCGLContext_(arg0, /)`
+- `GSPath (instance).checkConnectionForNode_(arg0, /)`
+- `GSPath (instance).checkConnections()`
+- `GSPath (instance).ck_bindInStatement_atIndex_(arg0, arg1, /)`
+- `GSPath (instance).cksqlcs_appendSQLConstantValueToString_(arg0, /)`
+- `GSPath (instance).cksqlcs_archivedObjectBindingValue_(arg0, /)`
+- `GSPath (instance).cksqlcs_bindArchivedObject_index_db_(arg0, arg1, arg2, /)`
+- `GSPath (instance).cksqlcs_bindBlob_index_db_(arg0, arg1, arg2, /)`
+- `GSPath (instance).cksqlcs_bindDouble_index_db_(arg0, arg1, arg2, /)`
+- `GSPath (instance).cksqlcs_bindInt64_index_db_(arg0, arg1, arg2, /)`
+- `GSPath (instance).cksqlcs_bindText_index_db_(arg0, arg1, arg2, /)`
+- `GSPath (instance).cksqlcs_blobBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSPath (instance).cksqlcs_doubleBindingValue_(arg0, /)`
+- `GSPath (instance).cksqlcs_int64BindingValue_(arg0, /)`
+- `GSPath (instance).cksqlcs_textBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSPath (instance).classCode()`
+- `GSPath (instance).classDescription()`
+- `GSPath (instance).classDescriptionForDestinationKey_(arg0, /)`
+- `GSPath (instance).classForArchiver()`
+- `GSPath (instance).classForCoder()`
+- `GSPath (instance).classForKeyedArchiver()`
+- `GSPath (instance).classForPortCoder()`
+- `GSPath (instance).className()`
+- `GSPath (instance).class__()`
+- `GSPath (instance).cleanUp()`
+- `GSPath (instance).cleanUpGrid_(arg0, /)`
+- `GSPath (instance).clearProperties()`
+- `GSPath (instance).coalescedPerformSelector_(arg0, /)`
+- `GSPath (instance).coerceValueForScriptingProperties_(arg0, /)`
+- `GSPath (instance).coerceValue_forKey_(arg0, arg1, /)`
+- `GSPath (instance).collectExtraShapes_transform_scale_extraPaths_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).compareHash()`
+- `GSPath (instance).compareString()`
+- `GSPath (instance).compositionParameterView_didChangeParameterWithKey_(arg0, arg1, /)`
+- `GSPath (instance).compositionParameterView_shouldDisplayParameterWithKey_attributes_(arg0, arg1, arg2, /)`
+- `GSPath (instance).compositionPickerViewDidStartAnimating_(arg0, /)`
+- `GSPath (instance).compositionPickerViewWillStopAnimating_(arg0, /)`
+- `GSPath (instance).compositionPickerView_didLoadComposition_(arg0, arg1, /)`
+- `GSPath (instance).compositionPickerView_didSelectComposition_(arg0, arg1, /)`
+- `GSPath (instance).compositionPickerView_draggingEnteredComposition_sender_(arg0, arg1, arg2, /)`
+- `GSPath (instance).compositionPickerView_keyDown_(arg0, arg1, /)`
+- `GSPath (instance).compositionPickerView_performDragOperationOnComposition_sender_(arg0, arg1, arg2, /)`
+- `GSPath (instance).compositionPickerView_willSelectComposition_(arg0, arg1, /)`
+- `GSPath (instance).conformsToProtocol_(arg0, /)`
+- `GSPath (instance).containsNode_(arg0, /)`
+- `GSPath (instance).convertSpecialToBezier()`
+- `GSPath (instance).convertToCubic()`
+- `GSPath (instance).convertToQuadratic()`
+- `GSPath (instance).copy()`
+- `GSPath (instance).copyRenderedTextureForCGLContext_pixelFormat_bounds_isFlipped_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).copyScriptingValue_forKey_withProperties_(arg0, arg1, arg2, /)`
+- `GSPath (instance).copyWithZone_(arg0, /)`
+- `GSPath (instance).cornerHintAtIndex_cornerHints_(arg0, arg1, /)`
+- `GSPath (instance).count()`
+- `GSPath (instance).countOfAttributes()`
+- `GSPath (instance).countOfNodes()`
+- `GSPath (instance).countOfTempData()`
+- `GSPath (instance).createImageWithOptions_(arg0, /)`
+- `GSPath (instance).createKeyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSPath (instance).createOptimizedProviderWithTransformation_cropping_(arg0, arg1, /)`
+- `GSPath (instance).dealloc()`
+- `GSPath (instance).debugDescription()`
+- `GSPath (instance).decomposeCorner_(arg0, /)`
+- `GSPath (instance).description()`
+- `GSPath (instance).descriptionAtIndent_(arg0, /)`
+- `GSPath (instance).dictionaryWithValuesForKeys_(arg0, /)`
+- `GSPath (instance).didChangeValueForKey_(arg0, /)`
+- `GSPath (instance).didChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSPath (instance).didChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSPath (instance).doesContain_(arg0, /)`
+- `GSPath (instance).doesNotRecognizeSelector_(arg0, /)`
+- `GSPath (instance).doubleValueSafe()`
+- `GSPath (instance).doubleValueSafe_(arg0, /)`
+- `GSPath (instance).draw(pen)`
+- `GSPath (instance).drawBrushWithPen_inNodes_inCount_cornerLayer_cornerHint_isFirst_secondPen_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, /)`
+- `GSPath (instance).drawCapOldWithPen_inNodes_inCount_outNodes_outCount_cornerLayer_cornerHint_isFirst_extraPaths_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, /)`
+- `GSPath (instance).drawCapWithPen_inNodes_inCount_outNodes_outCount_cornerLayer_cornerHint_isFirst_extraPaths_secondPen_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, /)`
+- `GSPath (instance).drawCornerOutline_startTransform_endTransform_cornerLayer_cornerPath_inCount_inNodes_isFirst_pen_cornerHighlightPath_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, /)`
+- `GSPath (instance).drawCornerWithPen_inNodes_inCount_outNodes_outCount_cornerLayer_cornerHint_isFirst_extraPaths_secondPen_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, /)`
+- `GSPath (instance).drawInPen_(arg0, /)`
+- `GSPath (instance).drawInPen_openPen_secondaryPen_extraHandles_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).drawPoints(pen)`
+- `GSPath (instance).drawSegmentComponentWithPen_inNodes_inCount_cornerLayer_cornerHint_isFirst_secondPen_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, /)`
+- `GSPath (instance).drawSimpleInPen_(arg0, /)`
+- `GSPath (instance).elementDidChange_(arg0, /)`
+- `GSPath (instance).enclosesPath_(arg0, /)`
+- `GSPath (instance).encodeWithCAMLWriter_(arg0, /)`
+- `GSPath (instance).encodeWithCoder_(arg0, /)`
+- `GSPath (instance).endNode()`
+- `GSPath (instance).entityName()`
+- `GSPath (instance).expandedStroke()`
+- `GSPath (instance).exposedBindings()`
+- `GSPath (instance).fastBounds()`
+- `GSPath (instance).fastBoundsTransform_(arg0, /)`
+- `GSPath (instance).finalize()`
+- `GSPath (instance).findHint_forPoint_index_(arg0, arg1, arg2, /)`
+- `GSPath (instance).findMinNode()`
+- `GSPath (instance).findRequiredNodeIndexes_gridLength_(arg0, arg1, /)`
+- `GSPath (instance).findStartNode()`
+- `GSPath (instance).finishObserving()`
+- `GSPath (instance).firstOncurveNodeIndex()`
+- `GSPath (instance).flattenedOutlines()`
+- `GSPath (instance).flattenedPath()`
+- `GSPath (instance).flushKeyBindings()`
+- `GSPath (instance).font()`
+- `GSPath (instance).forwardInvocation_(arg0, /)`
+- `GSPath (instance).forwardingTargetForSelector_(arg0, /)`
+- `GSPath (instance).fp__ivarDescriptionForClass_(arg0, /)`
+- `GSPath (instance).fp__methodDescriptionForClass_(arg0, /)`
+- `GSPath (instance).fp_ivarDescription()`
+- `GSPath (instance).fp_methodDescription()`
+- `GSPath (instance).fp_shortMethodDescription()`
+- `GSPath (instance).getCornerLayer_font_(arg0, arg1, /)`
+- `GSPath (instance).getPositionsFromShape_(arg0, /)`
+- `GSPath (instance).getStrokeSettingsWidth_height_pos_capStart_capEnd_join_fill_mask_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, /)`
+- `GSPath (instance).glyph()`
+- `GSPath (instance).gridLength()`
+- `GSPath (instance).handleQueryWithUnboundKey_(arg0, /)`
+- `GSPath (instance).handleTakeValue_forUnboundKey_(arg0, arg1, /)`
+- `GSPath (instance).hasHobbyCurve()`
+- `GSPath (instance).hasTrueTypeCurve()`
+- `GSPath (instance).hasTrueTypeOutline()`
+- `GSPath (instance).hash()`
+- `GSPath (instance).if_setValueIfNonNil_forKey_(arg0, arg1, /)`
+- `GSPath (instance).if_setValueIfYES_forKey_(arg0, arg1, /)`
+- `GSPath (instance).ikInMainLoopWait_(arg0, /)`
+- `GSPath (instance).imageBrowser_didValidateVisibleCellsAtIndexes_(arg0, arg1, /)`
+- `GSPath (instance).imageBrowser_willDisplayCellsAtIndexes_(arg0, arg1, /)`
+- `GSPath (instance).imageSubtitle()`
+- `GSPath (instance).imageTitle()`
+- `GSPath (instance).imageToDrawForCell_(arg0, /)`
+- `GSPath (instance).implementsSelector_(arg0, /)`
+- `GSPath (instance).indexOfNode_(arg0, /)`
+- `GSPath (instance).indexOfTTStartNode()`
+- `GSPath (instance).infoForBinding_(arg0, /)`
+- `GSPath (instance).init()`
+- `GSPath (instance).initWithCoder_(arg0, /)`
+- `GSPath (instance).initWithDict_format_(arg0, arg1, /)`
+- `GSPath (instance).initWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSPath (instance).initWithPathString_(arg0, /)`
+- `GSPath (instance).insertNodeWithPathTime_(arg0, /)`
+- `GSPath (instance).insertNode_atIndex_(arg0, arg1, /)`
+- `GSPath (instance).insertObject_inNodesAtIndex_(arg0, arg1, /)`
+- `GSPath (instance).insertValue_atIndex_inPropertyWithKey_(arg0, arg1, arg2, /)`
+- `GSPath (instance).insertValue_inPropertyWithKey_(arg0, arg1, /)`
+- `GSPath (instance).int64ValueSafe()`
+- `GSPath (instance).int64ValueSafe_(arg0, /)`
+- `GSPath (instance).intersectionsWithLineFrom_to_(arg0, arg1, /)`
+- `GSPath (instance).inverseForRelationshipKey_(arg0, /)`
+- `GSPath (instance).isCaseInsensitiveLike_(arg0, /)`
+- `GSPath (instance).isEqualToPath_(arg0, /)`
+- `GSPath (instance).isEqualToShape_(arg0, /)`
+- `GSPath (instance).isEqualTo_(arg0, /)`
+- `GSPath (instance).isEqual_(arg0, /)`
+- `GSPath (instance).isFault()`
+- `GSPath (instance).isGreaterThanOrEqualTo_(arg0, /)`
+- `GSPath (instance).isGreaterThan_(arg0, /)`
+- `GSPath (instance).isKindOfClass_(arg0, /)`
+- `GSPath (instance).isLessThanOrEqualTo_(arg0, /)`
+- `GSPath (instance).isLessThan_(arg0, /)`
+- `GSPath (instance).isLike_(arg0, /)`
+- `GSPath (instance).isLocked()`
+- `GSPath (instance).isMemberOfClass_(arg0, /)`
+- `GSPath (instance).isNSArray__()`
+- `GSPath (instance).isNSCFConstantString__()`
+- `GSPath (instance).isNSData__()`
+- `GSPath (instance).isNSDate__()`
+- `GSPath (instance).isNSDictionary__()`
+- `GSPath (instance).isNSNumber__()`
+- `GSPath (instance).isNSObject__()`
+- `GSPath (instance).isNSOrderedSet__()`
+- `GSPath (instance).isNSSet__()`
+- `GSPath (instance).isNSString__()`
+- `GSPath (instance).isNSTimeZone__()`
+- `GSPath (instance).isNSValue__()`
+- `GSPath (instance).isNotEqualTo_(arg0, /)`
+- `GSPath (instance).isNull()`
+- `GSPath (instance).isProxy()`
+- `GSPath (instance).isToManyKey_(arg0, /)`
+- `GSPath (instance).keyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSPath (instance).layer()`
+- `GSPath (instance).length()`
+- `GSPath (instance).makeCornerFirstNodeIndex_endNodeIndex_(arg0, arg1, /)`
+- `GSPath (instance).makeHobbyInPen_(arg0, /)`
+- `GSPath (instance).makeLocked()`
+- `GSPath (instance).makeNodeFirst_(arg0, /)`
+- `GSPath (instance).makeUnlocked()`
+- `GSPath (instance).methodDescriptionForSelector_(arg0, /)`
+- `GSPath (instance).methodForSelector_(arg0, /)`
+- `GSPath (instance).methodSignatureForSelector_(arg0, /)`
+- `GSPath (instance).moveWithPoint_(arg0, /)`
+- `GSPath (instance).mr_formattedDebugDescription()`
+- `GSPath (instance).mutableArrayValueForKeyPath_(arg0, /)`
+- `GSPath (instance).mutableArrayValueForKey_(arg0, /)`
+- `GSPath (instance).mutableCopy()`
+- `GSPath (instance).mutableCopyWithZone_(arg0, /)`
+- `GSPath (instance).mutableOrderedSetValueForKeyPath_(arg0, /)`
+- `GSPath (instance).mutableOrderedSetValueForKey_(arg0, /)`
+- `GSPath (instance).mutableSetValueForKeyPath_(arg0, /)`
+- `GSPath (instance).mutableSetValueForKey_(arg0, /)`
+- `GSPath (instance).my_compactDescription()`
+- `GSPath (instance).nDirection_cornerOrigin_nodes_count_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).nearestNodeWithPathTime_(arg0, /)`
+- `GSPath (instance).nearestPointOnPath_pathTime_(arg0, arg1, /)`
+- `GSPath (instance).newScriptingObjectOfClass_forValueForKey_withContentsValue_properties_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).newTaggedNSStringWithASCIIBytes__length__(arg0, arg1, /)`
+- `GSPath (instance).nextOncurveNodeFromIndex_(arg0, /)`
+- `GSPath (instance).nodeAtIndex_(arg0, /)`
+- `GSPath (instance).nodeIndexForHash_callback_(arg0, arg1, /)`
+- `GSPath (instance).normalizedCornerLayer_scale_reversed_transform_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).objectSpecifier()`
+- `GSPath (instance).observationInfo()`
+- `GSPath (instance).observeValueForKeyPath_ofObject_change_context_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).openCornerAtNode_offset_(arg0, arg1, /)`
+- `GSPath (instance).optionDescriptionsForBinding_(arg0, /)`
+- `GSPath (instance).orientationTransform_cornerType_cDirectionIn_cDirectionOut_cOriginIn_cOriginOut_nDirectionIn_nDirectionOut_nOriginIn_nOriginOut_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, /)`
+- `GSPath (instance).ownsDestinationObjectsForRelationshipKey_(arg0, /)`
+- `GSPath (instance).parseGlyphsLine_format_(arg0, arg1, /)`
+- `GSPath (instance).pep_afterDelay_(arg0, /)`
+- `GSPath (instance).pep_getInvocation_(arg0, /)`
+- `GSPath (instance).pep_onMainThread()`
+- `GSPath (instance).pep_onMainThreadIfNecessary()`
+- `GSPath (instance).pep_onOperationQueue_(arg0, /)`
+- `GSPath (instance).pep_onOperationQueue_priority_(arg0, arg1, /)`
+- `GSPath (instance).pep_onThread_(arg0, /)`
+- `GSPath (instance).pep_onThread_immediateForMatchingThread_(arg0, arg1, /)`
+- `GSPath (instance).performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSPath (instance).performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSPath (instance).performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).performSelector_(arg0, /)`
+- `GSPath (instance).performSelector_object_afterDelay_(arg0, arg1, arg2, /)`
+- `GSPath (instance).performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSPath (instance).performSelector_withObject_(arg0, arg1, /)`
+- `GSPath (instance).performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSPath (instance).performSelector_withObject_afterDelay_ignoreMenuTracking_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).performSelector_withObject_withObject_(arg0, arg1, arg2, /)`
+- `GSPath (instance).pkaxRespondsToSelector_fromExtrasProtocol_(arg0, arg1, /)`
+- `GSPath (instance).pkaxValueForKey_(arg0, /)`
+- `GSPath (instance).pointAtPathTime_(arg0, /)`
+- `GSPath (instance).position()`
+- `GSPath (instance).positionAtIndex_(arg0, /)`
+- `GSPath (instance).positionPrecise()`
+- `GSPath (instance).postRead_format_(arg0, arg1, /)`
+- `GSPath (instance).prepareForInterfaceBuilder()`
+- `GSPath (instance).prepareSegmentHint_cornerLayer_cornerPath_endAngle_endBrushPoint_endPathPoint_inCount_inNodes_startAngle_startBrushPoint_startPathPoint_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, /)`
+- `GSPath (instance).previousOncurveNodeFromIndex_(arg0, /)`
+- `GSPath (instance).propertyListValueFormat_(arg0, /)`
+- `GSPath (instance).pyobjc_performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSPath (instance).pyobjc_performSelectorOnMainThread_withObject_(arg0, arg1, /)`
+- `GSPath (instance).pyobjc_performSelectorOnMainThread_withObject_modes_(arg0, arg1, arg2, /)`
+- `GSPath (instance).pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSPath (instance).pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).pyobjc_performSelector_onThread_withObject_(arg0, arg1, arg2, /)`
+- `GSPath (instance).pyobjc_performSelector_onThread_withObject_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).pyobjc_performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).pyobjc_performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSPath (instance).pyobjc_performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSPath (instance).pyobjc_performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).qcurvePointListAtNodeIndex_qCurveSegment_count_(arg0, arg1, arg2, /)`
+- `GSPath (instance).receiveObservedError_(arg0, /)`
+- `GSPath (instance).receiveObservedValue_(arg0, /)`
+- `GSPath (instance).release()`
+- `GSPath (instance).releaseRenderedTexture_forCGLContext_(arg0, arg1, /)`
+- `GSPath (instance).removeAttributeForKey_(arg0, /)`
+- `GSPath (instance).removeDuplicateNodes()`
+- `GSPath (instance).removeNodeAtIndex_(arg0, /)`
+- `GSPath (instance).removeNodeCheckKeepShape_(arg0, /)`
+- `GSPath (instance).removeNodeCheckKeepShape_normalizeHandles_(arg0, arg1, /)`
+- `GSPath (instance).removeNodeCheckKeepShape_normalizeHandles_error_(arg0, arg1, arg2, /)`
+- `GSPath (instance).removeNodeCheck_(arg0, /)`
+- `GSPath (instance).removeNodeFast_(arg0, /)`
+- `GSPath (instance).removeNode_(arg0, /)`
+- `GSPath (instance).removeNodes_(arg0, /)`
+- `GSPath (instance).removeObjectFromNodesAtIndex_(arg0, /)`
+- `GSPath (instance).removeObject_fromBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSPath (instance).removeObject_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSPath (instance).removeObservation_(arg0, /)`
+- `GSPath (instance).removeObservation_forObservableKeyPath_(arg0, arg1, /)`
+- `GSPath (instance).removeObserver_forKeyPath_(arg0, arg1, /)`
+- `GSPath (instance).removeObserver_forKeyPath_context_(arg0, arg1, arg2, /)`
+- `GSPath (instance).removeOutsideOverlap_nextNode_overNextNode_nodeIndex_inNodes_inCount_outNodes_outCount_secondPen_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, /)`
+- `GSPath (instance).removeOutsideOverlaps_(arg0, /)`
+- `GSPath (instance).removeValueAtIndex_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSPath (instance).renderToBuffer_withBytesPerRow_pixelFormat_forBounds_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).renderWithCGLContext_forBounds_(arg0, arg1, /)`
+- `GSPath (instance).replaceObjectInNodesAtIndex_withObject_(arg0, arg1, /)`
+- `GSPath (instance).replaceValueAtIndex_inPropertyWithKey_withValue_(arg0, arg1, arg2, /)`
+- `GSPath (instance).replacementObjectForArchiver_(arg0, /)`
+- `GSPath (instance).replacementObjectForCoder_(arg0, /)`
+- `GSPath (instance).replacementObjectForKeyedArchiver_(arg0, /)`
+- `GSPath (instance).replacementObjectForPortCoder_(arg0, /)`
+- `GSPath (instance).resolveForwardingConflictWithPreviousMetadata_forKey_(arg0, arg1, /)`
+- `GSPath (instance).respondsToSelector_(arg0, /)`
+- `GSPath (instance).retain()`
+- `GSPath (instance).retainCount()`
+- `GSPath (instance).retainWeakReference()`
+- `GSPath (instance).reverse()`
+- `GSPath (instance).reverseFast()`
+- `GSPath (instance).roundToGridFast_(arg0, /)`
+- `GSPath (instance).roundToGrid_(arg0, /)`
+- `GSPath (instance).safari_isNSBoolean()`
+- `GSPath (instance).safari_postKVONotificationsForKey_aroundBlock_(arg0, arg1, /)`
+- `GSPath (instance).safari_removeDeallocationSentinelForObserver_(arg0, /)`
+- `GSPath (instance).safari_setDeallocationSentinelForObserver_(arg0, /)`
+- `GSPath (instance).safari_setDeallocationSentinelForObserver_withContext_(arg0, arg1, /)`
+- `GSPath (instance).saveToFile_format_compact_error_(arg0, arg1, arg2, arg3, /)`
+- `GSPath (instance).saveToFile_format_error_(arg0, arg1, arg2, /)`
+- `GSPath (instance).scaleAttributes_(arg0, /)`
+- `GSPath (instance).scriptingProperties()`
+- `GSPath (instance).scriptingValueForSpecifier_(arg0, /)`
+- `GSPath (instance).segmentAtIndex_(arg0, /)`
+- `GSPath (instance).self()`
+- `GSPath (instance).setAccessibilityBrailleMapRenderRegion_(arg0, /)`
+- `GSPath (instance).setAccessibilityBrailleMapRenderer_(arg0, /)`
+- `GSPath (instance).setAssociatedObject_(arg0, /)`
+- `GSPath (instance).setAttribute_forKey_(arg0, arg1, /)`
+- `GSPath (instance).setAttributes_(arg0, /)`
+- `GSPath (instance).setAttributes_format_(arg0, arg1, /)`
+- `GSPath (instance).setClosePath_(arg0, /)`
+- `GSPath (instance).setClosePath_fixStartNode_(arg0, arg1, /)`
+- `GSPath (instance).setClosed_(arg0, /)`
+- `GSPath (instance).setLocked_(arg0, /)`
+- `GSPath (instance).setLocked_shadow_withPoint_(arg0, arg1, arg2, /)`
+- `GSPath (instance).setLocked_withPoint_(arg0, arg1, /)`
+- `GSPath (instance).setMirrored_withCenterPoint_oppositePoint_(arg0, arg1, arg2, /)`
+- `GSPath (instance).setNilValueForKey_(arg0, /)`
+- `GSPath (instance).setNodesFast_(arg0, /)`
+- `GSPath (instance).setNodes_(arg0, /)`
+- `GSPath (instance).setObservationInfo_(arg0, /)`
+- `GSPath (instance).setObservation_forObservingKeyPath_(arg0, arg1, /)`
+- `GSPath (instance).setParent_(arg0, /)`
+- `GSPath (instance).setPositionFast_(arg0, /)`
+- `GSPath (instance).setPositionFast_round_(arg0, arg1, /)`
+- `GSPath (instance).setPosition_(arg0, /)`
+- `GSPath (instance).setScriptingProperties_(arg0, /)`
+- `GSPath (instance).setSegments_(arg0, /)`
+- `GSPath (instance).setShadowIn_(arg0, /)`
+- `GSPath (instance).setShadow_(arg0, /)`
+- `GSPath (instance).setSmooth_withCenterNode_oppositeNode_(arg0, arg1, arg2, /)`
+- `GSPath (instance).setSmooth_withCenterPoint_oppositePoint_(arg0, arg1, arg2, /)`
+- `GSPath (instance).setTempData_(arg0, /)`
+- `GSPath (instance).setTempData_forKey_(arg0, arg1, /)`
+- `GSPath (instance).setUserInterfaceItemIdentifier_(arg0, /)`
+- `GSPath (instance).setValue_forKeyPath_(arg0, arg1, /)`
+- `GSPath (instance).setValue_forKey_(arg0, arg1, /)`
+- `GSPath (instance).setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSPath (instance).setValuesForKeysWithDictionary_(arg0, /)`
+- `GSPath (instance).settingsView_clearSettingForKey_(arg0, arg1, /)`
+- `GSPath (instance).settingsView_renameKey_toKey_(arg0, arg1, arg2, /)`
+- `GSPath (instance).settingsView_setSetting_forKey_(arg0, arg1, arg2, /)`
+- `GSPath (instance).settingsView_settingForKey_(arg0, arg1, /)`
+- `GSPath (instance).settingsView_shouldRenameKey_(arg0, arg1, /)`
+- `GSPath (instance).shadow()`
+- `GSPath (instance).shadowIn()`
+- `GSPath (instance).shortenSegment_count_smoothTransform_transform_cornerPoint_cornerOrigin_(arg0, arg1, arg2, arg3, arg4, arg5, /)`
+- `GSPath (instance).shouldColorMatch()`
+- `GSPath (instance).startNode()`
+- `GSPath (instance).storedValueForKey_(arg0, /)`
+- `GSPath (instance).stringValueSafe()`
+- `GSPath (instance).stringValueSafe_(arg0, /)`
+- `GSPath (instance).superclass()`
+- `GSPath (instance).supportedBufferPixelFormats()`
+- `GSPath (instance).supportedRenderedTexturePixelFormats()`
+- `GSPath (instance).supportsBSXPCSecureCoding()`
+- `GSPath (instance).supportsRBSXPCSecureCoding()`
+- `GSPath (instance).takeStoredValue_forKey_(arg0, arg1, /)`
+- `GSPath (instance).takeStoredValuesFromDictionary_(arg0, /)`
+- `GSPath (instance).takeValue_forKeyPath_(arg0, arg1, /)`
+- `GSPath (instance).takeValue_forKey_(arg0, arg1, /)`
+- `GSPath (instance).takeValuesFromDictionary_(arg0, /)`
+- `GSPath (instance).tangentAngleAtNodeAtIndex_direction_(arg0, arg1, /)`
+- `GSPath (instance).tangentAngleAtNode_direction_(arg0, arg1, /)`
+- `GSPath (instance).tempDataForKey_(arg0, /)`
+- `GSPath (instance).toManyRelationshipKeys()`
+- `GSPath (instance).toOneRelationshipKeys()`
+- `GSPath (instance).transformFast_round_(arg0, arg1, /)`
+- `GSPath (instance).transformForHash_(arg0, /)`
+- `GSPath (instance).transform_(arg0, /)`
+- `GSPath (instance).transform_selection_(arg0, arg1, /)`
+- `GSPath (instance).un_safeBoolValue()`
+- `GSPath (instance).unableToSetNilForKey_(arg0, /)`
+- `GSPath (instance).unbind_(arg0, /)`
+- `GSPath (instance).undoManager()`
+- `GSPath (instance).undoManagerCheck()`
+- `GSPath (instance).unitVectorAtNodeAtIndex_(arg0, /)`
+- `GSPath (instance).unitVectorAtNodeAtIndex_direction_(arg0, arg1, /)`
+- `GSPath (instance).userInterfaceItemIdentifier()`
+- `GSPath (instance).utf8ValueSafe()`
+- `GSPath (instance).utf8ValueSafe_(arg0, /)`
+- `GSPath (instance).validateTakeValue_forKeyPath_(arg0, arg1, /)`
+- `GSPath (instance).validateValue_forKeyPath_error_(arg0, arg1, arg2, /)`
+- `GSPath (instance).validateValue_forKey_(arg0, arg1, /)`
+- `GSPath (instance).validateValue_forKey_error_(arg0, arg1, arg2, /)`
+- `GSPath (instance).valueAtIndex_inPropertyWithKey_(arg0, arg1, /)`
+- `GSPath (instance).valueClassForBinding_(arg0, /)`
+- `GSPath (instance).valueForKeyPath_(arg0, /)`
+- `GSPath (instance).valueForKey_(arg0, /)`
+- `GSPath (instance).valueForUndefinedKey_(arg0, /)`
+- `GSPath (instance).valueWithName_inPropertyWithKey_(arg0, arg1, /)`
+- `GSPath (instance).valueWithUniqueID_inPropertyWithKey_(arg0, arg1, /)`
+- `GSPath (instance).valuesForKeys_(arg0, /)`
+- `GSPath (instance).vk_loggingDescription()`
+- `GSPath (instance).vk_loggingIdentifier()`
+- `GSPath (instance).vk_prettyLoggingDescription()`
+- `GSPath (instance).willChangeValueForKey_(arg0, /)`
+- `GSPath (instance).willChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSPath (instance).willChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSPath (instance).zone()`

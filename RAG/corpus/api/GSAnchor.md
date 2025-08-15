@@ -1,0 +1,933 @@
+# GSAnchor — a named anchor on a layer
+**Use when:** reading, creating, or updating anchors across layers/masters.
+**Key APIs:** `name`, `position`, layer `anchorNamed_()`, `addAnchor_()`
+**Do:** use `layer.anchorNamed_("top")` to look up; construct and `addAnchor_()` when missing.
+**Don’t:** assume every layer has the same anchors; check and create per layer.
+**Keywords:** GSAnchor, anchorNamed_, addAnchor_, name, position, anchors
+
+
+## Attributes
+
+- `GSAnchor.attributes`  *(type: property)*
+- `GSAnchor.attributes`  *(type: property)*
+- `GSAnchor.glyph`  *(type: property)*
+- `GSAnchor.glyph`  *(type: property)*
+- `GSAnchor.layer`  *(type: property)*
+- `GSAnchor.layer`  *(type: property)*
+- `GSAnchor.locked`  *(type: property)*
+- `GSAnchor.name`  *(type: property)*
+- `GSAnchor.name`  *(type: property)*
+- `GSAnchor.orientation`  *(type: property)*
+- `GSAnchor.position`  *(type: property)*
+- `GSAnchor.position`  *(type: property)*
+- `GSAnchor.position`  *(type: property)*
+- `GSAnchor.userData`  *(type: property)*
+- `GSAnchor.userData`  *(type: property)*
+- `GSAnchor.x`  *(type: property)*
+- `GSAnchor.y`  *(type: property)*
+- `GSAnchor (instance).attributes`  *(type: AttributesProxy)*
+- `GSAnchor (instance).glyph`  *(type: NoneType)*
+- `GSAnchor (instance).layer`  *(type: NoneType)*
+- `GSAnchor (instance).locked`  *(type: bool)*
+- `GSAnchor (instance).name`  *(type: NoneType)*
+- `GSAnchor (instance).orientation`  *(type: int)*
+- `GSAnchor (instance).position`  *(type: CGPoint)*
+- `GSAnchor (instance).userData`  *(type: UserDataProxy)*
+- `GSAnchor (instance).x`  *(type: float)*
+- `GSAnchor (instance).y`  *(type: float)*
+
+## Methods
+
+- `GSAnchor..cxx_destruct()`
+- `GSAnchor..cxx_destruct()`
+- `GSAnchor.CAMLType()`
+- `GSAnchor.CAMLTypeForKey_(arg0, /)`
+- `GSAnchor.CAMLTypeSupportedForKey_(arg0, /)`
+- `GSAnchor.CA_addValue_multipliedBy_(arg0, arg1, /)`
+- `GSAnchor.CA_archivingValueForKey_(arg0, /)`
+- `GSAnchor.CA_copyNumericValue_(arg0, /)`
+- `GSAnchor.CA_copyRenderValue()`
+- `GSAnchor.CA_copyRenderValueWithColorspace_(arg0, /)`
+- `GSAnchor.CA_distanceToValue_(arg0, /)`
+- `GSAnchor.CA_interpolateValue_byFraction_(arg0, arg1, /)`
+- `GSAnchor.CA_interpolateValues___interpolator_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.CA_numericValueCount()`
+- `GSAnchor.CA_prepareRenderValue()`
+- `GSAnchor.CA_roundToIntegerFromValue_(arg0, /)`
+- `GSAnchor.CA_validateValue_forKey_(arg0, arg1, /)`
+- `GSAnchor.CKAssignToContainerWithID_(arg0, /)`
+- `GSAnchor.CKDescription()`
+- `GSAnchor.CKDescriptionPropertiesWithPublic_private_shouldExpand_(arg0, arg1, arg2, /)`
+- `GSAnchor.CKDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSAnchor.CKExpandedDescription()`
+- `GSAnchor.CKHashedDescription()`
+- `GSAnchor.CKObjectDescriptionRedact_(arg0, /)`
+- `GSAnchor.CKObjectDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSAnchor.CKPropertiesDescription()`
+- `GSAnchor.CKPropertiesDescriptionStringFromProperties_(arg0, /)`
+- `GSAnchor.CKRedactedDescription()`
+- `GSAnchor.CKSingleLineDescription()`
+- `GSAnchor.CKUnredactedDescription()`
+- `GSAnchor.IKImageRepresentationWithType_(arg0, /)`
+- `GSAnchor.NSLifeguard_autorelease()`
+- `GSAnchor.NSRepresentation()`
+- `GSAnchor.NSRepresentation()`
+- `GSAnchor.NS_addTiledLayerDescendent_(arg0, /)`
+- `GSAnchor.NS_observationForKeyPath_options_block_(arg0, arg1, arg2, /)`
+- `GSAnchor.NS_observationForKeyPaths_options_block_(arg0, arg1, arg2, /)`
+- `GSAnchor.NS_removeTiledLayerDescendent_(arg0, /)`
+- `GSAnchor.NS_tiledLayerVisibleRect()`
+- `GSAnchor.RBSIsXPCObject()`
+- `GSAnchor.SCNUI_name()`
+- `GSAnchor.SCN_setupDisplayLinkWithQueue_screen_policy_(arg0, arg1, arg2, /)`
+- `GSAnchor.abCaseInsensitiveIsEqual_(arg0, /)`
+- `GSAnchor.abDictionaryWithValuesForKeyPaths_(arg0, /)`
+- `GSAnchor.abRemoveObserverIgnoringExceptions_forKeyPath_(arg0, arg1, /)`
+- `GSAnchor.accessibilityAddTemporaryChild_(arg0, /)`
+- `GSAnchor.accessibilityAllowsOverriddenAttributesWhenIgnored()`
+- `GSAnchor.accessibilityArrayAttributeCount_(arg0, /)`
+- `GSAnchor.accessibilityArrayAttributeValues_index_maxCount_(arg0, arg1, arg2, /)`
+- `GSAnchor.accessibilityAttributeValue_forParameter_(arg0, arg1, /)`
+- `GSAnchor.accessibilityAttributedValueForStringAttributeAttributeForParameter_(arg0, /)`
+- `GSAnchor.accessibilityBrailleMapRenderRegion()`
+- `GSAnchor.accessibilityBrailleMapRenderer()`
+- `GSAnchor.accessibilityDecodeOverriddenAttributes_(arg0, /)`
+- `GSAnchor.accessibilityEncodeOverriddenAttributes_(arg0, /)`
+- `GSAnchor.accessibilityIndexForChildUIElementAttributeForParameter_(arg0, /)`
+- `GSAnchor.accessibilityIndexOfChild_(arg0, /)`
+- `GSAnchor.accessibilityOverriddenAttributes()`
+- `GSAnchor.accessibilityParameterizedAttributeNames()`
+- `GSAnchor.accessibilityPerformShowMenuOfChild_(arg0, /)`
+- `GSAnchor.accessibilityPresenterProcessIdentifier()`
+- `GSAnchor.accessibilityRemoveTemporaryChild_(arg0, /)`
+- `GSAnchor.accessibilityReplaceRange_withText_(arg0, arg1, /)`
+- `GSAnchor.accessibilitySetOverrideValue_forAttribute_(arg0, arg1, /)`
+- `GSAnchor.accessibilitySetPresenterProcessIdentifier_(arg0, /)`
+- `GSAnchor.accessibilityShouldSendNotification_(arg0, /)`
+- `GSAnchor.accessibilityShouldUseUniqueId()`
+- `GSAnchor.accessibilitySupportsCustomElementData()`
+- `GSAnchor.accessibilitySupportsNotifications()`
+- `GSAnchor.accessibilitySupportsOverriddenAttributes()`
+- `GSAnchor.accessibilityTemporaryChildren()`
+- `GSAnchor.accessibilityVisibleArea()`
+- `GSAnchor.addChainedObservers_(arg0, /)`
+- `GSAnchor.addObject_toBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSAnchor.addObject_toPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor.addObservationTransformer_(arg0, /)`
+- `GSAnchor.addObserverBlock_(arg0, /)`
+- `GSAnchor.addObserver_(arg0, /)`
+- `GSAnchor.addObserver_forKeyPath_options_context_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.addObserver_forObservableKeyPath_(arg0, arg1, /)`
+- `GSAnchor.addUserData_(arg0, /)`
+- `GSAnchor.akToolbarButtonItemType()`
+- `GSAnchor.allPropertyKeys()`
+- `GSAnchor.allowsWeakReference()`
+- `GSAnchor.associatedObject()`
+- `GSAnchor.attributeForKey_(arg0, /)`
+- `GSAnchor.attributeKeys()`
+- `GSAnchor.autoContentAccessingProxy()`
+- `GSAnchor.autorelease()`
+- `GSAnchor.awakeAfterUsingCoder_(arg0, /)`
+- `GSAnchor.awakeFromNib()`
+- `GSAnchor.bind_toObject_withKeyPath_options_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.boolValueSafe()`
+- `GSAnchor.boolValueSafe_(arg0, /)`
+- `GSAnchor.bounds()`
+- `GSAnchor.bounds()`
+- `GSAnchor.bounds()`
+- `GSAnchor.bs_isPlistableType()`
+- `GSAnchor.bs_secureEncoded()`
+- `GSAnchor.canRenderWithCGLContext_(arg0, /)`
+- `GSAnchor.ck_bindInStatement_atIndex_(arg0, arg1, /)`
+- `GSAnchor.cksqlcs_appendSQLConstantValueToString_(arg0, /)`
+- `GSAnchor.cksqlcs_archivedObjectBindingValue_(arg0, /)`
+- `GSAnchor.cksqlcs_bindArchivedObject_index_db_(arg0, arg1, arg2, /)`
+- `GSAnchor.cksqlcs_bindBlob_index_db_(arg0, arg1, arg2, /)`
+- `GSAnchor.cksqlcs_bindDouble_index_db_(arg0, arg1, arg2, /)`
+- `GSAnchor.cksqlcs_bindInt64_index_db_(arg0, arg1, arg2, /)`
+- `GSAnchor.cksqlcs_bindText_index_db_(arg0, arg1, arg2, /)`
+- `GSAnchor.cksqlcs_blobBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSAnchor.cksqlcs_doubleBindingValue_(arg0, /)`
+- `GSAnchor.cksqlcs_int64BindingValue_(arg0, /)`
+- `GSAnchor.cksqlcs_textBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSAnchor.classCode()`
+- `GSAnchor.classDescription()`
+- `GSAnchor.classDescriptionForDestinationKey_(arg0, /)`
+- `GSAnchor.classForArchiver()`
+- `GSAnchor.classForCoder()`
+- `GSAnchor.classForKeyedArchiver()`
+- `GSAnchor.classForPortCoder()`
+- `GSAnchor.className()`
+- `GSAnchor.class__()`
+- `GSAnchor.clearProperties()`
+- `GSAnchor.coalescedPerformSelector_(arg0, /)`
+- `GSAnchor.coerceValueForScriptingProperties_(arg0, /)`
+- `GSAnchor.coerceValue_forKey_(arg0, arg1, /)`
+- `GSAnchor.compare_(arg0, /)`
+- `GSAnchor.compositionParameterView_didChangeParameterWithKey_(arg0, arg1, /)`
+- `GSAnchor.compositionParameterView_shouldDisplayParameterWithKey_attributes_(arg0, arg1, arg2, /)`
+- `GSAnchor.compositionPickerViewDidStartAnimating_(arg0, /)`
+- `GSAnchor.compositionPickerViewWillStopAnimating_(arg0, /)`
+- `GSAnchor.compositionPickerView_didLoadComposition_(arg0, arg1, /)`
+- `GSAnchor.compositionPickerView_didSelectComposition_(arg0, arg1, /)`
+- `GSAnchor.compositionPickerView_draggingEnteredComposition_sender_(arg0, arg1, arg2, /)`
+- `GSAnchor.compositionPickerView_keyDown_(arg0, arg1, /)`
+- `GSAnchor.compositionPickerView_performDragOperationOnComposition_sender_(arg0, arg1, arg2, /)`
+- `GSAnchor.compositionPickerView_willSelectComposition_(arg0, arg1, /)`
+- `GSAnchor.conformsToProtocol_(arg0, /)`
+- `GSAnchor.context()`
+- `GSAnchor.copy()`
+- `GSAnchor.copyRenderedTextureForCGLContext_pixelFormat_bounds_isFlipped_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.copyScriptingValue_forKey_withProperties_(arg0, arg1, arg2, /)`
+- `GSAnchor.copyWithZone_(arg0, /)`
+- `GSAnchor.copyWithZone_(arg0, /)`
+- `GSAnchor.copyWithZone_(arg0, /)`
+- `GSAnchor.countOfAttributes()`
+- `GSAnchor.countOfTempData()`
+- `GSAnchor.countOfUserData()`
+- `GSAnchor.createImageWithOptions_(arg0, /)`
+- `GSAnchor.createKeyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSAnchor.createOptimizedProviderWithTransformation_cropping_(arg0, arg1, /)`
+- `GSAnchor.dealloc()`
+- `GSAnchor.debugDescription()`
+- `GSAnchor.description()`
+- `GSAnchor.description()`
+- `GSAnchor.description()`
+- `GSAnchor.description()`
+- `GSAnchor.descriptionAtIndent_(arg0, /)`
+- `GSAnchor.dictionaryWithValuesForKeys_(arg0, /)`
+- `GSAnchor.didChangeValueForKey_(arg0, /)`
+- `GSAnchor.didChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSAnchor.didChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSAnchor.doesContain_(arg0, /)`
+- `GSAnchor.doesNotRecognizeSelector_(arg0, /)`
+- `GSAnchor.doesNotRecognizeSelector_(arg0, /)`
+- `GSAnchor.doubleValueSafe()`
+- `GSAnchor.doubleValueSafe_(arg0, /)`
+- `GSAnchor.draw(self, pen)`
+- `GSAnchor.drawInPen_(arg0, /)`
+- `GSAnchor.drawInPen_openPen_secondaryPen_extraHandles_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.drawInView_(arg0, /)`
+- `GSAnchor.drawPoints(self, pen)`
+- `GSAnchor.drawSimpleInPen_(arg0, /)`
+- `GSAnchor.elementDidChange_(arg0, /)`
+- `GSAnchor.elementString()`
+- `GSAnchor.encodeWithCAMLWriter_(arg0, /)`
+- `GSAnchor.encodeWithCoder_(arg0, /)`
+- `GSAnchor.encodeWithCoder_(arg0, /)`
+- `GSAnchor.encodeWithCoder_(arg0, /)`
+- `GSAnchor.entityName()`
+- `GSAnchor.exposedBindings()`
+- `GSAnchor.fastBounds()`
+- `GSAnchor.fastBoundsTransform_(arg0, /)`
+- `GSAnchor.finalize()`
+- `GSAnchor.finishObserving()`
+- `GSAnchor.flushKeyBindings()`
+- `GSAnchor.font()`
+- `GSAnchor.forwardInvocation_(arg0, /)`
+- `GSAnchor.forwardingTargetForSelector_(arg0, /)`
+- `GSAnchor.fp__ivarDescriptionForClass_(arg0, /)`
+- `GSAnchor.fp__methodDescriptionForClass_(arg0, /)`
+- `GSAnchor.fp_ivarDescription()`
+- `GSAnchor.fp_methodDescription()`
+- `GSAnchor.fp_shortMethodDescription()`
+- `GSAnchor.getHandleRect_scale_(arg0, arg1, /)`
+- `GSAnchor.getPositionsFromShape_(arg0, /)`
+- `GSAnchor.getStrokeSettingsWidth_height_pos_capStart_capEnd_join_fill_mask_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, /)`
+- `GSAnchor.handleQueryWithUnboundKey_(arg0, /)`
+- `GSAnchor.handleTakeValue_forUnboundKey_(arg0, arg1, /)`
+- `GSAnchor.hash()`
+- `GSAnchor.hitTest_(arg0, /)`
+- `GSAnchor.hitTest_tolerance_(arg0, arg1, /)`
+- `GSAnchor.if_setValueIfNonNil_forKey_(arg0, arg1, /)`
+- `GSAnchor.if_setValueIfYES_forKey_(arg0, arg1, /)`
+- `GSAnchor.ikInMainLoopWait_(arg0, /)`
+- `GSAnchor.imageBrowser_didValidateVisibleCellsAtIndexes_(arg0, arg1, /)`
+- `GSAnchor.imageBrowser_willDisplayCellsAtIndexes_(arg0, arg1, /)`
+- `GSAnchor.imageSubtitle()`
+- `GSAnchor.imageTitle()`
+- `GSAnchor.imageToDrawForCell_(arg0, /)`
+- `GSAnchor.implementsSelector_(arg0, /)`
+- `GSAnchor.infoForBinding_(arg0, /)`
+- `GSAnchor.init()`
+- `GSAnchor.initWithCoder_(arg0, /)`
+- `GSAnchor.initWithCoder_(arg0, /)`
+- `GSAnchor.initWithDict_format_(arg0, arg1, /)`
+- `GSAnchor.initWithDict_format_(arg0, arg1, /)`
+- `GSAnchor.initWithDict_format_(arg0, arg1, /)`
+- `GSAnchor.initWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSAnchor.initWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSAnchor.initWithString_(arg0, /)`
+- `GSAnchor.insertValue_atIndex_inPropertyWithKey_(arg0, arg1, arg2, /)`
+- `GSAnchor.insertValue_inPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor.int64ValueSafe()`
+- `GSAnchor.int64ValueSafe_(arg0, /)`
+- `GSAnchor.inverseForRelationshipKey_(arg0, /)`
+- `GSAnchor.isCaseInsensitiveLike_(arg0, /)`
+- `GSAnchor.isEqualToAnchor_(arg0, /)`
+- `GSAnchor.isEqualToShape_(arg0, /)`
+- `GSAnchor.isEqualTo_(arg0, /)`
+- `GSAnchor.isEqual_(arg0, /)`
+- `GSAnchor.isFault()`
+- `GSAnchor.isGreaterThanOrEqualTo_(arg0, /)`
+- `GSAnchor.isGreaterThan_(arg0, /)`
+- `GSAnchor.isKindOfClass_(arg0, /)`
+- `GSAnchor.isLessThanOrEqualTo_(arg0, /)`
+- `GSAnchor.isLessThan_(arg0, /)`
+- `GSAnchor.isLike_(arg0, /)`
+- `GSAnchor.isLocked()`
+- `GSAnchor.isMemberOfClass_(arg0, /)`
+- `GSAnchor.isNSArray__()`
+- `GSAnchor.isNSCFConstantString__()`
+- `GSAnchor.isNSData__()`
+- `GSAnchor.isNSDate__()`
+- `GSAnchor.isNSDictionary__()`
+- `GSAnchor.isNSNumber__()`
+- `GSAnchor.isNSObject__()`
+- `GSAnchor.isNSOrderedSet__()`
+- `GSAnchor.isNSSet__()`
+- `GSAnchor.isNSString__()`
+- `GSAnchor.isNSTimeZone__()`
+- `GSAnchor.isNSValue__()`
+- `GSAnchor.isNotEqualTo_(arg0, /)`
+- `GSAnchor.isNull()`
+- `GSAnchor.isProxy()`
+- `GSAnchor.isToManyKey_(arg0, /)`
+- `GSAnchor.keyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSAnchor.makeLocked()`
+- `GSAnchor.makeLocked()`
+- `GSAnchor.makeUnlocked()`
+- `GSAnchor.makeUnlocked()`
+- `GSAnchor.methodDescriptionForSelector_(arg0, /)`
+- `GSAnchor.methodForSelector_(arg0, /)`
+- `GSAnchor.methodSignatureForSelector_(arg0, /)`
+- `GSAnchor.methodSignatureForSelector_(arg0, /)`
+- `GSAnchor.moveElementUndoName()`
+- `GSAnchor.moveWithPoint_(arg0, /)`
+- `GSAnchor.moveWithPoint_(arg0, /)`
+- `GSAnchor.mr_formattedDebugDescription()`
+- `GSAnchor.mutableArrayValueForKeyPath_(arg0, /)`
+- `GSAnchor.mutableArrayValueForKey_(arg0, /)`
+- `GSAnchor.mutableCopy()`
+- `GSAnchor.mutableCopyWithZone_(arg0, /)`
+- `GSAnchor.mutableCopyWithZone_(arg0, /)`
+- `GSAnchor.mutableOrderedSetValueForKeyPath_(arg0, /)`
+- `GSAnchor.mutableOrderedSetValueForKey_(arg0, /)`
+- `GSAnchor.mutableSetValueForKeyPath_(arg0, /)`
+- `GSAnchor.mutableSetValueForKey_(arg0, /)`
+- `GSAnchor.my_compactDescription()`
+- `GSAnchor.newScriptingObjectOfClass_forValueForKey_withContentsValue_properties_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.newTaggedNSStringWithASCIIBytes__length__(arg0, arg1, /)`
+- `GSAnchor.objectSpecifier()`
+- `GSAnchor.observationInfo()`
+- `GSAnchor.observeValueForKeyPath_ofObject_change_context_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.optionDescriptionsForBinding_(arg0, /)`
+- `GSAnchor.ownsDestinationObjectsForRelationshipKey_(arg0, /)`
+- `GSAnchor.parent()`
+- `GSAnchor.parseGlyphsLine_format_(arg0, arg1, /)`
+- `GSAnchor.pep_afterDelay_(arg0, /)`
+- `GSAnchor.pep_getInvocation_(arg0, /)`
+- `GSAnchor.pep_onMainThread()`
+- `GSAnchor.pep_onMainThreadIfNecessary()`
+- `GSAnchor.pep_onOperationQueue_(arg0, /)`
+- `GSAnchor.pep_onOperationQueue_priority_(arg0, arg1, /)`
+- `GSAnchor.pep_onThread_(arg0, /)`
+- `GSAnchor.pep_onThread_immediateForMatchingThread_(arg0, arg1, /)`
+- `GSAnchor.performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSAnchor.performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSAnchor.performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.performSelector_(arg0, /)`
+- `GSAnchor.performSelector_object_afterDelay_(arg0, arg1, arg2, /)`
+- `GSAnchor.performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSAnchor.performSelector_withObject_(arg0, arg1, /)`
+- `GSAnchor.performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSAnchor.performSelector_withObject_afterDelay_ignoreMenuTracking_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.performSelector_withObject_withObject_(arg0, arg1, arg2, /)`
+- `GSAnchor.pkaxRespondsToSelector_fromExtrasProtocol_(arg0, arg1, /)`
+- `GSAnchor.pkaxValueForKey_(arg0, /)`
+- `GSAnchor.positionForLayerWidth_(arg0, /)`
+- `GSAnchor.positionPrecise()`
+- `GSAnchor.positionPrecise()`
+- `GSAnchor.positionPreciseForLayerWidth_(arg0, /)`
+- `GSAnchor.postRead_format_(arg0, arg1, /)`
+- `GSAnchor.prepareForInterfaceBuilder()`
+- `GSAnchor.propertyListValueFormat_(arg0, /)`
+- `GSAnchor.propertyListValueFormat_(arg0, /)`
+- `GSAnchor.propertyListValueFormat_(arg0, /)`
+- `GSAnchor.pyobjc_performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSAnchor.pyobjc_performSelectorOnMainThread_withObject_(arg0, arg1, /)`
+- `GSAnchor.pyobjc_performSelectorOnMainThread_withObject_modes_(arg0, arg1, arg2, /)`
+- `GSAnchor.pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSAnchor.pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.pyobjc_performSelector_onThread_withObject_(arg0, arg1, arg2, /)`
+- `GSAnchor.pyobjc_performSelector_onThread_withObject_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.pyobjc_performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.pyobjc_performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSAnchor.pyobjc_performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSAnchor.pyobjc_performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.receiveObservedError_(arg0, /)`
+- `GSAnchor.receiveObservedValue_(arg0, /)`
+- `GSAnchor.release()`
+- `GSAnchor.releaseRenderedTexture_forCGLContext_(arg0, arg1, /)`
+- `GSAnchor.removeAttributeForKey_(arg0, /)`
+- `GSAnchor.removeObject_fromBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSAnchor.removeObject_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor.removeObservation_(arg0, /)`
+- `GSAnchor.removeObservation_forObservableKeyPath_(arg0, arg1, /)`
+- `GSAnchor.removeObserver_forKeyPath_(arg0, arg1, /)`
+- `GSAnchor.removeObserver_forKeyPath_context_(arg0, arg1, arg2, /)`
+- `GSAnchor.removeUserDataForKey_(arg0, /)`
+- `GSAnchor.removeValueAtIndex_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor.renderToBuffer_withBytesPerRow_pixelFormat_forBounds_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor.renderWithCGLContext_forBounds_(arg0, arg1, /)`
+- `GSAnchor.replaceValueAtIndex_inPropertyWithKey_withValue_(arg0, arg1, arg2, /)`
+- `GSAnchor.replacementObjectForArchiver_(arg0, /)`
+- `GSAnchor.replacementObjectForCoder_(arg0, /)`
+- `GSAnchor.replacementObjectForKeyedArchiver_(arg0, /)`
+- `GSAnchor.replacementObjectForPortCoder_(arg0, /)`
+- `GSAnchor.resolveForwardingConflictWithPreviousMetadata_forKey_(arg0, arg1, /)`
+- `GSAnchor.respondsToSelector_(arg0, /)`
+- `GSAnchor.retain()`
+- `GSAnchor.retainCount()`
+- `GSAnchor.retainWeakReference()`
+- `GSAnchor.roundToGridFast_(arg0, /)`
+- `GSAnchor.roundToGridFast_(arg0, /)`
+- `GSAnchor.roundToGrid_(arg0, /)`
+- `GSAnchor.roundToGrid_(arg0, /)`
+- `GSAnchor.safari_isNSBoolean()`
+- `GSAnchor.safari_postKVONotificationsForKey_aroundBlock_(arg0, arg1, /)`
+- `GSAnchor.safari_removeDeallocationSentinelForObserver_(arg0, /)`
+- `GSAnchor.safari_setDeallocationSentinelForObserver_(arg0, /)`
+- `GSAnchor.safari_setDeallocationSentinelForObserver_withContext_(arg0, arg1, /)`
+- `GSAnchor.saveToFile_format_error_(arg0, arg1, arg2, /)`
+- `GSAnchor.saveToFile_format_error_(arg0, arg1, arg2, /)`
+- `GSAnchor.saveToFile_format_error_(arg0, arg1, arg2, /)`
+- `GSAnchor.scaleAttributes_(arg0, /)`
+- `GSAnchor.scriptingProperties()`
+- `GSAnchor.scriptingValueForSpecifier_(arg0, /)`
+- `GSAnchor.self()`
+- `GSAnchor.setAccessibilityBrailleMapRenderRegion_(arg0, /)`
+- `GSAnchor.setAccessibilityBrailleMapRenderer_(arg0, /)`
+- `GSAnchor.setAssociatedObject_(arg0, /)`
+- `GSAnchor.setAttribute_forKey_(arg0, arg1, /)`
+- `GSAnchor.setAttributes_(arg0, /)`
+- `GSAnchor.setAttributes_format_(arg0, arg1, /)`
+- `GSAnchor.setContext_(arg0, /)`
+- `GSAnchor.setLocked_(arg0, /)`
+- `GSAnchor.setLocked_(arg0, /)`
+- `GSAnchor.setNameFast_(arg0, /)`
+- `GSAnchor.setName_(arg0, /)`
+- `GSAnchor.setNilValueForKey_(arg0, /)`
+- `GSAnchor.setObservationInfo_(arg0, /)`
+- `GSAnchor.setObservation_forObservingKeyPath_(arg0, arg1, /)`
+- `GSAnchor.setOrientation_(arg0, /)`
+- `GSAnchor.setParent_(arg0, /)`
+- `GSAnchor.setPositionFast_(arg0, /)`
+- `GSAnchor.setPositionFast_round_(arg0, arg1, /)`
+- `GSAnchor.setPosition_(arg0, /)`
+- `GSAnchor.setPosition_(arg0, /)`
+- `GSAnchor.setPosition_(arg0, /)`
+- `GSAnchor.setPosition_forLayerWidth_(arg0, arg1, /)`
+- `GSAnchor.setPropertyListValue_format_(arg0, arg1, /)`
+- `GSAnchor.setPropertyListValue_format_(arg0, arg1, /)`
+- `GSAnchor.setScriptingProperties_(arg0, /)`
+- `GSAnchor.setTempData_(arg0, /)`
+- `GSAnchor.setTempData_forKey_(arg0, arg1, /)`
+- `GSAnchor.setUserData_(arg0, /)`
+- `GSAnchor.setUserData_forKey_(arg0, arg1, /)`
+- `GSAnchor.setUserInterfaceItemIdentifier_(arg0, /)`
+- `GSAnchor.setValue_forKeyPath_(arg0, arg1, /)`
+- `GSAnchor.setValue_forKey_(arg0, arg1, /)`
+- `GSAnchor.setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSAnchor.setValuesForKeysWithDictionary_(arg0, /)`
+- `GSAnchor.setX_(arg0, /)`
+- `GSAnchor.setY_(arg0, /)`
+- `GSAnchor.settingsView_clearSettingForKey_(arg0, arg1, /)`
+- `GSAnchor.settingsView_renameKey_toKey_(arg0, arg1, arg2, /)`
+- `GSAnchor.settingsView_setSetting_forKey_(arg0, arg1, arg2, /)`
+- `GSAnchor.settingsView_settingForKey_(arg0, arg1, /)`
+- `GSAnchor.settingsView_shouldRenameKey_(arg0, arg1, /)`
+- `GSAnchor.shapeType()`
+- `GSAnchor.shouldColorMatch()`
+- `GSAnchor.storedValueForKey_(arg0, /)`
+- `GSAnchor.stringValueSafe()`
+- `GSAnchor.stringValueSafe_(arg0, /)`
+- `GSAnchor.superclass()`
+- `GSAnchor.supportedBufferPixelFormats()`
+- `GSAnchor.supportedRenderedTexturePixelFormats()`
+- `GSAnchor.supportsBSXPCSecureCoding()`
+- `GSAnchor.supportsRBSXPCSecureCoding()`
+- `GSAnchor.takeStoredValue_forKey_(arg0, arg1, /)`
+- `GSAnchor.takeStoredValuesFromDictionary_(arg0, /)`
+- `GSAnchor.takeValue_forKeyPath_(arg0, arg1, /)`
+- `GSAnchor.takeValue_forKey_(arg0, arg1, /)`
+- `GSAnchor.takeValuesFromDictionary_(arg0, /)`
+- `GSAnchor.tempData()`
+- `GSAnchor.tempDataForKey_(arg0, /)`
+- `GSAnchor.toManyRelationshipKeys()`
+- `GSAnchor.toOneRelationshipKeys()`
+- `GSAnchor.transformFast_round_(arg0, arg1, /)`
+- `GSAnchor.transform_(arg0, /)`
+- `GSAnchor.transform_(arg0, /)`
+- `GSAnchor.transform_selection_(arg0, arg1, /)`
+- `GSAnchor.un_safeBoolValue()`
+- `GSAnchor.unableToSetNilForKey_(arg0, /)`
+- `GSAnchor.unbind_(arg0, /)`
+- `GSAnchor.undoManager()`
+- `GSAnchor.undoManager()`
+- `GSAnchor.undoManagerCheck()`
+- `GSAnchor.undoManagerCheck()`
+- `GSAnchor.userDataForKey_(arg0, /)`
+- `GSAnchor.userInterfaceItemIdentifier()`
+- `GSAnchor.utf8ValueSafe()`
+- `GSAnchor.utf8ValueSafe_(arg0, /)`
+- `GSAnchor.validateTakeValue_forKeyPath_(arg0, arg1, /)`
+- `GSAnchor.validateValue_forKeyPath_error_(arg0, arg1, arg2, /)`
+- `GSAnchor.validateValue_forKey_(arg0, arg1, /)`
+- `GSAnchor.validateValue_forKey_error_(arg0, arg1, arg2, /)`
+- `GSAnchor.valueAtIndex_inPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor.valueClassForBinding_(arg0, /)`
+- `GSAnchor.valueForKeyPath_(arg0, /)`
+- `GSAnchor.valueForKey_(arg0, /)`
+- `GSAnchor.valueForUndefinedKey_(arg0, /)`
+- `GSAnchor.valueWithName_inPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor.valueWithUniqueID_inPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor.valuesForKeys_(arg0, /)`
+- `GSAnchor.vk_loggingDescription()`
+- `GSAnchor.vk_loggingIdentifier()`
+- `GSAnchor.vk_prettyLoggingDescription()`
+- `GSAnchor.willChangeValueForKey_(arg0, /)`
+- `GSAnchor.willChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSAnchor.willChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSAnchor.zone()`
+- `GSAnchor (instance)..cxx_destruct()`
+- `GSAnchor (instance).CAMLType()`
+- `GSAnchor (instance).CAMLTypeForKey_(arg0, /)`
+- `GSAnchor (instance).CAMLTypeSupportedForKey_(arg0, /)`
+- `GSAnchor (instance).CA_addValue_multipliedBy_(arg0, arg1, /)`
+- `GSAnchor (instance).CA_archivingValueForKey_(arg0, /)`
+- `GSAnchor (instance).CA_copyNumericValue_(arg0, /)`
+- `GSAnchor (instance).CA_copyRenderValue()`
+- `GSAnchor (instance).CA_copyRenderValueWithColorspace_(arg0, /)`
+- `GSAnchor (instance).CA_distanceToValue_(arg0, /)`
+- `GSAnchor (instance).CA_interpolateValue_byFraction_(arg0, arg1, /)`
+- `GSAnchor (instance).CA_interpolateValues___interpolator_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).CA_numericValueCount()`
+- `GSAnchor (instance).CA_prepareRenderValue()`
+- `GSAnchor (instance).CA_roundToIntegerFromValue_(arg0, /)`
+- `GSAnchor (instance).CA_validateValue_forKey_(arg0, arg1, /)`
+- `GSAnchor (instance).CKAssignToContainerWithID_(arg0, /)`
+- `GSAnchor (instance).CKDescription()`
+- `GSAnchor (instance).CKDescriptionPropertiesWithPublic_private_shouldExpand_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).CKDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSAnchor (instance).CKExpandedDescription()`
+- `GSAnchor (instance).CKHashedDescription()`
+- `GSAnchor (instance).CKObjectDescriptionRedact_(arg0, /)`
+- `GSAnchor (instance).CKObjectDescriptionRedact_avoidShortDescription_(arg0, arg1, /)`
+- `GSAnchor (instance).CKPropertiesDescription()`
+- `GSAnchor (instance).CKPropertiesDescriptionStringFromProperties_(arg0, /)`
+- `GSAnchor (instance).CKRedactedDescription()`
+- `GSAnchor (instance).CKSingleLineDescription()`
+- `GSAnchor (instance).CKUnredactedDescription()`
+- `GSAnchor (instance).IKImageRepresentationWithType_(arg0, /)`
+- `GSAnchor (instance).NSLifeguard_autorelease()`
+- `GSAnchor (instance).NSRepresentation()`
+- `GSAnchor (instance).NS_addTiledLayerDescendent_(arg0, /)`
+- `GSAnchor (instance).NS_observationForKeyPath_options_block_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).NS_observationForKeyPaths_options_block_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).NS_removeTiledLayerDescendent_(arg0, /)`
+- `GSAnchor (instance).NS_tiledLayerVisibleRect()`
+- `GSAnchor (instance).RBSIsXPCObject()`
+- `GSAnchor (instance).SCNUI_name()`
+- `GSAnchor (instance).SCN_setupDisplayLinkWithQueue_screen_policy_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).abCaseInsensitiveIsEqual_(arg0, /)`
+- `GSAnchor (instance).abDictionaryWithValuesForKeyPaths_(arg0, /)`
+- `GSAnchor (instance).abRemoveObserverIgnoringExceptions_forKeyPath_(arg0, arg1, /)`
+- `GSAnchor (instance).accessibilityAddTemporaryChild_(arg0, /)`
+- `GSAnchor (instance).accessibilityAllowsOverriddenAttributesWhenIgnored()`
+- `GSAnchor (instance).accessibilityArrayAttributeCount_(arg0, /)`
+- `GSAnchor (instance).accessibilityArrayAttributeValues_index_maxCount_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).accessibilityAttributeValue_forParameter_(arg0, arg1, /)`
+- `GSAnchor (instance).accessibilityAttributedValueForStringAttributeAttributeForParameter_(arg0, /)`
+- `GSAnchor (instance).accessibilityBrailleMapRenderRegion()`
+- `GSAnchor (instance).accessibilityBrailleMapRenderer()`
+- `GSAnchor (instance).accessibilityDecodeOverriddenAttributes_(arg0, /)`
+- `GSAnchor (instance).accessibilityEncodeOverriddenAttributes_(arg0, /)`
+- `GSAnchor (instance).accessibilityIndexForChildUIElementAttributeForParameter_(arg0, /)`
+- `GSAnchor (instance).accessibilityIndexOfChild_(arg0, /)`
+- `GSAnchor (instance).accessibilityOverriddenAttributes()`
+- `GSAnchor (instance).accessibilityParameterizedAttributeNames()`
+- `GSAnchor (instance).accessibilityPerformShowMenuOfChild_(arg0, /)`
+- `GSAnchor (instance).accessibilityPresenterProcessIdentifier()`
+- `GSAnchor (instance).accessibilityRemoveTemporaryChild_(arg0, /)`
+- `GSAnchor (instance).accessibilityReplaceRange_withText_(arg0, arg1, /)`
+- `GSAnchor (instance).accessibilitySetOverrideValue_forAttribute_(arg0, arg1, /)`
+- `GSAnchor (instance).accessibilitySetPresenterProcessIdentifier_(arg0, /)`
+- `GSAnchor (instance).accessibilityShouldSendNotification_(arg0, /)`
+- `GSAnchor (instance).accessibilityShouldUseUniqueId()`
+- `GSAnchor (instance).accessibilitySupportsCustomElementData()`
+- `GSAnchor (instance).accessibilitySupportsNotifications()`
+- `GSAnchor (instance).accessibilitySupportsOverriddenAttributes()`
+- `GSAnchor (instance).accessibilityTemporaryChildren()`
+- `GSAnchor (instance).accessibilityVisibleArea()`
+- `GSAnchor (instance).addChainedObservers_(arg0, /)`
+- `GSAnchor (instance).addObject_toBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSAnchor (instance).addObject_toPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor (instance).addObservationTransformer_(arg0, /)`
+- `GSAnchor (instance).addObserverBlock_(arg0, /)`
+- `GSAnchor (instance).addObserver_(arg0, /)`
+- `GSAnchor (instance).addObserver_forKeyPath_options_context_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).addObserver_forObservableKeyPath_(arg0, arg1, /)`
+- `GSAnchor (instance).addUserData_(arg0, /)`
+- `GSAnchor (instance).akToolbarButtonItemType()`
+- `GSAnchor (instance).allPropertyKeys()`
+- `GSAnchor (instance).allowsWeakReference()`
+- `GSAnchor (instance).associatedObject()`
+- `GSAnchor (instance).attributeForKey_(arg0, /)`
+- `GSAnchor (instance).attributeKeys()`
+- `GSAnchor (instance).autoContentAccessingProxy()`
+- `GSAnchor (instance).autorelease()`
+- `GSAnchor (instance).awakeAfterUsingCoder_(arg0, /)`
+- `GSAnchor (instance).awakeFromNib()`
+- `GSAnchor (instance).bind_toObject_withKeyPath_options_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).boolValueSafe()`
+- `GSAnchor (instance).boolValueSafe_(arg0, /)`
+- `GSAnchor (instance).bounds()`
+- `GSAnchor (instance).bs_isPlistableType()`
+- `GSAnchor (instance).bs_secureEncoded()`
+- `GSAnchor (instance).canRenderWithCGLContext_(arg0, /)`
+- `GSAnchor (instance).ck_bindInStatement_atIndex_(arg0, arg1, /)`
+- `GSAnchor (instance).cksqlcs_appendSQLConstantValueToString_(arg0, /)`
+- `GSAnchor (instance).cksqlcs_archivedObjectBindingValue_(arg0, /)`
+- `GSAnchor (instance).cksqlcs_bindArchivedObject_index_db_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).cksqlcs_bindBlob_index_db_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).cksqlcs_bindDouble_index_db_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).cksqlcs_bindInt64_index_db_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).cksqlcs_bindText_index_db_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).cksqlcs_blobBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).cksqlcs_doubleBindingValue_(arg0, /)`
+- `GSAnchor (instance).cksqlcs_int64BindingValue_(arg0, /)`
+- `GSAnchor (instance).cksqlcs_textBindingValue_destructor_error_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).classCode()`
+- `GSAnchor (instance).classDescription()`
+- `GSAnchor (instance).classDescriptionForDestinationKey_(arg0, /)`
+- `GSAnchor (instance).classForArchiver()`
+- `GSAnchor (instance).classForCoder()`
+- `GSAnchor (instance).classForKeyedArchiver()`
+- `GSAnchor (instance).classForPortCoder()`
+- `GSAnchor (instance).className()`
+- `GSAnchor (instance).class__()`
+- `GSAnchor (instance).clearProperties()`
+- `GSAnchor (instance).coalescedPerformSelector_(arg0, /)`
+- `GSAnchor (instance).coerceValueForScriptingProperties_(arg0, /)`
+- `GSAnchor (instance).coerceValue_forKey_(arg0, arg1, /)`
+- `GSAnchor (instance).compare_(arg0, /)`
+- `GSAnchor (instance).compositionParameterView_didChangeParameterWithKey_(arg0, arg1, /)`
+- `GSAnchor (instance).compositionParameterView_shouldDisplayParameterWithKey_attributes_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).compositionPickerViewDidStartAnimating_(arg0, /)`
+- `GSAnchor (instance).compositionPickerViewWillStopAnimating_(arg0, /)`
+- `GSAnchor (instance).compositionPickerView_didLoadComposition_(arg0, arg1, /)`
+- `GSAnchor (instance).compositionPickerView_didSelectComposition_(arg0, arg1, /)`
+- `GSAnchor (instance).compositionPickerView_draggingEnteredComposition_sender_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).compositionPickerView_keyDown_(arg0, arg1, /)`
+- `GSAnchor (instance).compositionPickerView_performDragOperationOnComposition_sender_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).compositionPickerView_willSelectComposition_(arg0, arg1, /)`
+- `GSAnchor (instance).conformsToProtocol_(arg0, /)`
+- `GSAnchor (instance).context()`
+- `GSAnchor (instance).copy()`
+- `GSAnchor (instance).copyRenderedTextureForCGLContext_pixelFormat_bounds_isFlipped_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).copyScriptingValue_forKey_withProperties_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).copyWithZone_(arg0, /)`
+- `GSAnchor (instance).countOfAttributes()`
+- `GSAnchor (instance).countOfTempData()`
+- `GSAnchor (instance).countOfUserData()`
+- `GSAnchor (instance).createImageWithOptions_(arg0, /)`
+- `GSAnchor (instance).createKeyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSAnchor (instance).createOptimizedProviderWithTransformation_cropping_(arg0, arg1, /)`
+- `GSAnchor (instance).dealloc()`
+- `GSAnchor (instance).debugDescription()`
+- `GSAnchor (instance).description()`
+- `GSAnchor (instance).descriptionAtIndent_(arg0, /)`
+- `GSAnchor (instance).dictionaryWithValuesForKeys_(arg0, /)`
+- `GSAnchor (instance).didChangeValueForKey_(arg0, /)`
+- `GSAnchor (instance).didChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).didChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).doesContain_(arg0, /)`
+- `GSAnchor (instance).doesNotRecognizeSelector_(arg0, /)`
+- `GSAnchor (instance).doubleValueSafe()`
+- `GSAnchor (instance).doubleValueSafe_(arg0, /)`
+- `GSAnchor (instance).draw(pen)`
+- `GSAnchor (instance).drawInPen_(arg0, /)`
+- `GSAnchor (instance).drawInPen_openPen_secondaryPen_extraHandles_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).drawInView_(arg0, /)`
+- `GSAnchor (instance).drawPoints(pen)`
+- `GSAnchor (instance).drawSimpleInPen_(arg0, /)`
+- `GSAnchor (instance).elementDidChange_(arg0, /)`
+- `GSAnchor (instance).elementString()`
+- `GSAnchor (instance).encodeWithCAMLWriter_(arg0, /)`
+- `GSAnchor (instance).encodeWithCoder_(arg0, /)`
+- `GSAnchor (instance).entityName()`
+- `GSAnchor (instance).exposedBindings()`
+- `GSAnchor (instance).fastBounds()`
+- `GSAnchor (instance).fastBoundsTransform_(arg0, /)`
+- `GSAnchor (instance).finalize()`
+- `GSAnchor (instance).finishObserving()`
+- `GSAnchor (instance).flushKeyBindings()`
+- `GSAnchor (instance).font()`
+- `GSAnchor (instance).forwardInvocation_(arg0, /)`
+- `GSAnchor (instance).forwardingTargetForSelector_(arg0, /)`
+- `GSAnchor (instance).fp__ivarDescriptionForClass_(arg0, /)`
+- `GSAnchor (instance).fp__methodDescriptionForClass_(arg0, /)`
+- `GSAnchor (instance).fp_ivarDescription()`
+- `GSAnchor (instance).fp_methodDescription()`
+- `GSAnchor (instance).fp_shortMethodDescription()`
+- `GSAnchor (instance).getHandleRect_scale_(arg0, arg1, /)`
+- `GSAnchor (instance).getPositionsFromShape_(arg0, /)`
+- `GSAnchor (instance).getStrokeSettingsWidth_height_pos_capStart_capEnd_join_fill_mask_(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, /)`
+- `GSAnchor (instance).handleQueryWithUnboundKey_(arg0, /)`
+- `GSAnchor (instance).handleTakeValue_forUnboundKey_(arg0, arg1, /)`
+- `GSAnchor (instance).hash()`
+- `GSAnchor (instance).hitTest_(arg0, /)`
+- `GSAnchor (instance).hitTest_tolerance_(arg0, arg1, /)`
+- `GSAnchor (instance).if_setValueIfNonNil_forKey_(arg0, arg1, /)`
+- `GSAnchor (instance).if_setValueIfYES_forKey_(arg0, arg1, /)`
+- `GSAnchor (instance).ikInMainLoopWait_(arg0, /)`
+- `GSAnchor (instance).imageBrowser_didValidateVisibleCellsAtIndexes_(arg0, arg1, /)`
+- `GSAnchor (instance).imageBrowser_willDisplayCellsAtIndexes_(arg0, arg1, /)`
+- `GSAnchor (instance).imageSubtitle()`
+- `GSAnchor (instance).imageTitle()`
+- `GSAnchor (instance).imageToDrawForCell_(arg0, /)`
+- `GSAnchor (instance).implementsSelector_(arg0, /)`
+- `GSAnchor (instance).infoForBinding_(arg0, /)`
+- `GSAnchor (instance).init()`
+- `GSAnchor (instance).initWithCoder_(arg0, /)`
+- `GSAnchor (instance).initWithDict_format_(arg0, arg1, /)`
+- `GSAnchor (instance).initWithGlyphsParser_format_(arg0, arg1, /)`
+- `GSAnchor (instance).initWithString_(arg0, /)`
+- `GSAnchor (instance).insertValue_atIndex_inPropertyWithKey_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).insertValue_inPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor (instance).int64ValueSafe()`
+- `GSAnchor (instance).int64ValueSafe_(arg0, /)`
+- `GSAnchor (instance).inverseForRelationshipKey_(arg0, /)`
+- `GSAnchor (instance).isCaseInsensitiveLike_(arg0, /)`
+- `GSAnchor (instance).isEqualToAnchor_(arg0, /)`
+- `GSAnchor (instance).isEqualToShape_(arg0, /)`
+- `GSAnchor (instance).isEqualTo_(arg0, /)`
+- `GSAnchor (instance).isEqual_(arg0, /)`
+- `GSAnchor (instance).isFault()`
+- `GSAnchor (instance).isGreaterThanOrEqualTo_(arg0, /)`
+- `GSAnchor (instance).isGreaterThan_(arg0, /)`
+- `GSAnchor (instance).isKindOfClass_(arg0, /)`
+- `GSAnchor (instance).isLessThanOrEqualTo_(arg0, /)`
+- `GSAnchor (instance).isLessThan_(arg0, /)`
+- `GSAnchor (instance).isLike_(arg0, /)`
+- `GSAnchor (instance).isLocked()`
+- `GSAnchor (instance).isMemberOfClass_(arg0, /)`
+- `GSAnchor (instance).isNSArray__()`
+- `GSAnchor (instance).isNSCFConstantString__()`
+- `GSAnchor (instance).isNSData__()`
+- `GSAnchor (instance).isNSDate__()`
+- `GSAnchor (instance).isNSDictionary__()`
+- `GSAnchor (instance).isNSNumber__()`
+- `GSAnchor (instance).isNSObject__()`
+- `GSAnchor (instance).isNSOrderedSet__()`
+- `GSAnchor (instance).isNSSet__()`
+- `GSAnchor (instance).isNSString__()`
+- `GSAnchor (instance).isNSTimeZone__()`
+- `GSAnchor (instance).isNSValue__()`
+- `GSAnchor (instance).isNotEqualTo_(arg0, /)`
+- `GSAnchor (instance).isNull()`
+- `GSAnchor (instance).isProxy()`
+- `GSAnchor (instance).isToManyKey_(arg0, /)`
+- `GSAnchor (instance).keyValueBindingForKey_typeMask_(arg0, arg1, /)`
+- `GSAnchor (instance).makeLocked()`
+- `GSAnchor (instance).makeUnlocked()`
+- `GSAnchor (instance).methodDescriptionForSelector_(arg0, /)`
+- `GSAnchor (instance).methodForSelector_(arg0, /)`
+- `GSAnchor (instance).methodSignatureForSelector_(arg0, /)`
+- `GSAnchor (instance).moveElementUndoName()`
+- `GSAnchor (instance).moveWithPoint_(arg0, /)`
+- `GSAnchor (instance).mr_formattedDebugDescription()`
+- `GSAnchor (instance).mutableArrayValueForKeyPath_(arg0, /)`
+- `GSAnchor (instance).mutableArrayValueForKey_(arg0, /)`
+- `GSAnchor (instance).mutableCopy()`
+- `GSAnchor (instance).mutableCopyWithZone_(arg0, /)`
+- `GSAnchor (instance).mutableOrderedSetValueForKeyPath_(arg0, /)`
+- `GSAnchor (instance).mutableOrderedSetValueForKey_(arg0, /)`
+- `GSAnchor (instance).mutableSetValueForKeyPath_(arg0, /)`
+- `GSAnchor (instance).mutableSetValueForKey_(arg0, /)`
+- `GSAnchor (instance).my_compactDescription()`
+- `GSAnchor (instance).newScriptingObjectOfClass_forValueForKey_withContentsValue_properties_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).newTaggedNSStringWithASCIIBytes__length__(arg0, arg1, /)`
+- `GSAnchor (instance).objectSpecifier()`
+- `GSAnchor (instance).observationInfo()`
+- `GSAnchor (instance).observeValueForKeyPath_ofObject_change_context_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).optionDescriptionsForBinding_(arg0, /)`
+- `GSAnchor (instance).ownsDestinationObjectsForRelationshipKey_(arg0, /)`
+- `GSAnchor (instance).parent()`
+- `GSAnchor (instance).parseGlyphsLine_format_(arg0, arg1, /)`
+- `GSAnchor (instance).pep_afterDelay_(arg0, /)`
+- `GSAnchor (instance).pep_getInvocation_(arg0, /)`
+- `GSAnchor (instance).pep_onMainThread()`
+- `GSAnchor (instance).pep_onMainThreadIfNecessary()`
+- `GSAnchor (instance).pep_onOperationQueue_(arg0, /)`
+- `GSAnchor (instance).pep_onOperationQueue_priority_(arg0, arg1, /)`
+- `GSAnchor (instance).pep_onThread_(arg0, /)`
+- `GSAnchor (instance).pep_onThread_immediateForMatchingThread_(arg0, arg1, /)`
+- `GSAnchor (instance).performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSAnchor (instance).performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).performSelector_(arg0, /)`
+- `GSAnchor (instance).performSelector_object_afterDelay_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSAnchor (instance).performSelector_withObject_(arg0, arg1, /)`
+- `GSAnchor (instance).performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).performSelector_withObject_afterDelay_ignoreMenuTracking_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).performSelector_withObject_withObject_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).pkaxRespondsToSelector_fromExtrasProtocol_(arg0, arg1, /)`
+- `GSAnchor (instance).pkaxValueForKey_(arg0, /)`
+- `GSAnchor (instance).positionForLayerWidth_(arg0, /)`
+- `GSAnchor (instance).positionPrecise()`
+- `GSAnchor (instance).positionPreciseForLayerWidth_(arg0, /)`
+- `GSAnchor (instance).postRead_format_(arg0, arg1, /)`
+- `GSAnchor (instance).prepareForInterfaceBuilder()`
+- `GSAnchor (instance).propertyListValueFormat_(arg0, /)`
+- `GSAnchor (instance).pyobjc_performSelectorInBackground_withObject_(arg0, arg1, /)`
+- `GSAnchor (instance).pyobjc_performSelectorOnMainThread_withObject_(arg0, arg1, /)`
+- `GSAnchor (instance).pyobjc_performSelectorOnMainThread_withObject_modes_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).pyobjc_performSelectorOnMainThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).pyobjc_performSelector_onThread_withObject_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).pyobjc_performSelector_onThread_withObject_modes_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).pyobjc_performSelector_onThread_withObject_waitUntilDone_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).pyobjc_performSelector_onThread_withObject_waitUntilDone_modes_(arg0, arg1, arg2, arg3, arg4, /)`
+- `GSAnchor (instance).pyobjc_performSelector_withObject_afterDelay_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).pyobjc_performSelector_withObject_afterDelay_inModes_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).receiveObservedError_(arg0, /)`
+- `GSAnchor (instance).receiveObservedValue_(arg0, /)`
+- `GSAnchor (instance).release()`
+- `GSAnchor (instance).releaseRenderedTexture_forCGLContext_(arg0, arg1, /)`
+- `GSAnchor (instance).removeAttributeForKey_(arg0, /)`
+- `GSAnchor (instance).removeObject_fromBothSidesOfRelationshipWithKey_(arg0, arg1, /)`
+- `GSAnchor (instance).removeObject_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor (instance).removeObservation_(arg0, /)`
+- `GSAnchor (instance).removeObservation_forObservableKeyPath_(arg0, arg1, /)`
+- `GSAnchor (instance).removeObserver_forKeyPath_(arg0, arg1, /)`
+- `GSAnchor (instance).removeObserver_forKeyPath_context_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).removeUserDataForKey_(arg0, /)`
+- `GSAnchor (instance).removeValueAtIndex_fromPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor (instance).renderToBuffer_withBytesPerRow_pixelFormat_forBounds_(arg0, arg1, arg2, arg3, /)`
+- `GSAnchor (instance).renderWithCGLContext_forBounds_(arg0, arg1, /)`
+- `GSAnchor (instance).replaceValueAtIndex_inPropertyWithKey_withValue_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).replacementObjectForArchiver_(arg0, /)`
+- `GSAnchor (instance).replacementObjectForCoder_(arg0, /)`
+- `GSAnchor (instance).replacementObjectForKeyedArchiver_(arg0, /)`
+- `GSAnchor (instance).replacementObjectForPortCoder_(arg0, /)`
+- `GSAnchor (instance).resolveForwardingConflictWithPreviousMetadata_forKey_(arg0, arg1, /)`
+- `GSAnchor (instance).respondsToSelector_(arg0, /)`
+- `GSAnchor (instance).retain()`
+- `GSAnchor (instance).retainCount()`
+- `GSAnchor (instance).retainWeakReference()`
+- `GSAnchor (instance).roundToGridFast_(arg0, /)`
+- `GSAnchor (instance).roundToGrid_(arg0, /)`
+- `GSAnchor (instance).safari_isNSBoolean()`
+- `GSAnchor (instance).safari_postKVONotificationsForKey_aroundBlock_(arg0, arg1, /)`
+- `GSAnchor (instance).safari_removeDeallocationSentinelForObserver_(arg0, /)`
+- `GSAnchor (instance).safari_setDeallocationSentinelForObserver_(arg0, /)`
+- `GSAnchor (instance).safari_setDeallocationSentinelForObserver_withContext_(arg0, arg1, /)`
+- `GSAnchor (instance).saveToFile_format_error_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).scaleAttributes_(arg0, /)`
+- `GSAnchor (instance).scriptingProperties()`
+- `GSAnchor (instance).scriptingValueForSpecifier_(arg0, /)`
+- `GSAnchor (instance).self()`
+- `GSAnchor (instance).setAccessibilityBrailleMapRenderRegion_(arg0, /)`
+- `GSAnchor (instance).setAccessibilityBrailleMapRenderer_(arg0, /)`
+- `GSAnchor (instance).setAssociatedObject_(arg0, /)`
+- `GSAnchor (instance).setAttribute_forKey_(arg0, arg1, /)`
+- `GSAnchor (instance).setAttributes_(arg0, /)`
+- `GSAnchor (instance).setAttributes_format_(arg0, arg1, /)`
+- `GSAnchor (instance).setContext_(arg0, /)`
+- `GSAnchor (instance).setLocked_(arg0, /)`
+- `GSAnchor (instance).setNameFast_(arg0, /)`
+- `GSAnchor (instance).setName_(arg0, /)`
+- `GSAnchor (instance).setNilValueForKey_(arg0, /)`
+- `GSAnchor (instance).setObservationInfo_(arg0, /)`
+- `GSAnchor (instance).setObservation_forObservingKeyPath_(arg0, arg1, /)`
+- `GSAnchor (instance).setOrientation_(arg0, /)`
+- `GSAnchor (instance).setParent_(arg0, /)`
+- `GSAnchor (instance).setPositionFast_(arg0, /)`
+- `GSAnchor (instance).setPositionFast_round_(arg0, arg1, /)`
+- `GSAnchor (instance).setPosition_(arg0, /)`
+- `GSAnchor (instance).setPosition_forLayerWidth_(arg0, arg1, /)`
+- `GSAnchor (instance).setPropertyListValue_format_(arg0, arg1, /)`
+- `GSAnchor (instance).setScriptingProperties_(arg0, /)`
+- `GSAnchor (instance).setTempData_(arg0, /)`
+- `GSAnchor (instance).setTempData_forKey_(arg0, arg1, /)`
+- `GSAnchor (instance).setUserData_(arg0, /)`
+- `GSAnchor (instance).setUserData_forKey_(arg0, arg1, /)`
+- `GSAnchor (instance).setUserInterfaceItemIdentifier_(arg0, /)`
+- `GSAnchor (instance).setValue_forKeyPath_(arg0, arg1, /)`
+- `GSAnchor (instance).setValue_forKey_(arg0, arg1, /)`
+- `GSAnchor (instance).setValue_forUndefinedKey_(arg0, arg1, /)`
+- `GSAnchor (instance).setValuesForKeysWithDictionary_(arg0, /)`
+- `GSAnchor (instance).setX_(arg0, /)`
+- `GSAnchor (instance).setY_(arg0, /)`
+- `GSAnchor (instance).settingsView_clearSettingForKey_(arg0, arg1, /)`
+- `GSAnchor (instance).settingsView_renameKey_toKey_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).settingsView_setSetting_forKey_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).settingsView_settingForKey_(arg0, arg1, /)`
+- `GSAnchor (instance).settingsView_shouldRenameKey_(arg0, arg1, /)`
+- `GSAnchor (instance).shapeType()`
+- `GSAnchor (instance).shouldColorMatch()`
+- `GSAnchor (instance).storedValueForKey_(arg0, /)`
+- `GSAnchor (instance).stringValueSafe()`
+- `GSAnchor (instance).stringValueSafe_(arg0, /)`
+- `GSAnchor (instance).superclass()`
+- `GSAnchor (instance).supportedBufferPixelFormats()`
+- `GSAnchor (instance).supportedRenderedTexturePixelFormats()`
+- `GSAnchor (instance).supportsBSXPCSecureCoding()`
+- `GSAnchor (instance).supportsRBSXPCSecureCoding()`
+- `GSAnchor (instance).takeStoredValue_forKey_(arg0, arg1, /)`
+- `GSAnchor (instance).takeStoredValuesFromDictionary_(arg0, /)`
+- `GSAnchor (instance).takeValue_forKeyPath_(arg0, arg1, /)`
+- `GSAnchor (instance).takeValue_forKey_(arg0, arg1, /)`
+- `GSAnchor (instance).takeValuesFromDictionary_(arg0, /)`
+- `GSAnchor (instance).tempData()`
+- `GSAnchor (instance).tempDataForKey_(arg0, /)`
+- `GSAnchor (instance).toManyRelationshipKeys()`
+- `GSAnchor (instance).toOneRelationshipKeys()`
+- `GSAnchor (instance).transformFast_round_(arg0, arg1, /)`
+- `GSAnchor (instance).transform_(arg0, /)`
+- `GSAnchor (instance).transform_selection_(arg0, arg1, /)`
+- `GSAnchor (instance).un_safeBoolValue()`
+- `GSAnchor (instance).unableToSetNilForKey_(arg0, /)`
+- `GSAnchor (instance).unbind_(arg0, /)`
+- `GSAnchor (instance).undoManager()`
+- `GSAnchor (instance).undoManagerCheck()`
+- `GSAnchor (instance).userDataForKey_(arg0, /)`
+- `GSAnchor (instance).userInterfaceItemIdentifier()`
+- `GSAnchor (instance).utf8ValueSafe()`
+- `GSAnchor (instance).utf8ValueSafe_(arg0, /)`
+- `GSAnchor (instance).validateTakeValue_forKeyPath_(arg0, arg1, /)`
+- `GSAnchor (instance).validateValue_forKeyPath_error_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).validateValue_forKey_(arg0, arg1, /)`
+- `GSAnchor (instance).validateValue_forKey_error_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).valueAtIndex_inPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor (instance).valueClassForBinding_(arg0, /)`
+- `GSAnchor (instance).valueForKeyPath_(arg0, /)`
+- `GSAnchor (instance).valueForKey_(arg0, /)`
+- `GSAnchor (instance).valueForUndefinedKey_(arg0, /)`
+- `GSAnchor (instance).valueWithName_inPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor (instance).valueWithUniqueID_inPropertyWithKey_(arg0, arg1, /)`
+- `GSAnchor (instance).valuesForKeys_(arg0, /)`
+- `GSAnchor (instance).vk_loggingDescription()`
+- `GSAnchor (instance).vk_loggingIdentifier()`
+- `GSAnchor (instance).vk_prettyLoggingDescription()`
+- `GSAnchor (instance).willChangeValueForKey_(arg0, /)`
+- `GSAnchor (instance).willChangeValueForKey_withSetMutation_usingObjects_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).willChange_valuesAtIndexes_forKey_(arg0, arg1, arg2, /)`
+- `GSAnchor (instance).zone()`
