@@ -1,6 +1,6 @@
 ### GlyphsGPT with Chat — AI-driven Macro Editor for Glyphs App
 
-Build and **edit code by chatting**, then **run the script instantly**—no scripting background needed.  
+**Build and edit code by chatting**, then **run the script instantly**—no scripting background needed.  
 GlyphsGPT turns your plain-language requests into ready-to-run Python macros inside Glyphs, so you can stay in design flow.
 
 **Why designers love it**
