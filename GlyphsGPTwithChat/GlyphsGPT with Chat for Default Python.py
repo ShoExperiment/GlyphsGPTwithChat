@@ -22,6 +22,55 @@ from Foundation import NSObject, NSDictionary, NSString, NSArray, NSNull, NSNumb
 from WebKit import WKWebView, WKWebViewConfiguration, WKUserContentController
 import ssl, socket, urllib.parse
 
+# --- Apple TLS bridge (fixes NameError and cert issues) ----------------------
+try:
+    # If Foundation is available (it is in Glyphs' Python), enable Apple TLS path
+    from Foundation import (
+        NSURL, NSMutableURLRequest, NSData, NSURLConnection
+    )
+    HAS_NSURLSESSION = True
+except Exception:
+    HAS_NSURLSESSION = False
+
+def _ns_request_json(method, url, body, headers, timeout):
+    """
+    Minimal Cocoa HTTPS request using Apple's TLS trust store.
+    Uses NSURLConnection.sendSynchronousRequest... for simplicity/reliability.
+    Falls back to urllib-style decode and JSON parse.
+    """
+    if not HAS_NSURLSESSION:
+        # Should never be reached if guard checks are correct, but keep as safety.
+        raise RuntimeError("Apple TLS bridge unavailable on this Python.")
+
+    # Build NSMutableURLRequest
+    req = NSMutableURLRequest.requestWithURL_(NSURL.URLWithString_(url))
+    req.setHTTPMethod_(method or "GET")
+    if headers:
+        for k, v in headers.items():
+            req.setValue_forHTTPHeaderField_(str(v), str(k))
+    if body is not None:
+        data = NSData.dataWithBytes_length_(body, len(body))
+        req.setHTTPBody_(data)
+
+    # Synchronous send via Cocoa (uses macOS trust)
+    data, response, error = NSURLConnection.sendSynchronousRequest_returningResponse_error_(req, None, None)
+    if error is not None:
+        # Prefer a clear error message in UI
+        try:
+            msg = str(error.localizedDescription())
+        except Exception:
+            msg = str(error)
+        raise RuntimeError(f"Apple TLS request failed: {msg}")
+
+    raw = bytes(data or b"").decode("utf-8", "ignore")
+    import json as _json
+    try:
+        return _json.loads(raw)
+    except Exception:
+        return {"_raw": raw}
+# ---------------------------------------------------------------------------
+
+
 DEBUG = False
 PREFKEY = "com.yourname.GlyphsGPT.HTMLChat"
 
