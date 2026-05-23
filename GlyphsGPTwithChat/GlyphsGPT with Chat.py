@@ -8,6 +8,7 @@ A standalone Glyphs script with an HTML chat UI that uses Codex.
 - Direct mode: Codex + Glyphs MCP
 - Code mode: Codex returns Glyphs Python code, displayed/editable/executable in-app
 - Multi-tab sessions with persistent history
+- Fixed Codex agent workspace at ~/GlyphsGPTCodexAgent for shared AGENTS.md and skills
 - Compact top chrome merged with the safe close-box version; prompt/response/console kept from the safe version
 """
 
@@ -52,6 +53,7 @@ except Exception:
 
 REQUEST_TIMEOUT_S = 20.0
 RESOURCE_TIMEOUT_S = 45.0
+CODEX_AGENT_DIR_NAME = "GlyphsGPTCodexAgent"
 _PRIVATE_HOST = re.compile(
     r"^(localhost|127(?:\.\d{1,3}){3}|10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})$"
 )
@@ -221,9 +223,10 @@ DEFAULT_MODE = "direct"
 DEFAULT_MODEL = ""
 DEFAULT_PROVIDER = "codex"
 DEFAULT_THEME = "dark"
+DEFAULT_REASONING = "auto"
 STATE_DIR = os.path.expanduser("~/Library/Application Support/Glyphs 3")
 STATE_PATH = os.path.join(STATE_DIR, "GlyphsGPTCodex_state.json")
-SCRIPT_BUILD = "2026-03-15.responses_api_appletls2"
+SCRIPT_BUILD = "2026-03-18.reasoning_controls"
 DEFAULT_LMSTUDIO_PLUGIN = "mcp/glyphs-mcp"
 DEFAULT_GLYPHS_MCP_URL = "http://127.0.0.1:9680/mcp/"
 
@@ -236,9 +239,24 @@ SESSION_DEFAULTS = {
     "apiBase": "",
     "apiKey": "",
     "theme": DEFAULT_THEME,
+    "reasoning": DEFAULT_REASONING,
     "copyToMacro": False,
     "history": [],
 }
+
+REASONING_OPTIONS = {
+    "codex": ("auto", "low", "medium", "high", "xhigh"),
+    "openai": ("auto", "none", "low", "medium", "high", "xhigh"),
+    "openai_compat": ("auto", "none", "low", "medium", "high", "xhigh"),
+    "anthropic": ("auto", "off", "low", "medium", "high"),
+}
+
+def normalize_reasoning_value(provider, value):
+    provider = str(provider or DEFAULT_PROVIDER).strip().lower()
+    if provider not in REASONING_OPTIONS:
+        provider = DEFAULT_PROVIDER
+    val = str(value or DEFAULT_REASONING).strip().lower() or DEFAULT_REASONING
+    return val if val in REASONING_OPTIONS.get(provider, ()) else DEFAULT_REASONING
 
 HTML = r'''<!doctype html>
 <html>
@@ -443,6 +461,9 @@ HTML = r'''<!doctype html>
       <div class="muted">Model</div>
       <input id="settingsModel" type="text" placeholder="Model name"/>
 
+      <div class="muted" id="settingsReasoningLabel">Reasoning</div>
+      <select id="settingsReasoning"></select>
+
       <div class="muted">Theme</div>
       <select id="settingsTheme">
         <option value="dark">Dark</option>
@@ -480,16 +501,69 @@ const providerBadge = document.getElementById('providerBadge');
 const settingsOverlay = document.getElementById('settingsOverlay');
 const settingsProviderEl = document.getElementById('settingsProvider');
 const settingsModelEl = document.getElementById('settingsModel');
+const settingsReasoningLabelEl = document.getElementById('settingsReasoningLabel');
+const settingsReasoningEl = document.getElementById('settingsReasoning');
 const settingsThemeEl = document.getElementById('settingsTheme');
 const settingsApiBaseEl = document.getElementById('settingsApiBase');
 const settingsApiKeyEl = document.getElementById('settingsApiKey');
 const settingsHintEl = document.getElementById('settingsHint');
 const advancedLabelEl = document.getElementById('advancedLabel');
-let state = {mode:'direct', server:'glyphs-mcp-server', model:'', copyToMacro:false, provider:'codex', apiBase:'', apiKey:'', theme:'dark'};
+let state = {mode:'direct', server:'glyphs-mcp-server', model:'', copyToMacro:false, provider:'codex', apiBase:'', apiKey:'', theme:'dark', reasoning:'auto'};
 let tabInfo = {names:['Chat 1'], active:0};
 let __clickTimer = null;
 
 function providerLabel(v){ return ({codex:'Codex CLI', openai:'OpenAI API', anthropic:'Claude API', openai_compat:'Local / OpenAI-compatible'})[v] || v; }
+function reasoningConfigForProvider(provider){
+  if (provider === 'anthropic') {
+    return {
+      label: 'Thinking',
+      options: [
+        {value:'auto', label:'Auto'},
+        {value:'off', label:'Off'},
+        {value:'low', label:'Low'},
+        {value:'medium', label:'Medium'},
+        {value:'high', label:'High'}
+      ]
+    };
+  }
+  if (provider === 'codex') {
+    return {
+      label: 'Reasoning',
+      options: [
+        {value:'auto', label:'Auto'},
+        {value:'low', label:'Low'},
+        {value:'medium', label:'Medium'},
+        {value:'high', label:'High'},
+        {value:'xhigh', label:'XHigh'}
+      ]
+    };
+  }
+  return {
+    label: 'Reasoning',
+    options: [
+      {value:'auto', label:'Auto'},
+      {value:'none', label:'None'},
+      {value:'low', label:'Low'},
+      {value:'medium', label:'Medium'},
+      {value:'high', label:'High'},
+      {value:'xhigh', label:'XHigh'}
+    ]
+  };
+}
+function syncReasoningOptions(selectedValue){
+  const cfg = reasoningConfigForProvider(settingsProviderEl.value);
+  if (settingsReasoningLabelEl) settingsReasoningLabelEl.textContent = cfg.label;
+  const current = String(selectedValue || settingsReasoningEl.value || state.reasoning || 'auto');
+  settingsReasoningEl.innerHTML = '';
+  cfg.options.forEach(opt => {
+    const el = document.createElement('option');
+    el.value = opt.value;
+    el.textContent = opt.label;
+    settingsReasoningEl.appendChild(el);
+  });
+  const valid = cfg.options.some(opt => opt.value === current) ? current : 'auto';
+  settingsReasoningEl.value = valid;
+}
 function applyTheme(){ document.body.classList.toggle('light', state.theme === 'light'); }
 function looksLikeSentence(line){
   const t = String(line || '').trim();
@@ -689,16 +763,17 @@ function hydrateHistory(items){
     if (role === 'user') addUser(content, id); else if (kind === 'code') addCode(role, content, id); else addText(role, content, id);
   });
 }
-function syncProviderFields(){
+function syncProviderFields(selectedReasoning){
   const provider = settingsProviderEl.value; const isCodex = provider === 'codex'; const isAnthropic = provider === 'anthropic'; const isLocal = provider === 'openai_compat';
   settingsApiBaseEl.placeholder = isLocal ? 'http://127.0.0.1:1234/v1' : (isAnthropic ? 'https://api.anthropic.com/v1' : 'https://api.openai.com/v1');
   settingsHintEl.textContent = isCodex
-    ? 'Codex uses the local CLI. Direct mode can use Glyphs MCP.'
+    ? 'Codex uses the local CLI. Reasoning controls are sent as one-off config overrides. Direct mode can use Glyphs MCP.'
     : (isAnthropic
-      ? 'Claude API uses the Anthropic Messages endpoint. Direct mode becomes normal chat; Code mode returns Glyphs Python.'
+      ? 'Claude API uses the Messages endpoint. Thinking options are mapped to Claude thinking settings depending on model support.'
       : (isLocal
-        ? 'Local / OpenAI-compatible uses the Responses API when available, with chat completions fallback for older servers. If API Base points to LM Studio, Direct mode can use Glyphs MCP through /v1/responses.'
-        : 'OpenAI uses the Responses API. Direct mode becomes normal chat; Code mode returns Glyphs Python.'));
+        ? 'Local / OpenAI-compatible uses the Responses API when available, with chat completions fallback for older servers. Reasoning controls are best-effort because support varies by server.'
+        : 'OpenAI uses the Responses API. Reasoning controls are sent through reasoning.effort when supported.'));
+  syncReasoningOptions(selectedReasoning);
 }
 function syncUI(){
   modeDirectEl.classList.toggle('active', state.mode === 'direct');
@@ -716,7 +791,7 @@ function renderTabs(info){
   names.forEach((name, i) => { const t = document.createElement('div'); t.className = 'tab' + (i === active ? ' active' : ''); t.setAttribute('data-idx', i); t.innerHTML = '<span class="tabLabel">'+esc(name || ('Chat ' + (i+1)))+'</span><span class="x" title="Close" data-close="'+i+'">×</span>'; tabbar.appendChild(t); });
   const plus = document.createElement('button'); plus.id = 'btnPlusTab'; plus.className = 'plus'; plus.textContent = '＋'; tabbar.appendChild(plus);
 }
-function openSettings(){ settingsProviderEl.value = state.provider || 'codex'; settingsModelEl.value = state.model || ''; settingsThemeEl.value = state.theme || 'dark'; settingsApiBaseEl.value = state.apiBase || ''; settingsApiKeyEl.value = state.apiKey || ''; syncProviderFields(); settingsOverlay.classList.add('open'); }
+function openSettings(){ settingsProviderEl.value = state.provider || 'codex'; settingsModelEl.value = state.model || ''; settingsThemeEl.value = state.theme || 'dark'; settingsApiBaseEl.value = state.apiBase || ''; settingsApiKeyEl.value = state.apiKey || ''; syncProviderFields(state.reasoning || 'auto'); settingsOverlay.classList.add('open'); }
 function closeSettings(){ settingsOverlay.classList.remove('open'); }
 function sendAsk(){
   const prompt = (promptEl.value || '').trim(); if (!prompt) return;
@@ -736,8 +811,8 @@ document.getElementById('openMacroBtn').onclick = function(){ if (window.webkit 
 document.getElementById('settingsBtn').onclick = openSettings;
 document.getElementById('settingsCancel').onclick = closeSettings;
 document.getElementById('settingsSave').onclick = function(){
-  state.provider = settingsProviderEl.value; state.model = settingsModelEl.value.trim(); state.theme = settingsThemeEl.value; state.apiBase = settingsApiBaseEl.value.trim(); state.apiKey = settingsApiKeyEl.value; modelEl.value = state.model || ''; syncUI(); closeSettings();
-  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) window.webkit.messageHandlers.bridge.postMessage({type:'saveSettings', settings:{provider:state.provider, model:state.model, theme:state.theme, apiBase:state.apiBase, apiKey:state.apiKey}});
+  state.provider = settingsProviderEl.value; state.model = settingsModelEl.value.trim(); state.reasoning = settingsReasoningEl.value || 'auto'; state.theme = settingsThemeEl.value; state.apiBase = settingsApiBaseEl.value.trim(); state.apiKey = settingsApiKeyEl.value; modelEl.value = state.model || ''; syncUI(); closeSettings();
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) window.webkit.messageHandlers.bridge.postMessage({type:'saveSettings', settings:{provider:state.provider, model:state.model, reasoning:state.reasoning, theme:state.theme, apiBase:state.apiBase, apiKey:state.apiKey}});
 };
 settingsProviderEl.onchange = syncProviderFields;
 settingsOverlay.addEventListener('click', function(e){ if (e.target === settingsOverlay) closeSettings(); });
@@ -966,6 +1041,7 @@ class GlyphsGPTCodex(object):
                 "apiBase": str(s.get("apiBase") or out["apiBase"]),
                 "apiKey": str(s.get("apiKey") or out["apiKey"]),
                 "theme": str(s.get("theme") or out["theme"]),
+                "reasoning": normalize_reasoning_value(str(s.get("provider") or out["provider"]), s.get("reasoning") or out["reasoning"]),
                 "copyToMacro": bool(s.get("copyToMacro", out["copyToMacro"])),
             })
             if out["mode"] not in ("direct", "code"):
@@ -1041,6 +1117,7 @@ class GlyphsGPTCodex(object):
             "apiBase": s.get("apiBase", ""),
             "apiKey": s.get("apiKey", ""),
             "theme": s.get("theme", DEFAULT_THEME),
+            "reasoning": s.get("reasoning", DEFAULT_REASONING),
             "copyToMacro": bool(s.get("copyToMacro", False)),
         }
 
@@ -1140,6 +1217,7 @@ class GlyphsGPTCodex(object):
             theme = DEFAULT_THEME
         cur["provider"] = provider
         cur["model"] = str(settings.get("model") or cur.get("model") or "")
+        cur["reasoning"] = normalize_reasoning_value(provider, settings.get("reasoning") if "reasoning" in settings else cur.get("reasoning") or DEFAULT_REASONING)
         cur["apiBase"] = str(settings.get("apiBase") or cur.get("apiBase") or "")
         cur["apiKey"] = str(settings.get("apiKey") or cur.get("apiKey") or "")
         cur["theme"] = theme
@@ -1250,15 +1328,33 @@ class GlyphsGPTCodex(object):
         return None
 
     def _workspace_dir(self):
+        return self._ensure_codex_agent_workspace()
+
+    def _ensure_codex_agent_workspace(self):
+        base = os.path.join(os.path.expanduser("~"), CODEX_AGENT_DIR_NAME)
+        skills_dir = os.path.join(base, ".agents", "skills")
         try:
-            font = Glyphs.font
-            if font and font.filepath:
-                folder = os.path.dirname(str(font.filepath))
-                if os.path.isdir(folder):
-                    return folder
+            os.makedirs(skills_dir, exist_ok=True)
+            agents_path = os.path.join(base, "AGENTS.md")
+            if not os.path.exists(agents_path):
+                with open(agents_path, "w", encoding="utf-8") as f:
+                    f.write(
+                        "# GlyphsGPTCodex Agent Workspace\n\n"
+                        "Put shared Codex instructions here.\n"
+                        "- This folder is always used as the Codex working directory.\n"
+                        "- Add reusable skills under .agents/skills/.\n"
+                    )
+            readme_path = os.path.join(base, "README.txt")
+            if not os.path.exists(readme_path):
+                with open(readme_path, "w", encoding="utf-8") as f:
+                    f.write(
+                        "GlyphsGPTCodex Agent Workspace\n\n"
+                        "Edit AGENTS.md for shared instructions.\n"
+                        "Create skills inside .agents/skills/<skill-name>/SKILL.md\n"
+                    )
         except Exception:
             pass
-        return os.path.expanduser("~")
+        return base
 
     def _font_context(self):
         lines = []
@@ -1357,17 +1453,20 @@ class GlyphsGPTCodex(object):
             "Recent tab history:\n%s" 
         ) % (plugin_id, ctx, hist or "(none)")
 
-    def _build_command(self, mode, server, model, outputPath):
+    def _build_command(self, mode, server, model, outputPath, reasoning=DEFAULT_REASONING):
         codex = self._codex_path()
         if not codex:
             raise RuntimeError("Could not find Codex CLI. Checked PATH and Codex.app bundled binary.")
-        cmd = [
-            codex,
+        cmd = [codex]
+        effort = normalize_reasoning_value("codex", reasoning)
+        if effort != "auto":
+            cmd.extend(["--config", 'model_reasoning_effort="%s"' % effort])
+        cmd.extend([
             "exec",
             "--skip-git-repo-check",
             "--full-auto",
             "--output-last-message", outputPath,
-        ]
+        ])
         if model:
             cmd.extend(["-m", model])
         cmd.append("-")
@@ -1569,7 +1668,30 @@ class GlyphsGPTCodex(object):
             sample = str(res)[:2000]
         raise RuntimeError("Provider returned no message. Raw response: %s" % sample)
 
-    def _call_openai_responses(self, apiBase, apiKey, model, system, messages, tools=None, temperature=None, timeout=180):
+    def _openai_reasoning_effort(self, reasoning):
+        val = str(reasoning or DEFAULT_REASONING).strip().lower()
+        return val if val in ("none", "low", "medium", "high", "xhigh") else None
+
+    def _reasoning_rejected(self, exc):
+        lowered = str(exc or "").lower()
+        return ("reasoning" in lowered) and any(tok in lowered for tok in ("invalid", "unknown", "unsupported", "unrecognized", "extra fields", "not allowed"))
+
+    def _anthropic_thinking_settings(self, model, reasoning):
+        val = str(reasoning or DEFAULT_REASONING).strip().lower()
+        if val in ("", "auto", "off", "none"):
+            return None, None, 4096
+        if val not in ("low", "medium", "high"):
+            return None, None, 4096
+
+        model_name = str(model or "").strip().lower()
+        if "4-6" in model_name and ("opus" in model_name or "sonnet" in model_name):
+            return {"type": "adaptive"}, {"effort": val}, 8192
+
+        budgets = {"low": 1024, "medium": 4096, "high": 8192}
+        budget = budgets.get(val, 4096)
+        return {"type": "enabled", "budget_tokens": budget}, None, max(4096, budget + 1024)
+
+    def _call_openai_responses(self, apiBase, apiKey, model, system, messages, tools=None, reasoning=DEFAULT_REASONING, temperature=None, timeout=180):
         base = self._normalize_openai_base(apiBase, "https://api.openai.com/v1")
         if not model:
             raise RuntimeError("Set a model in Settings.")
@@ -1582,6 +1704,9 @@ class GlyphsGPTCodex(object):
             "input": self._responses_input_from_messages(messages),
             "text": {"format": {"type": "text"}},
         }
+        effort = self._openai_reasoning_effort(reasoning)
+        if effort is not None:
+            payload["reasoning"] = {"effort": effort}
         if tools:
             payload["tools"] = tools
             payload["tool_choice"] = "auto"
@@ -1652,10 +1777,10 @@ class GlyphsGPTCodex(object):
                 parts.append("%s: %s" % (role.capitalize(), text))
         return "\n\n".join(parts).strip()
 
-    def _call_lmstudio_responses(self, apiBase, apiKey, model, server, system, messages):
+    def _call_lmstudio_responses(self, apiBase, apiKey, model, server, system, messages, reasoning=DEFAULT_REASONING):
         tools = self._build_lmstudio_responses_tools(server)
         try:
-            return self._call_openai_responses(apiBase, apiKey, model, system, messages, tools=tools, temperature=0, timeout=180)
+            return self._call_openai_responses(apiBase, apiKey, model, system, messages, tools=tools, reasoning=reasoning, temperature=0, timeout=180)
         except Exception as e:
             lowered = str(e or "").lower()
             if "invalid type for 'input'" not in lowered and "invalid_union" not in lowered:
@@ -1674,6 +1799,9 @@ class GlyphsGPTCodex(object):
                 "tool_choice": "auto",
                 "temperature": 0,
             }
+            effort = self._openai_reasoning_effort(reasoning)
+            if effort is not None:
+                payload["reasoning"] = {"effort": effort}
             res = self._http_post_json(base + "/responses", headers, payload, timeout=180)
             return self._extract_responses_text(res)
 
@@ -1732,14 +1860,19 @@ class GlyphsGPTCodex(object):
             return "Tools ran but no final message was returned.\n" + "\n".join(tool_notes)
         raise RuntimeError("LM Studio returned no message.")
 
-    def _call_anthropic(self, apiBase, apiKey, model, system, messages):
+    def _call_anthropic(self, apiBase, apiKey, model, system, messages, reasoning=DEFAULT_REASONING):
         if not apiKey:
             raise RuntimeError("Set an Anthropic API key in Settings.")
         if not model:
             raise RuntimeError("Set a model in Settings.")
         base = (apiBase or "https://api.anthropic.com/v1").rstrip("/")
         headers = {"Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01"}
-        payload = {"model": model, "max_tokens": 4096, "system": system, "messages": messages}
+        thinking, output_config, max_tokens = self._anthropic_thinking_settings(model, reasoning)
+        payload = {"model": model, "max_tokens": max_tokens, "system": system, "messages": messages}
+        if thinking is not None:
+            payload["thinking"] = thinking
+        if output_config is not None:
+            payload["output_config"] = output_config
         res = self._http_post_json(base + "/messages", headers, payload, timeout=120)
         return "".join(part.get("text") or "" for part in (res.get("content") or []) if isinstance(part, dict) and part.get("type") == "text")
 
@@ -1749,8 +1882,9 @@ class GlyphsGPTCodex(object):
         try:
             cur = self.cur()
             system, messages = self._build_api_messages(mode)
+            reasoning = normalize_reasoning_value(provider, cur.get("reasoning", DEFAULT_REASONING))
             if provider == "anthropic":
-                text = self._call_anthropic(cur.get("apiBase", ""), cur.get("apiKey", ""), cur.get("model", ""), system, messages)
+                text = self._call_anthropic(cur.get("apiBase", ""), cur.get("apiKey", ""), cur.get("model", ""), system, messages, reasoning=reasoning)
             else:
                 base = cur.get("apiBase", "")
                 key = cur.get("apiKey", "")
@@ -1763,7 +1897,7 @@ class GlyphsGPTCodex(object):
 
                 if provider == "openai":
                     try:
-                        text = self._call_openai_responses(base, key, cur.get("model", ""), system, messages)
+                        text = self._call_openai_responses(base, key, cur.get("model", ""), system, messages, reasoning=reasoning)
                     except Exception as e:
                         lowered = str(e or "").lower()
                         if mode == "direct" and ("provider returned no message" in lowered or "response incomplete" in lowered):
@@ -1772,17 +1906,34 @@ class GlyphsGPTCodex(object):
                             raise
                 elif provider == "openai_compat" and mode == "direct" and self._is_lmstudio_base(base):
                     try:
-                        text = self._call_lmstudio_responses(base, key, cur.get("model", ""), cur.get("server", DEFAULT_SERVER), system, messages)
+                        text = self._call_lmstudio_responses(base, key, cur.get("model", ""), cur.get("server", DEFAULT_SERVER), system, messages, reasoning=reasoning)
                     except Exception as e:
-                        if self._use_chat_completions_fallback(e) or "invalid type for 'input'" in str(e or "").lower() or "invalid_union" in str(e or "").lower():
+                        lowered = str(e or "").lower()
+                        if reasoning != DEFAULT_REASONING and self._reasoning_rejected(e):
+                            try:
+                                text = self._call_lmstudio_responses(base, key, cur.get("model", ""), cur.get("server", DEFAULT_SERVER), system, messages, reasoning=DEFAULT_REASONING)
+                            except Exception as e2:
+                                if self._use_chat_completions_fallback(e2) or "invalid type for 'input'" in str(e2 or "").lower() or "invalid_union" in str(e2 or "").lower():
+                                    text = self._call_lmstudio_chat(base, key, cur.get("model", ""), cur.get("server", DEFAULT_SERVER), self._last_user_prompt())
+                                else:
+                                    raise
+                        elif self._use_chat_completions_fallback(e) or "invalid type for 'input'" in lowered or "invalid_union" in lowered:
                             text = self._call_lmstudio_chat(base, key, cur.get("model", ""), cur.get("server", DEFAULT_SERVER), self._last_user_prompt())
                         else:
                             raise
                 else:
                     try:
-                        text = self._call_openai_responses(base, key, cur.get("model", ""), system, messages)
+                        text = self._call_openai_responses(base, key, cur.get("model", ""), system, messages, reasoning=reasoning)
                     except Exception as e:
-                        if self._use_chat_completions_fallback(e):
+                        if provider == "openai_compat" and reasoning != DEFAULT_REASONING and self._reasoning_rejected(e):
+                            try:
+                                text = self._call_openai_responses(base, key, cur.get("model", ""), system, messages, reasoning=DEFAULT_REASONING)
+                            except Exception as e2:
+                                if self._use_chat_completions_fallback(e2):
+                                    text = self._call_openai_like(base, key, cur.get("model", ""), system, messages)
+                                else:
+                                    raise
+                        elif self._use_chat_completions_fallback(e):
                             text = self._call_openai_like(base, key, cur.get("model", ""), system, messages)
                         else:
                             raise
@@ -1808,6 +1959,7 @@ class GlyphsGPTCodex(object):
         copyToMacro = bool(payload.get("copyToMacro"))
 
         cur = self.cur()
+        reasoning = normalize_reasoning_value(payload.get("provider") or cur.get("provider") or DEFAULT_PROVIDER, payload.get("reasoning") or cur.get("reasoning") or DEFAULT_REASONING)
         provider = str(payload.get("provider") or cur.get("provider") or DEFAULT_PROVIDER).strip().lower()
         if provider not in ("codex", "openai", "anthropic", "openai_compat"):
             provider = DEFAULT_PROVIDER
@@ -1824,6 +1976,7 @@ class GlyphsGPTCodex(object):
             "apiBase": str(payload.get("apiBase") or cur.get("apiBase") or ""),
             "apiKey": str(payload.get("apiKey") or cur.get("apiKey") or ""),
             "theme": theme,
+            "reasoning": normalize_reasoning_value(provider, reasoning),
         })
         self._save_store()
         self.send_state()
@@ -1863,7 +2016,7 @@ class GlyphsGPTCodex(object):
             fd, outputPath = tempfile.mkstemp(prefix="glyphsgptcodex_", suffix=".txt")
             os.close(fd)
             tmp = outputPath
-            cmd = self._build_command(mode, server, model, outputPath)
+            cmd = self._build_command(mode, server, model, outputPath, self.cur().get("reasoning", DEFAULT_REASONING))
             env = os.environ.copy()
             env["PATH"] = ":".join([
                 "/Applications/Codex.app/Contents/Resources",
@@ -1871,7 +2024,7 @@ class GlyphsGPTCodex(object):
                 "/usr/local/bin",
                 env.get("PATH", ""),
             ])
-            cwd = self._workspace_dir() if mode == "direct" else os.path.expanduser("~")
+            cwd = self._workspace_dir()
             self.codexProcess = subprocess.Popen(
                 cmd,
                 stdin=subprocess.PIPE,
