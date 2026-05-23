@@ -1,952 +1,859 @@
-#MenuTitle: GlyphsGPT with Chat
+# MenuTitle: GlyphsGPT with Chat
 # -*- coding: utf-8 -*-
-__doc__="""
-GlyphsGPT with Chat
+from __future__ import division, print_function, unicode_literals
+
+__doc__ = """
+GlyphsGPTCodex
+A standalone Glyphs script with an HTML chat UI that uses Codex.
+- Direct mode: Codex + Glyphs MCP
+- Code mode: Codex returns Glyphs Python code, displayed/editable/executable in-app
+- Multi-tab sessions with persistent history
+- Compact top chrome merged with the safe close-box version; prompt/response/console kept from the safe version
 """
 
-# GlyphsGPT · HTML Chat UI (WKWebView) — TABS + HARDENED BRIDGE + EDITABLE CODE + RELIABLE PYTHON COLORS
-# - Real tabs: per-tab settings & history; "+" clones current tab
-# - Bridge is crash-proof and JSON-safe (no ObjC containers leak out)
-# - Per-tab Settings/History stored under PREFKEY
-# - RAG optional; strict/grounded prompts available
-# - Inline editor (Edit → Run / Done / Cancel), Execute and Copy
-# - Output sanitizer for stray tool tokens
-# - FIX: proper Python syntax highlighting for strings, comments, numbers, keywords, and common builtins
-#        using class-based spans (no inline hex codes), and a placeholder system to avoid coloring inside strings
-
-from GlyphsApp import Glyphs
-import json, urllib.request, urllib.error, traceback, sys, io, contextlib, re, copy
+import builtins
+import contextlib
+import copy
+import io
+import json
+import os
+import re
+import shutil
+import subprocess
+import tempfile
+import threading
+import traceback
+import uuid
+import ssl
+import urllib.request
+import urllib.error
+import urllib.parse
 
 import objc
-from AppKit import NSWindow
+import AppKit as AK
+import Foundation as FN
+from AppKit import NSWindow, NSPasteboard, NSPasteboardTypeString
 from Foundation import NSObject, NSDictionary, NSString, NSArray, NSNull, NSNumber
 from WebKit import WKWebView, WKWebViewConfiguration, WKUserContentController
-import ssl, socket, urllib.parse
+from PyObjCTools.AppHelper import callAfter
 
-DEBUG = False
-PREFKEY = "com.yourname.GlyphsGPT.HTMLChat"
+from GlyphsApp import Glyphs
 
-# ---- Defaults for a single session (tab) ----
-SESSION_DEFAULTS = dict(
-    name=None,                     
-    llmBase="http://<YourIP Address>/v1",# Set https://api.openai.com/v1  for gpt-5
-    llmModel="openai/gpt-oss-20b", #Set gpt-5 for gpt-5 API
-    llmKey="",#Set your OpenAI key for gpt-5
-    ragURL="http://<YourIP Address>/search",#elete for gpt-5
-    ragToken="",
-    topK=8,
-    useRAG=True, #set False for gpt-5
-    mode=0,                        # 0 Auto, 1 Grounded, 2 Hybrid, 3 Chat
-    remember=True,
-    maxContext=20000,
-    maxOutput=1024,  #Try setting 4048 for gpt-5
-    headroom=512,
-    history=[],
-)
+# --- Apple TLS bridge (NSURLSession + macOS trust store) --------------------
+try:
+    from Foundation import (
+        NSURL, NSMutableURLRequest, NSData,
+        NSURLSession, NSURLSessionConfiguration,
+        NSDate, NSRunLoop
+    )
+    HAS_NSURLSESSION = True
+except Exception:
+    HAS_NSURLSESSION = False
 
-MAX_CONTEXT_CHUNKS   = 5
-CHUNK_CHAR_LIMIT     = 1200
-
-# ---- Prompt presets ----
-PROMPT_GROUNDED = """You are a strict Glyphs 3 scripting assistant.
-
-RULES
-1) Use ONLY the APIs and facts that appear verbatim in CONTEXT.
-2) After each API symbol you use (Class.method/prop), append its citation [S#] that matches the snippet it came from.
-3) If code is requested but a required API is missing from CONTEXT, reply exactly: insufficient context
-4) Never invent or guess API names. Do NOT use Glyphs 2, RoboFont, or FontLab APIs unless they appear in CONTEXT.
-5) Prefer minimal, correct examples over cleverness.
-6) Output format (decide based on the question):
-   - If the user asks for a script/code or code is clearly the most direct answer, write a good enough explanation (2–5 sentences), then exactly ONE fenced `python` block, followed by an optional short note (≤ 3 sentences) if helpful.
-   - Otherwise, write a concise text answer (no code). If you mention APIs, still add [S#] after them.
-7) If you mention undo groups: do not use Font.beginUndoGroup or Font.endUndoGroup unless they appear in CONTEXT.
-
-You are assisting an expert user; be precise and concise."""
-
-PROMPT_HYBRID = """You are a Glyphs 3 scripting assistant.
-
-RULES
-1) Prefer APIs found in CONTEXT and cite them with [S#].
-2) If you need an API not in CONTEXT, keep it conservative and add a trailing comment `# UNVERIFIED`.
-3) Never mix in Glyphs 2/RoboFont/FontLab APIs.
-4) Output format:
-   - If code is explicitly requested or clearly best: one brief sentence + ONE fenced `python` block.
-   - Otherwise: concise text answer, no code."""
-
-PROMPT_CHAT = """You are a helpful assistant specialized in Glyphs 3 scripting.
-- Keep answers minimal and correct.
-- Avoid inventing APIs; if unsure, say so.
-- Output:
-  - Code only if asked or obviously required; otherwise plain text."""
-
-HTML = r"""<!doctype html>
-<html>
-<head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>GlyphsGPT with Chat</title>
-<style>
-  :root {
-    --bg:#0f1115; --panel:#171a21; --muted:#a3acc3; --text:#e6ebff; --border:#262a36;
-    --bubble-user:#1e2430; --bubble-assistant:#121722; --code-bg:#0b0e14; --code-border:#222736;
-    --tab:#1b2030; --tab-active:#0e1422; --tab-hover:#232a3c; --red:#e26d6d;
-  }
-  *{box-sizing:border-box} html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,Segoe UI,sans-serif}
-  .wrap{display:flex;flex-direction:column;height:100%}
-  .topbar{padding:8px 10px;border-bottom:1px solid var(--border);background:var(--panel);position:sticky;top:0;z-index:3}
-  .row{display:flex;gap:8px;align-items:center}
-  .title{font-weight:600;margin-right:8px}
-  .spacer{flex:1}
-  .tabEdit{
-    font:inherit; color:var(--text);
-    background:#0f1320; border:1px solid var(--border);
-    border-radius:6px; padding:2px 6px; outline:none;
-  }
-  .tab .model{font-size:12px; opacity:0.75}
-  .tabs{display:flex;gap:6px;overflow:auto;padding:6px 0;}
-  .tab{background:var(--tab); border:1px solid var(--border); border-radius:8px; padding:6px 10px; cursor:pointer; display:flex; align-items:center; gap:8px; white-space:nowrap}
-  .tab:hover{background:var(--tab-hover)}
-  .tab.active{background:var(--tab-active); border-color:#334058}
-  .x{font-size:12px; opacity:0.75; padding:0 4px;}
-  .x:hover{opacity:1; color:var(--red)}
-  .plus{background:#222739;color:#dce2ff;border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer}
-  .plus:hover{border-color:#334058}
-
-  .btn{background:#222739;color:#dce2ff;border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer}
-  .btn:hover{border-color:#334058}
-
-  .chat{flex:1;overflow:auto;padding:14px 14px 0 14px}
-  .bubble{max-width:860px;margin:0 auto 12px auto;padding:12px 14px;border:1px solid var(--border);border-radius:12px;white-space:pre-wrap}
-  .user{background:var(--bubble-user)}.assistant{background:var(--bubble-assistant)}.system{background:#151920;color:#a3acc3}
-  .promptRow{padding:12px;border-top:1px solid var(--border);background:var(--panel);display:flex;gap:10px}
-  textarea#prompt{flex:1;resize:vertical;min-height:70px;max-height:180px;padding:10px;background:#0f1320;color:#e6ebff;border:1px solid var(--border);border-radius:8px}
-
-  pre{background:var(--code-bg);border:1px solid var(--code-border);border-radius:10px;padding:10px;overflow:auto}
-  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
-  .codeHeader{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin:6px 0 0 0}
-  .codeBtn{border:1px solid var(--border);background:#1c2232;color:#cfe0ff;border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer}
-  .codeBtn:hover{border-color:#334058}
-  .codeEdit{width:100%;min-height:220px;background:var(--code-bg);color:var(--text);border:1px solid var(--code-border);border-radius:10px;padding:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;white-space:pre;overflow:auto}
-
-  #contextPanel{display:none;position:fixed;right:16px;bottom:90px;width:420px;max-height:50%;overflow:auto;background:#0c0f17;border:1px solid var(--border);border-radius:10px;padding:10px;z-index:4}
-  #modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:5;align-items:center;justify-content:center}
-  .card{width:720px;background:#0c0f17;border:1px solid var(--border);border-radius:14px;padding:14px}
-  .grid{display:grid;grid-template-columns: 1fr 1fr;gap:10px}
-  .field input,.field select{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;background:#0f1320;color:#e6ebff}
-  .muted{color:#a3acc3;font-size:12px}
-
-  /* Syntax colors (class-based; no inline styles to avoid '#' issues) */
-  pre code span.s { color:#a6e3a1 !important; }  /* strings */
-  pre code span.c { color:#6c7086 !important; }  /* comments */
-  pre code span.n { color:#cba6f7 !important; }  /* numbers */
-  pre code span.k { color:#89b4fa !important; }  /* keywords */
-  pre code span.b { color:#f38ba8 !important; }  /* builtins */
-</style>
-</head>
-<body>
-<div class="wrap">
-
-  <div class="topbar">
-    <div class="row">
-      <div class="title">GlyphsGPT with Chat</div>
-      <div class="spacer"></div>
-      <button id="btnCtx" class="btn">Context</button>
-      <button id="btnSettings" class="btn">⚙ Settings</button>
-      <button id="btnNew" class="btn">New Chat</button>
-    </div>
-    <div id="tabbar" class="tabs" style="margin-top:6px"></div>
-  </div>
-
-  <div id="contextPanel"></div>
-  <div id="chat" class="chat"></div>
-
-  <div class="promptRow">
-    <textarea id="prompt" placeholder="Type a message…"></textarea>
-    <button id="btnSend" class="btn">Ask</button>
-  </div>
-</div>
-
-<div id="modal">
-  <div class="card">
-    <h3 style="margin:6px 0 10px 0">Settings (this tab only)</h3>
-    <div class="grid">
-      <div class="field"><div class="muted">LM Base</div><input id="s_lmBase"/></div>
-      <div class="field"><div class="muted">Model</div><input id="s_lmModel"/></div>
-      <div class="field"><div class="muted">LM Key (optional)</div><input id="s_lmKey"/></div>
-      <div class="field"><div class="muted">RAG URL</div><input id="s_ragURL"/></div>
-      <div class="field"><div class="muted">RAG Token (optional)</div><input id="s_ragToken"/></div>
-      <div class="field"><div class="muted">Top-K</div><input id="s_topK" type="number" min="1" max="20"/></div>
-
-      <div class="field"><div class="muted">Max context (tokens)</div><input id="s_maxContext" type="number" min="1024" max="200000"/></div>
-      <div class="field"><div class="muted">Max output tokens</div><input id="s_maxOutput" type="number" min="64" max="8000"/></div>
-      <div class="field"><div class="muted">Headroom (safety)</div><input id="s_headroom" type="number" min="0" max="4000"/></div>
-    </div>
-
-    <div class="row" style="margin-top:10px">
-      <label class="row"><input id="s_useRAG" type="checkbox" checked style="margin-right:6px"/>Include retrieval</label>
-      <div class="spacer"></div>
-      <div class="field">
-        <select id="s_mode">
-          <option value="0">Auto (prefer RAG)</option>
-          <option value="1">Grounded (RAG only)</option>
-          <option value="2">Hybrid (RAG + general)</option>
-          <option value="3">Chat (no RAG)</option>
-        </select>
-      </div>
-      <label class="row"><input id="s_remember" type="checkbox" checked style="margin-right:6px"/>Remember chat</label>
-    </div>
-    <div class="row" style="margin-top:12px; justify-content:flex-end">
-      <button id="btnSave" class="btn">Save</button>
-      <button id="btnClose" class="btn">Close</button>
-    </div>
-  </div>
-</div>
-
-<script>
-  const chatEl = document.getElementById('chat');
-  const promptEl = document.getElementById('prompt');
-  const ctxEl = document.getElementById('contextPanel');
-  const modal = document.getElementById('modal');
-  const tabbar = document.getElementById('tabbar');
-  let __activeTabIndex = 0;
-  let __clickTimer = null;
-  function asBool(v){
-    if (v === true || v === false) return v;
-    if (typeof v === "number") return v !== 0;
-    if (typeof v === "string") {
-      const s = v.trim().toLowerCase();
-      return s === "1" || s === "true" || s === "yes" || s === "on" || s === "y" || s === "t";
-    }
-    return !!v; // fallback
-  }
-  function copyText(text){
-    try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text); return; } } catch(e){}
-    var ta = document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); } catch(e){} document.body.removeChild(ta);
-  }
-  function esc(s){return String(s||"").replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));}
-
-  // Strip occasional tool-call markup
-  function stripWeirdLLMTokens(s){
-    if(!s) return s;
-    s = s.replace(/<\|[^|>]{0,80}\|>/g, '');
-    s = s.replace(/\b(?:analysis|commentary|final)\s+to=[^\s]+(?:\s+code)?/gi, '');
-    s = s.replace(/```python_user_visible/g, '```python');
-    return s;
-  }
-
-  // Python highlighter with placeholder protection for strings
-  function colorPython(code){
-    let t = esc(code);
-
-    // 1) strings first (so '#' inside strings won't become comments)
-    t = t.replace(/('{3}[\s\S]*?'{3}|"{3}[\s\S]*?"{3})/g, m => '<span class="s">'+m+'</span>');
-    t = t.replace(/'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"/g, m => '<span class="s">'+m+'</span>');
-
-    // protect string spans
-    const store = [];
-    t = t.replace(/<span class="s">[\s\S]*?<\/span>/g, function(m){ const i=store.push(m)-1; return '@@S'+i+'@@'; });
-
-    // 2) keywords (not inside strings)
-    const kw = /\b(?:def|class|return|if|elif|else|for|while|try|except|finally|with|as|lambda|yield|import|from|pass|break|continue|in|is|and|or|not|assert|raise|global|nonlocal|True|False|None)\b/g;
-    t = t.replace(kw, m => '<span class="k">'+m+'</span>');
-
-    // 3) builtins
-    const bi = /\b(?:print|len|range|dict|list|set|tuple|int|float|str|bool|sum|min|max|abs|isinstance|enumerate|zip|map|filter|any|all|open|sorted|reversed|super)\b/g;
-    t = t.replace(bi, m => '<span class="b">'+m+'</span>');
-
-    // 4) numbers
-    t = t.replace(/\b\d+(?:\.\d+)?\b/g, m => '<span class="n">'+m+'</span>');
-
-    // 5) comments last
-    t = t.replace(/#.*$/gm, m => '<span class="c">'+m+'</span>');
-
-    // restore strings
-    t = t.replace(/@@S(\d+)@@/g, (_,i) => store[+i]);
-
-    return t;
-  }
-
-
-  function cleanZW(s){
-    // strip zero-width spaces & BOM that sometimes sneak into fences
-    return String(s||"").replace(/[\u200B\u200C\u200D\u2060\uFEFF]/g, "");
-  }
-  
-  function looksLikePython(text){
-    if(!text) return false;
-    const t = String(text);
-    return (
-      /(^|\n)\s*(from|import|class|def|for|while|if|try|with|except|finally|lambda|return)\b/.test(t) ||
-      /\bGlyphs\b|\bGS(?:Font|Glyph|Layer|Path)\b/.test(t) ||
-      /^\s*#/.test(t)                                   // python comments at top
-    );
-  }
-  function looksLikePlainText(text){
-    if(!text) return true;
-    const lines = String(text).trim().split(/\n/);
-    if (lines.length > 6) return false;                // long blocks more likely code
-    const hasCodey = /[{};=<>]/.test(text);
-    return !looksLikePython(text) && !hasCodey;
-  }
-  
-  function isPythonishLine(line){
-    const t = String(line||"").trim();
-    if (!t) return false;
-    return /^(?:from|import|class|def|if|for|while|try|with|except|finally|return|lambda|@|#|"{3}|'{3}|pass|raise)/.test(t)
-        || /\bGlyphs\b|\bGS(?:Font|Glyph|Layer|Path)\b/.test(t)
-        || /[A-Za-z_]\w*\s*=/.test(t);
-  }
-  
-  function isEnglishLine(line){
-    const t = String(line||"").trim();
-    if (!t) return false;
-    // “Englishy” line: letters and spaces, not obviously code/punctuation soup
-    return /[A-Za-z]/.test(t) && !isPythonishLine(t) && !/[{}<>;=]/.test(t);
-  }
-  
-  function commentify(text){
-    return String(text||"")
-      .split("\n")
-      .map(l => l.trim() ? ("# " + l) : "#")
-      .join("\n");
-  }
-  
-  function splitProsePython(raw){
-    const lines = String(raw||"").split("\n");
-  
-    // leading prose (up to 3 lines)
-    let i = 0; while(i < lines.length && !lines[i].trim()) i++;
-    let leadEnd = i;
-    if (i < lines.length && isEnglishLine(lines[i])) {
-      let k = i, n = 0;
-      while (k < lines.length && isEnglishLine(lines[k]) && n < 3) { k++; n++; }
-      leadEnd = k;
-    }
-  
-    // trailing prose (up to 3 lines)
-    let j = lines.length - 1; while (j >= leadEnd && !lines[j].trim()) j--;
-    let trailStart = j + 1;
-    if (j >= leadEnd && isEnglishLine(lines[j])) {
-      let k = j, n = 0;
-      while (k >= leadEnd && isEnglishLine(lines[k]) && n < 3) { k--; n++; }
-      trailStart = k + 1;
-    }
-  
-    const lead  = lines.slice(0, leadEnd).join("\n").trim();
-    const body  = lines.slice(leadEnd, trailStart).join("\n");
-    const trail = lines.slice(trailStart).join("\n").trim();
-  
-    return { lead, body, trail };
-  }
-  
-    function blockHasPythonCues(text){
-    const lines = String(text||"").split("\n");
-    let hits = 0;
-    for (const l of lines){
-      const t = l.trim();
-      if (!t) continue;
-      if (isPythonishLine(t)) hits++;
-      if (hits >= 2) break; // require at least two pythonish lines to avoid false positives
-    }
-    return hits >= 2;
-  }
-  
-  
-  // Markdown → HTML (fenced code aware) + header with Edit/Execute/Copy
-  function mdToHtml(md){
-    const src   = cleanZW(String(md||"")).replace(/\r\n/g, "\n");
-    const lines = src.split("\n");
-  
-    let html = "";
-    let inCode = false, buf = [], lang = "", fenceChar = "```";
-    let para = [];
-    let sawPre = false;
-  
-    const openRe  = /^\s*(```|~~~)\s*([A-Za-z0-9._+-]*)\s*.*$/;    // forgiving open
-    const closeRe = /^\s*(```|~~~)\s*.*$/;                          // forgiving close
-  
-    function flushPara(){
-      if(!para.length) return;
-      const txt = para.join("\n")
-        .replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))
-        .replace(/\n/g,"<br>");
-      html += "<p>"+txt+"</p>";
-      para = [];
-    }
-
-    function flushCode(){
-      const raw      = buf.join("\n");
-      const langNorm = (lang||"").toLowerCase();
-      const isPyLang = (langNorm==="python" || langNorm==="py" || langNorm==="python_user_visible");
-      const unlabeled = !langNorm || langNorm==="text";
-    
-      // Treat unlabeled fences as Python if the block clearly looks like Python
-      const looksLikePythonBlock = isPyLang || (unlabeled && blockHasPythonCues(raw));
-    
-      // Case A: Python (explicit or confidently guessed)
-      if (looksLikePythonBlock){
-        const parts = splitProsePython(raw);
-        let render  = (parts.body || "").trim();
-    
-        if (parts.lead)  render = commentify(parts.lead) + (render ? "\n\n"+render : "");
-        if (parts.trail) render = (render ? render + "\n\n" : "") + commentify(parts.trail);
-    
-        // If the fence had only prose, keep it as commented python so Execute still works
-        if (!render) render = commentify(parts.lead || raw);
-    
-        const encoded = encodeURIComponent(render);
-        const body    = colorPython(render);
-        html += '<div class="codeHeader" data-raw="'+encoded+'">'
-             +  '<button class="codeBtn" data-edit="'+encoded+'">Edit</button>'
-             +  '<button class="codeBtn" data-exec="'+encoded+'">Execute</button>'
-             +  '<button class="codeBtn" data-copy="'+encoded+'">Copy</button>'
-             +  '</div>';
-        html += '<pre><code class="lang-python">'+body+'</code></pre>';
-        sawPre = true;
-        buf=[]; lang=""; inCode=false;
-        return;
-      }
-    
-      // Case B: non-python fence — collapse short prose-only blocks to <p>
-      const firstLineCodey = isPythonishLine(raw) || /[`$]/.test(raw);
-      if (!firstLineCodey){
-        const lines = raw.trim().split("\n");
-        const shortProse = lines.length <= 6 && lines.every(isEnglishLine);
-        if (shortProse){
-          const txt = raw
-            .replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))
-            .replace(/\n/g,"<br>");
-          html += "<p>"+txt+"</p>";
-          buf=[]; lang=""; inCode=false;
-          return;
-        }
-      }
-    
-      // Default: render as-is (non-python code)
-      const encoded = encodeURIComponent(raw);
-      const body = (langNorm && langNorm !== "text") ? colorPython(raw) : esc(raw);
-      html += '<div class="codeHeader" data-raw="'+encoded+'">'
-           +  '<button class="codeBtn" data-edit="'+encoded+'">Edit</button>'
-           +  '<button class="codeBtn" data-exec="'+encoded+'">Execute</button>'
-           +  '<button class="codeBtn" data-copy="'+encoded+'">Copy</button>'
-           +  '</div>';
-      html += '<pre><code class="lang-'+(lang||"text")+'">'+body+'</code></pre>';
-      sawPre = true;
-    
-      buf=[]; lang=""; inCode=false;
-    }
-
-  
-    for(let i=0;i<lines.length;i++){
-      const line = lines[i];
-  
-      if(!inCode){
-        const m = line.match(openRe);
-        if(m){
-          flushPara();
-          fenceChar = m[1];               // remember which fence opened (``` or ~~~)
-          lang = (m[2]||"");
-          if(lang==="py") lang="python";
-          if(lang==="python_user_visible") lang="python";
-          inCode = true;
-          continue;
-        }
-        para.push(line);
-      }else{
-        // close on any fence line (``` or ~~~), even if indented or with trailing text
-        if(closeRe.test(line)){
-          flushCode();
-          continue;
-        }
-        buf.push(line);
-      }
-    }
-    if(inCode) flushCode();
-    flushPara();
-  
-
-  
-    return html;
-  }
-
-  function addBubble(role, text){
-    var div=document.createElement('div'); div.className="bubble "+role;
-    var t = (role==="assistant") ? stripWeirdLLMTokens(text) : text;
-    div.innerHTML = role!=="user" ? mdToHtml(t) : esc(t);
-    chatEl.appendChild(div); chatEl.scrollTop = chatEl.scrollHeight;
-  }
-  function setContext(text){ ctxEl.textContent = text || "(no context)"; }
-  function toggle(el){ el.style.display = (el.style.display==="none"||!el.style.display) ? "block":"none"; }
-
-  // TAB RENDERING
-  function renderTabs(info){
-    const names  = info.names  || [];
-    const models = info.models || [];
-    const active = info.active || 0;
-    __activeTabIndex = active;            // <-- remember active tab
-    tabbar.innerHTML = "";
-    names.forEach((name, i) => {
-      const t = document.createElement('div');
-      t.className = "tab" + (i===active ? " active" : "");
-      t.setAttribute("data-idx", i);
-      const model = (models[i] || "");
-      const shortModel = model.split("/").pop();
-      t.innerHTML =
-        '<span class="label">'+esc(name)+'</span>' +
-        (shortModel ? ' <span class="model">· '+esc(shortModel)+'</span>' : '') +
-        '<span class="x" title="Close" data-close="'+i+'">×</span>';
-      tabbar.appendChild(t);
-    });
-    const plus = document.createElement('button');
-    plus.id = "btnPlusTab";
-    plus.className = "plus";
-    plus.textContent = "＋";
-    tabbar.appendChild(plus);
-  }
-  
-  
-
-  tabbar.addEventListener('click', function(e){
-    const closeIdx = e.target.getAttribute('data-close');
-    if (closeIdx !== null){
-      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
-        window.webkit.messageHandlers.bridge.postMessage({type:"closeTab", index: parseInt(closeIdx)});
-      }
-      return;
-    }
-    if (e.target.id === "btnPlusTab"){
-      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
-        window.webkit.messageHandlers.bridge.postMessage({type:"newTab"});
-      }
-      return;
-    }
-    let t = e.target; while(t && !t.classList.contains('tab')) t = t.parentNode;
-    if(!t) return;
-    const idx = parseInt(t.getAttribute('data-idx'), 10);
-  
-    // If you click the already-active tab, do nothing (so dblclick can rename)
-    if (idx === __activeTabIndex) return;
-  
-    // Delay the switch slightly; if a dblclick happens, we'll cancel this
-    if (__clickTimer) clearTimeout(__clickTimer);
-    __clickTimer = setTimeout(function(){
-      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
-        window.webkit.messageHandlers.bridge.postMessage({type:"switchTab", index: idx});
-      }
-      __clickTimer = null;
-    }, 180);
-  });
-  
-
-  tabbar.addEventListener('dblclick', function(e){
-    if (__clickTimer) { clearTimeout(__clickTimer); __clickTimer = null; } // <-- cancel single-click
-  
-    // ignore dblclicks on the close “×”
-    if (e.target && e.target.getAttribute('data-close') !== null) return;
-  
-    let t = e.target;
-    while (t && !t.classList.contains('tab')) t = t.parentNode;
-    if (!t) return;
-  
-    const idx = parseInt(t.getAttribute('data-idx'), 10);
-    const labelEl = t.querySelector('.label');
-    if (!labelEl) return;
-  
-    const orig = labelEl.textContent;
-    const input = document.createElement('input');
-    input.className = 'tabEdit';
-    input.type = 'text';
-    input.value = orig;
-  
-    const w = Math.max(100, Math.min(280, (labelEl.offsetWidth || 120) + 40));
-    input.style.width = w + 'px';
-  
-    labelEl.style.display = 'none';
-    t.insertBefore(input, labelEl);
-    input.focus();
-    input.select();
-  
-    let done = false;
-    function commit(){
-      if (done) return; done = true;
-      const name = (input.value || '').trim();
-      input.remove();
-      labelEl.style.display = '';
-      if (!name || name === orig) return;
-      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
-        window.webkit.messageHandlers.bridge.postMessage({type:"renameTab", index: idx, name});
-      }
-    }
-    function cancel(){
-      if (done) return; done = true;
-      input.remove();
-      labelEl.style.display = '';
-    }
-  
-  
-    input.addEventListener('keydown', function(ev){
-      if (ev.key === 'Enter') { commit(); }
-      else if (ev.key === 'Escape') { cancel(); }
-      ev.stopPropagation();
-    });
-    input.addEventListener('blur', commit);
-  
-    // don’t let the dblclick also trigger tab switching
-    e.stopPropagation();
-  });
-
-  
-
-  document.getElementById('btnCtx').onclick = function(){ toggle(ctxEl); };
-  document.getElementById('btnSettings').onclick = function(){
-    modal.style.display="flex";
-    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
-      window.webkit.messageHandlers.bridge.postMessage({type:"getSettings"});
-    }
-  };
-  document.getElementById('btnNew').onclick = function(){
-    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
-      window.webkit.messageHandlers.bridge.postMessage({type:"newChat"});
-    }
-  };
-  document.getElementById('btnSend').onclick = send;
-  document.getElementById('btnSave').onclick = saveSettings;
-  document.getElementById('btnClose').onclick = function(){ modal.style.display="none"; };
-
-  // Execute/Copy/Edit delegation
-  document.getElementById('chat').addEventListener('click', function(e){
-    var t=e.target; while(t && !t.classList.contains('codeBtn')){ t=t.parentNode; }
-    if(!t) return;
-
-    const header = t.closest('.codeHeader');
-    const next = header ? header.nextElementSibling : null;
-
-    if (t.getAttribute('data-edit') !== null){
-      const raw = decodeURIComponent(t.getAttribute('data-edit') || header.getAttribute('data-raw') || "");
-      if (!next) return;
-      const ta = document.createElement('textarea'); ta.className='codeEdit'; ta.value = raw;
-      next.replaceWith(ta);
-      header.setAttribute('data-raw', encodeURIComponent(raw));
-      header.innerHTML =
-        '<button class="codeBtn" data-run="1">Run</button>'+
-        '<button class="codeBtn" data-done="1">Done</button>'+
-        '<button class="codeBtn" data-cancel="1">Cancel</button>'+
-        '<button class="codeBtn" data-copy="'+encodeURIComponent(raw)+'">Copy</button>';
-      return;
-    }
-
-    if (t.getAttribute('data-run') !== null){
-      let code = "";
-      if (next && next.classList.contains('codeEdit')) code = next.value;
-      else code = decodeURIComponent(header.getAttribute('data-raw') || "");
-      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
-        window.webkit.messageHandlers.bridge.postMessage({type:"exec", code: code});
-      }
-      return;
-    }
-
-    if (t.getAttribute('data-done') !== null){
-      if (!(next && next.classList.contains('codeEdit'))) return;
-      const code = next.value;
-      const encoded = encodeURIComponent(code);
-      const pre = document.createElement('pre');
-      const codeEl = document.createElement('code'); codeEl.className = 'lang-python';
-      codeEl.innerHTML = colorPython(code);
-      pre.appendChild(codeEl);
-      next.replaceWith(pre);
-      header.setAttribute('data-raw', encoded);
-      header.innerHTML =
-        '<button class="codeBtn" data-edit="'+encoded+'">Edit</button>'+
-        '<button class="codeBtn" data-exec="'+encoded+'">Execute</button>'+
-        '<button class="codeBtn" data-copy="'+encoded+'">Copy</button>';
-      return;
-    }
-
-    if (t.getAttribute('data-cancel') !== null){
-      const raw = decodeURIComponent(header.getAttribute('data-raw') || "");
-      const pre = document.createElement('pre');
-      const codeEl = document.createElement('code'); codeEl.className = 'lang-python';
-      codeEl.innerHTML = colorPython(raw);
-      if (next) next.replaceWith(pre);
-      pre.appendChild(codeEl);
-      const encoded = encodeURIComponent(raw);
-      header.innerHTML =
-        '<button class="codeBtn" data-edit="'+encoded+'">Edit</button>'+
-        '<button class="codeBtn" data-exec="'+encoded+'">Execute</button>'+
-        '<button class="codeBtn" data-copy="'+encoded+'">Copy</button>';
-      return;
-    }
-
-    if (t.getAttribute('data-exec') !== null){
-      var code = decodeURIComponent((t.getAttribute('data-exec') || header.getAttribute('data-raw') || ""));
-      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
-        window.webkit.messageHandlers.bridge.postMessage({type:"exec", code: code});
-      }
-      return;
-    }
-
-    if (t.getAttribute('data-copy') !== null){
-      let code = (next && next.classList.contains('codeEdit'))
-        ? next.value
-        : decodeURIComponent(t.getAttribute('data-copy') || header.getAttribute('data-raw') || "");
-      copyText(code);
-      return;
-    }
-  });
-
-  function send(){
-    var q = promptEl.value.trim(); if(!q) return;
-    addBubble("user", q); promptEl.value="";
-    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
-      window.webkit.messageHandlers.bridge.postMessage({type:"ask", prompt:q});
-    }
-  }
-
-  function saveSettings(){
-    var payload = {
-      llmBase:  document.getElementById('s_lmBase').value.trim(),
-      llmModel: document.getElementById('s_lmModel').value.trim(),
-      llmKey:   document.getElementById('s_lmKey').value.trim(),
-      ragURL:   document.getElementById('s_ragURL').value.trim(),
-      ragToken: document.getElementById('s_ragToken').value.trim(),
-      topK:     parseInt(document.getElementById('s_topK').value||"8"),
-      useRAG:   document.getElementById('s_useRAG').checked,
-      mode:     parseInt(document.getElementById('s_mode').value),
-      remember: document.getElementById('s_remember').checked,
-      maxContext: parseInt(document.getElementById('s_maxContext').value||"20000"),
-      maxOutput:  parseInt(document.getElementById('s_maxOutput').value||"1024"),
-      headroom:   parseInt(document.getElementById('s_headroom').value||"512"),
-    };
-    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
-      window.webkit.messageHandlers.bridge.postMessage({type:"saveSettings", settings: payload});
-    }
-  }
-
-  // Native → JS
-  window.__fromNative = function(msg){
-    var type = msg.type, data = msg.data || {};
-    if(type==="settings"){
-      var p = data;
-      document.getElementById('s_lmBase').value = p.llmBase||"";
-      document.getElementById('s_lmModel').value = p.llmModel||"";
-      document.getElementById('s_lmKey').value = p.llmKey||"";
-      document.getElementById('s_ragURL').value = p.ragURL||"";
-      document.getElementById('s_ragToken').value = p.ragToken||"";
-      document.getElementById('s_topK').value = p.topK||8;
-      document.getElementById('s_useRAG').checked   = asBool(p.useRAG);
-      document.getElementById('s_mode').value = (p.mode||0);
-      document.getElementById('s_remember').checked = asBool(p.remember);
-      document.getElementById('s_maxContext').value = p.maxContext||20000;
-      document.getElementById('s_maxOutput').value  = p.maxOutput||1024;
-      document.getElementById('s_headroom').value   = p.headroom||512;
-
-    } else if(type==="tabs"){
-      renderTabs(data);
-
-    } else if(type==="hydrate"){
-      chatEl.innerHTML = "";
-      (data.history||[]).forEach(item => addBubble(item.role, item.content));
-      setContext("");
-
-    } else if(type==="answer"){
-      var answer = data.answer||"(no answer)";
-      var context = data.context||"";
-      addBubble("assistant", answer);
-      if(context){ setContext(context); }
-
-    } else if(type==="execResult"){
-      var out = data.output || "";
-      addBubble("system", "Execution output:\n```text\n"+out+"\n```");
-      chatEl.scrollTop = chatEl.scrollHeight;
-
-    } else if(type==="resetChat"){
-      chatEl.innerHTML = ""; setContext(""); addBubble("system","New chat started.");
-
-    } else if(type==="error"){
-      addBubble("assistant", "ERROR: " + (data.message||""));
-
-    } else if(type==="debug"){
-      addBubble("system", data.message||"");
-    }
-  };
-
-  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
-    window.webkit.messageHandlers.bridge.postMessage({type:"getSettings"});
-  }
-</script>
-</body>
-</html>
-"""
-
+REQUEST_TIMEOUT_S = 20.0
+RESOURCE_TIMEOUT_S = 45.0
 _PRIVATE_HOST = re.compile(
-    r"^(?:localhost|127\.0\.0\.1|10\..*|192\.168\..*|172\.(?:1[6-9]|2\d|3[0-1])\..*)$"
+    r"^(localhost|127(?:\.\d{1,3}){3}|10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})$"
 )
+PREFER_APPLE_TLS = True
 
-def _is_private_url(url: str) -> bool:
+def _ns_request_json(method, url, body, headers, timeout=None):
+    if not HAS_NSURLSESSION:
+        raise RuntimeError("Apple TLS bridge unavailable on this Python.")
+
+    req_to = float(timeout or REQUEST_TIMEOUT_S)
+    res_to = float(max(timeout or RESOURCE_TIMEOUT_S, req_to * 2.0))
+
+    req = NSMutableURLRequest.requestWithURL_(NSURL.URLWithString_(url))
+    req.setHTTPMethod_(method or "GET")
+    req.setTimeoutInterval_(req_to)
+    req.setCachePolicy_(1)
+
+    headers = dict(headers or {})
+    headers.setdefault("User-Agent", "GlyphsGPTCodex/AppleTLS")
+    headers.setdefault("Connection", "close")
+    for k, v in headers.items():
+        req.setValue_forHTTPHeaderField_(str(v), str(k))
+
+    if body is not None:
+        data = NSData.dataWithBytes_length_(body, len(body))
+        req.setHTTPBody_(data)
+
+    cfg = NSURLSessionConfiguration.ephemeralSessionConfiguration()
+    cfg.setTimeoutIntervalForRequest_(req_to)
+    cfg.setTimeoutIntervalForResource_(res_to)
+    session = NSURLSession.sessionWithConfiguration_(cfg)
+
+    result = {"data": None, "error": None}
+
+    def _done(data, response, error):
+        result["data"] = data
+        result["error"] = error
+
+    task = session.dataTaskWithRequest_completionHandler_(req, _done)
+    task.resume()
+
+    deadline = NSDate.dateWithTimeIntervalSinceNow_(res_to)
+    while result["data"] is None and result["error"] is None:
+        if NSDate.date().timeIntervalSinceDate_(deadline) > 0:
+            task.cancel()
+            result["error"] = "Timed out"
+            break
+        NSRunLoop.currentRunLoop().runUntilDate_(NSDate.dateWithTimeIntervalSinceNow_(0.01))
+
+    session.finishTasksAndInvalidate()
+
+    err = result["error"]
+    if err is not None:
+        if err == "Timed out":
+            raise RuntimeError("Apple TLS request failed: The request timed out.")
+        try:
+            msg = str(err.localizedDescription())
+        except Exception:
+            msg = str(err)
+        raise RuntimeError("Apple TLS request failed: %s" % msg)
+
+    data = result["data"] or NSData.data()
+    raw = bytes(data).decode("utf-8", "ignore")
+    try:
+        return json.loads(raw) if raw else {}
+    except Exception:
+        return {"_raw": raw}
+
+def _is_private_url(url):
     try:
         host = urllib.parse.urlparse(url).hostname or ""
         return bool(_PRIVATE_HOST.match(host))
     except Exception:
         return False
 
-def _build_opener(url: str, insecure_https: bool) -> urllib.request.OpenerDirector:
+def _build_opener(url, insecure_https):
     handlers = []
-    # HTTPS handler (optionally unverified for private/self-signed)
-    if url.lower().startswith("https"):
+    if str(url or "").lower().startswith("https"):
         ctx = ssl._create_unverified_context() if insecure_https else ssl.create_default_context()
         handlers.append(urllib.request.HTTPSHandler(context=ctx))
-    # Bypass proxies for private/local hosts so corp proxies don’t interfere
     if _is_private_url(url):
         handlers.append(urllib.request.ProxyHandler({}))
     return urllib.request.build_opener(*handlers)
 
 def http_post_json(url, payload, headers=None, timeout=25):
-    data = json.dumps(payload).encode("utf-8")
-    req = urllib.request.Request(url, data=data, method="POST",
-                                 headers={"Content-Type":"application/json", **(headers or {})})
+    body = json.dumps(payload).encode("utf-8")
+    headers = {"Content-Type": "application/json", **(headers or {})}
+
+    if str(url or "").lower().startswith("https") and HAS_NSURLSESSION and PREFER_APPLE_TLS:
+        return _ns_request_json("POST", url, body, headers, timeout)
+
+    req = urllib.request.Request(url, data=body, method="POST", headers=headers)
     try:
-        if _is_private_url(url):  # bypass corp proxies only for 10./192.168./172.16-31/localhost
-            opener = _build_opener(url, insecure_https=url.lower().startswith("https"))
+        if _is_private_url(url):
+            opener = _build_opener(url, insecure_https=str(url or "").lower().startswith("https"))
             with opener.open(req, timeout=timeout) as r:
                 raw = r.read().decode("utf-8", "ignore")
         else:
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 raw = r.read().decode("utf-8", "ignore")
     except urllib.error.HTTPError as e:
-        body = ""
-        try: body = e.read().decode("utf-8", "ignore")
-        except Exception: pass
-        raise RuntimeError(f"HTTP {e.code} {e.reason} from {url}\n{body}") from e
-    except urllib.error.URLError as e:
-        raise RuntimeError(f"Network error calling {url}: {e.reason or e}") from e
+        try:
+            body_txt = e.read().decode("utf-8", "ignore")
+        except Exception:
+            body_txt = ""
+        raise RuntimeError("HTTP %s %s from %s\n%s" % (e.code, e.reason, url, body_txt or e.reason))
     except Exception as e:
-        raise RuntimeError(f"Request to {url} failed: {e}") from e
+        s = str(e)
+        if str(url or "").lower().startswith("https") and HAS_NSURLSESSION and (
+            "CERTIFICATE_VERIFY_FAILED" in s or "ssl" in s.lower()
+        ):
+            return _ns_request_json("POST", url, body, headers, timeout)
+        raise RuntimeError("Request failed for %s\n%s" % (url, e))
+
     try:
-        return json.loads(raw)
+        return json.loads(raw) if raw else {}
     except Exception:
         return {"_raw": raw}
 
 def http_get_json(url, headers=None, timeout=10):
-    req = urllib.request.Request(url, method="GET", headers=headers or {})
+    headers = headers or {}
+
+    if str(url or "").lower().startswith("https") and HAS_NSURLSESSION and PREFER_APPLE_TLS:
+        return _ns_request_json("GET", url, None, headers, timeout)
+
+    req = urllib.request.Request(url, method="GET", headers=headers)
     try:
         if _is_private_url(url):
-            opener = _build_opener(url, insecure_https=url.lower().startswith("https"))
+            opener = _build_opener(url, insecure_https=str(url or "").lower().startswith("https"))
             with opener.open(req, timeout=timeout) as r:
                 raw = r.read().decode("utf-8", "ignore")
         else:
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 raw = r.read().decode("utf-8", "ignore")
     except urllib.error.HTTPError as e:
-        body = ""
-        try: body = e.read().decode("utf-8", "ignore")
-        except Exception: pass
-        raise RuntimeError(f"HTTP {e.code} {e.reason} from {url}\n{body}") from e
-    except urllib.error.URLError as e:
-        raise RuntimeError(f"Network error calling {url}: {e.reason or e}") from e
+        try:
+            body_txt = e.read().decode("utf-8", "ignore")
+        except Exception:
+            body_txt = ""
+        raise RuntimeError("HTTP %s %s from %s\n%s" % (e.code, e.reason, url, body_txt or e.reason))
     except Exception as e:
-        raise RuntimeError(f"Request to {url} failed: {e}") from e
+        s = str(e)
+        if str(url or "").lower().startswith("https") and HAS_NSURLSESSION and (
+            "CERTIFICATE_VERIFY_FAILED" in s or "ssl" in s.lower()
+        ):
+            return _ns_request_json("GET", url, None, headers, timeout)
+        raise RuntimeError("Request to %s failed: %s" % (url, e))
+
     try:
-        return json.loads(raw)
+        return json.loads(raw) if raw else {}
     except Exception:
         return {"_raw": raw}
 
+def http_get(url, headers=None, timeout=2.0):
+    try:
+        res = http_get_json(url, headers=headers, timeout=timeout)
+        if isinstance(res, dict) and "_raw" in res:
+            return str(res.get("_raw") or "")
+        return json.dumps(res, ensure_ascii=False)
+    except Exception:
+        return None
 
-CHAT_ROLES = {"system","user","assistant"}
+WINDOW_AUTOSAVE = "com.shotaronakano.GlyphsGPTCodex.window"
+APP_SINGLETON_KEY = "__GlyphsGPTCodex_singleton__"
+DEFAULT_SERVER = "glyphs-mcp-server"
+DEFAULT_MODE = "direct"
+DEFAULT_MODEL = ""
+DEFAULT_PROVIDER = "codex"
+DEFAULT_THEME = "dark"
+STATE_DIR = os.path.expanduser("~/Library/Application Support/Glyphs 3")
+STATE_PATH = os.path.join(STATE_DIR, "GlyphsGPTCodex_state.json")
+SCRIPT_BUILD = "2026-03-15.responses_api_appletls2"
+DEFAULT_LMSTUDIO_PLUGIN = "mcp/glyphs-mcp"
+DEFAULT_GLYPHS_MCP_URL = "http://127.0.0.1:9680/mcp/"
 
-def _sanitize_messages(messages):
-    fixed = []
-    for m in messages:
-        role = str(m.get("role","user"))
-        if role not in CHAT_ROLES:
-            # drop unknown roles (e.g. 'tool') for chat.completions
-            continue
-        content = m.get("content","")
-        if not isinstance(content, str):
-            content = str(content)
-        fixed.append({"role": role, "content": content})
-    return fixed
+SESSION_DEFAULTS = {
+    "name": "Chat 1",
+    "mode": DEFAULT_MODE,
+    "server": DEFAULT_SERVER,
+    "model": DEFAULT_MODEL,
+    "provider": DEFAULT_PROVIDER,
+    "apiBase": "",
+    "apiKey": "",
+    "theme": DEFAULT_THEME,
+    "copyToMacro": False,
+    "history": [],
+}
 
-def _assert_chat_model_exists(p):
-    base = (p.get("llmBase","")).rstrip("/")
-    key  = p.get("llmKey","")
-    if not base or not key: return
-    url = base + "/models"
-    headers = {"Authorization": "Bearer " + key}
-    res = http_get_json(url, headers=headers)
-    wanted = p.get("llmModel","").strip()
-    ids = [ (it.get("id") or it.get("name") or "") for it in (res.get("data") or []) ]
-    if wanted and wanted not in ids:
-        # surface a clear, actionable message in the UI
-        some = ", ".join(ids[:6]) + ("…" if len(ids)>6 else "")
-        raise RuntimeError(
-            f"Model '{wanted}' not found in your account. "
-            f"Pick a Chat Completions model (e.g. 'gpt-4o' or 'gpt-4.1').\n"
-            f"Available (sample): {some}"
-        )
+HTML = r'''<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>GlyphsGPTCodex</title>
+<style>
+  :root {
+    --bg:#0f1115; --panel:#171a21; --panel2:#121722; --muted:#9ba6c4; --text:#e8ecff;
+    --border:#262b36; --accent:#7aa2ff; --user:#1f2533; --assistant:#141a26; --code:#0b0f15;
+    --good:#80d39b; --warn:#e6c070; --bad:#e57a7a;
+    --tab:#151b27; --tab-active:#212a3d; --tab-hover:#29344a; --tab-edit:#202838;
+    --shadow:0 18px 60px rgba(0,0,0,.28);
+  }
+  body.light {
+    --bg:#f5f7fb; --panel:#ffffff; --panel2:#f3f5fa; --muted:#66718c; --text:#162033;
+    --border:#d8deea; --accent:#355ee8; --user:#eaf0ff; --assistant:#ffffff; --code:#f6f8fc;
+    --tab:#e9eef8; --tab-active:#ffffff; --tab-hover:#dfe7f7; --tab-edit:#ffffff;
+    --shadow:0 18px 60px rgba(31,55,107,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,Segoe UI,sans-serif}
+  .wrap{display:flex;flex-direction:column;height:100%;overflow:hidden}
+  .top{padding:6px 10px 5px 10px;border-bottom:1px solid var(--border);background:var(--panel);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .titleRow{display:flex;align-items:center;gap:8px;min-width:0}
+  .title{font-weight:700;letter-spacing:.15px;font-size:15px;line-height:1.2}
+  .muted{color:var(--muted);font-size:12px}
+  .subtitle{display:none}
+  .topActions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .pillset{display:flex;gap:6px;align-items:center}
+  .pill{border:1px solid var(--border);background:#111722;color:var(--text);border-radius:7px;padding:5px 10px;cursor:pointer}
+  body.light .pill{background:#edf2ff}
+  .pill.active{border-color:#49639d;background:#18233a;color:#dfe8ff}
+  body.light .pill.active{background:#dfe7ff;color:#173268;border-color:#90a6ea}
+  .field{display:flex;align-items:center;gap:6px}
+  .field input[type="text"], .field input[type="password"], .field select{
+    height:30px;padding:0 10px;border:1px solid var(--border);border-radius:8px;background:#0f1320;color:var(--text)
+  }
+  body.light .field input[type="text"], body.light .field input[type="password"], body.light .field select,
+  body.light textarea#prompt, body.light .modalCard input, body.light .modalCard select{
+    background:#ffffff;
+  }
+  .field input.small{width:158px}
+  .field input.tiny{width:110px}
+  .check{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .spacer{flex:1}
+  .btn{border:1px solid var(--border);background:#222739;color:#dce2ff;border-radius:8px;padding:7px 11px;cursor:pointer;white-space:nowrap}
+  body.light .btn{background:#eef2ff;color:#16305f}
+  .btn:hover{border-color:#334058}
+  .btn:disabled{opacity:.45;cursor:default}
+  .btn.compact{padding:5px 9px;font-size:12px;border-radius:7px}
+  .btn.mini{padding:5px 10px;font-size:12px;border-radius:7px;min-width:60px}
+  .btn.icon{width:28px;height:28px;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:14px;line-height:1}
 
-def rough_tokens(s):
-    return max(1, len(s)//4)
+  .tabWrap{padding:0 10px 6px 10px;border-bottom:1px solid var(--border);background:var(--panel)}
+  .tabs{display:flex;gap:6px;overflow:auto;padding-top:4px}
+  .tab{background:var(--tab); border:1px solid var(--border); border-radius:7px; padding:4px 8px; cursor:pointer; display:flex; align-items:center; gap:7px; white-space:nowrap; transition:background .15s ease,border-color .15s ease,box-shadow .15s ease}
+  .tab:hover{background:var(--tab-hover)}
+  .tab.active{background:var(--tab-active); border-color:#4c638f; box-shadow:inset 0 0 0 1px rgba(122,162,255,.18)}
+  .tabLabel{display:inline-block;max-width:180px;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+  .x{font-size:12px; opacity:0.75; padding:0 3px; user-select:none}
+  .x:hover{opacity:1; color:var(--bad)}
+  .plus{background:#222739;color:#dce2ff;border:1px solid var(--border);border-radius:7px;padding:4px 8px;cursor:pointer;flex:0 0 auto;font-size:13px}
+  body.light .plus{background:#eef2ff;color:#16305f}
+  .plus:hover{border-color:#334058}
+  .tabEdit{font:inherit; color:var(--text); background:var(--tab-edit); border:1px solid var(--border); border-radius:6px; padding:2px 6px; outline:none; box-shadow:inset 0 0 0 1px rgba(122,162,255,.08)}
 
-def fit_messages_to_budget(messages, budget):
-    def count(ms): return sum(rough_tokens(m.get("content","")) for m in ms)
-    ms = messages[:]
-    while count(ms) > budget and len(ms) > 2:
-        for i,m in enumerate(ms):
-            if m.get("role")!="system":
-                del ms[i]; break
-    return ms
+  .advancedHost{border-bottom:1px solid var(--border);background:var(--panel)}
+  .advancedPeek{padding:5px 10px 6px 10px;color:var(--muted);font-size:12px;line-height:1.35;display:flex;align-items:center;gap:8px;user-select:none;min-height:30px;flex-wrap:wrap}
+  .advancedPeek::before{content:"⌄";font-size:11px;opacity:.8;line-height:1}
+  .advancedLabel{white-space:nowrap}
+  .peekModes{display:flex;gap:6px;align-items:center;margin-left:auto}
+  .pill.peek{padding:3px 8px;font-size:11px;border-radius:999px}
+  .advancedBar{max-height:0;opacity:0;overflow:hidden;padding:0 10px;display:flex;gap:10px 12px;align-items:center;flex-wrap:wrap;transition:max-height .18s ease, opacity .18s ease, padding .18s ease}
+  .advancedHost:hover .advancedBar, .advancedHost:focus-within .advancedBar, .advancedHost.open .advancedBar{max-height:260px;opacity:1;padding:8px 10px 10px 10px}
+  .advancedHost:hover .advancedPeek, .advancedHost:focus-within .advancedPeek, .advancedHost.open .advancedPeek{color:var(--text)}
 
-# ---------- ObjC <-> Python coercion ----------
+  .chat{flex:1;overflow:auto;padding:14px 14px 0 14px}
+  .msg{max-width:980px;margin:0 auto 12px auto}
+  .msgHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 6px 4px 6px;color:var(--muted);font-size:11px;line-height:1.2}
+  .msgRole{text-transform:capitalize;letter-spacing:.2px}
+  .msgClose{appearance:none;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:6px;padding:0 7px;height:22px;line-height:20px;cursor:pointer;flex:0 0 auto}
+  .msgClose:hover{color:var(--text);border-color:#4a5878;background:rgba(122,162,255,.08)}
+  .bubble{padding:12px 14px;border:1px solid var(--border);border-radius:12px;white-space:pre-wrap;box-shadow:var(--shadow)}
+  .bubble p{margin:0 0 10px 0}
+  .bubble p:last-child{margin-bottom:0}
+  .user{background:var(--user)} .assistant{background:var(--assistant)} .system{background:var(--panel2);color:var(--text)}
+
+  .bar{padding:10px 12px;border-top:1px solid var(--border);background:var(--panel);display:flex;flex-direction:column;gap:8px;align-items:stretch;position:relative;z-index:20}
+  textarea#prompt{width:100%;min-height:138px;max-height:280px;resize:vertical;padding:12px;border:1px solid var(--border);border-radius:10px;background:#0f1320;color:var(--text)}
+  .bottomRow{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:34px}
+  .leftActions,.rightActions{display:flex;align-items:center;gap:8px}
+  .status{font-size:12px;color:var(--muted);min-height:18px}
+
+  pre{background:var(--code);border:1px solid #1e2534;border-radius:10px;padding:12px;overflow:auto;margin:8px 0 0 0}
+  body.light pre{border-color:#d6ddeb}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
+  .codeHeader{display:flex;gap:8px;justify-content:flex-end;margin-top:6px;flex-wrap:wrap}
+  .codeBtn{border:1px solid var(--border);background:#1c2232;color:#cfe0ff;border-radius:6px;padding:3px 9px;font-size:12px;cursor:pointer}
+  body.light .codeBtn{background:#eaf0ff;color:#14376f}
+  .codeBtn:hover{border-color:#334058}
+
+  .codeEditorWrap{position:relative;margin-top:8px;min-height:320px;border:1px solid #1e2534;border-radius:10px;background:var(--code);overflow:hidden}
+  body.light .codeEditorWrap{border-color:#d6ddeb}
+  .codePreview,.codePreview code,.codeEdit{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.45;letter-spacing:0;font-kerning:none;font-variant-ligatures:none;font-feature-settings:"liga" 0, "calt" 0;tab-size:4}
+  .codePreview{position:absolute;inset:0;z-index:1;margin:0;padding:12px 12px 24px 12px;border:none;background:transparent;white-space:pre;overflow:auto;pointer-events:none;scrollbar-gutter:stable both-edges}
+  .codePreview code{display:block;min-height:100%;white-space:inherit}
+  .codeEdit{position:absolute;inset:0;z-index:2;width:100%;height:100%;min-height:320px;margin:0;padding:12px 12px 24px 12px;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:var(--text);border:none;outline:none;white-space:pre;overflow:auto;resize:none;scrollbar-gutter:stable both-edges}
+  .codeEdit::selection{background:rgba(122,162,255,.22)}
+
+  pre code span.s { color:#a6e3a1 !important; }
+  pre code span.c { color:#6c7086 !important; }
+  pre code span.n { color:#cba6f7 !important; }
+  pre code span.k { color:#89b4fa !important; }
+  pre code span.b { color:#f38ba8 !important; }
+  body.light pre code span.s { color:#0d7b3b !important; }
+  body.light pre code span.c { color:#7a859f !important; }
+  body.light pre code span.n { color:#7f42d9 !important; }
+  body.light pre code span.k { color:#1756d1 !important; }
+  body.light pre code span.b { color:#c53166 !important; }
+
+  .modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,.36);display:none;align-items:center;justify-content:center;padding:24px;z-index:1000}
+  .modalOverlay.open{display:flex}
+  .modalCard{width:min(720px,96vw);background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+  .modalHead{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .modalTitle{font-weight:700;font-size:16px}
+  .modalGrid{display:grid;grid-template-columns:160px 1fr;gap:10px 12px;align-items:center}
+  .modalGrid input,.modalGrid select{width:100%;height:36px;padding:0 10px;border:1px solid var(--border);border-radius:10px;background:#0f1320;color:var(--text)}
+  .modalHint{font-size:12px;color:var(--muted);margin-top:10px}
+  .modalActions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="titleRow">
+      <div class="title" title="Direct = Codex + Glyphs MCP / Code = return editable Glyphs Python">GlyphsGPTCodex</div>
+      <div class="muted subtitle">Direct = Codex + Glyphs MCP / Code = return editable Glyphs Python</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="topActions">
+      <button id="settingsBtn" class="btn icon" title="Settings" aria-label="Settings">⚙︎</button>
+      <button id="clearBtn" class="btn compact">Clear Tab</button>
+      <button id="openMacroBtn" class="btn compact">Open Macro</button>
+    </div>
+  </div>
+
+  <div class="tabWrap">
+    <div id="tabbar" class="tabs"></div>
+  </div>
+
+  <div id="advancedHost" class="advancedHost">
+    <div id="advancedPeek" class="advancedPeek">
+      <span id="advancedLabel" class="advancedLabel">Controls · Codex CLI</span>
+      <div class="peekModes">
+        <button id="modeDirect" class="pill peek active">Direct</button>
+        <button id="modeCode" class="pill peek">Code</button>
+      </div>
+    </div>
+    <div class="advancedBar">
+      <div class="field"><span class="muted">Server</span><input id="server" class="small" type="text"/></div>
+      <div class="field"><span class="muted">Model</span><input id="model" class="small" type="text" placeholder="default"/></div>
+      <label class="check"><input id="copyToMacro" type="checkbox"/>Copy code to Macro</label>
+      <div class="muted" id="providerBadge"></div>
+      <div class="spacer"></div>
+      <button id="sendBtnTop" class="btn mini">Send</button>
+    </div>
+  </div>
+
+  <div id="chat" class="chat"></div>
+
+  <div class="bar">
+    <textarea id="prompt" placeholder="Ask Codex to control Glyphs, or ask for Glyphs Python code…"></textarea>
+    <div class="bottomRow">
+      <div class="leftActions">
+        <button id="blankSnippetBtn" class="btn compact">Blank Snippet</button>
+        <div id="status" class="status">Ready</div>
+      </div>
+      <div class="rightActions">
+        <button id="sendBtn" class="btn">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="settingsOverlay" class="modalOverlay">
+  <div class="modalCard">
+    <div class="modalHead">
+      <div class="modalTitle">Tab Settings</div>
+      <div class="muted">Saved per tab. New tabs inherit the current tab.</div>
+    </div>
+    <div class="modalGrid">
+      <div class="muted">Provider</div>
+      <select id="settingsProvider">
+        <option value="codex">Codex CLI</option>
+        <option value="openai">OpenAI API</option>
+        <option value="anthropic">Claude API</option>
+        <option value="openai_compat">Local / OpenAI-compatible</option>
+      </select>
+
+      <div class="muted">Model</div>
+      <input id="settingsModel" type="text" placeholder="Model name"/>
+
+      <div class="muted">Theme</div>
+      <select id="settingsTheme">
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+      </select>
+
+      <div class="muted">API Base</div>
+      <input id="settingsApiBase" type="text" placeholder="https://api.openai.com/v1"/>
+
+      <div class="muted">API Key</div>
+      <input id="settingsApiKey" type="password" placeholder="Stored locally for this script" autocomplete="off"/>
+    </div>
+    <div class="modalHint" id="settingsHint">Codex uses the local CLI. OpenAI-compatible can point to LM Studio / Ollama-compatible gateways.</div>
+    <div class="modalActions">
+      <button id="settingsCancel" class="btn">Cancel</button>
+      <button id="settingsSave" class="btn">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const chatEl = document.getElementById('chat');
+const promptEl = document.getElementById('prompt');
+const statusEl = document.getElementById('status');
+const modeDirectEl = document.getElementById('modeDirect');
+const modeCodeEl = document.getElementById('modeCode');
+const serverEl = document.getElementById('server');
+const modelEl = document.getElementById('model');
+const copyToMacroEl = document.getElementById('copyToMacro');
+const sendBtn = document.getElementById('sendBtn');
+const sendBtnTop = document.getElementById('sendBtnTop');
+const blankSnippetBtn = document.getElementById('blankSnippetBtn');
+const tabbar = document.getElementById('tabbar');
+const providerBadge = document.getElementById('providerBadge');
+const settingsOverlay = document.getElementById('settingsOverlay');
+const settingsProviderEl = document.getElementById('settingsProvider');
+const settingsModelEl = document.getElementById('settingsModel');
+const settingsThemeEl = document.getElementById('settingsTheme');
+const settingsApiBaseEl = document.getElementById('settingsApiBase');
+const settingsApiKeyEl = document.getElementById('settingsApiKey');
+const settingsHintEl = document.getElementById('settingsHint');
+const advancedLabelEl = document.getElementById('advancedLabel');
+let state = {mode:'direct', server:'glyphs-mcp-server', model:'', copyToMacro:false, provider:'codex', apiBase:'', apiKey:'', theme:'dark'};
+let tabInfo = {names:['Chat 1'], active:0};
+let __clickTimer = null;
+
+function providerLabel(v){ return ({codex:'Codex CLI', openai:'OpenAI API', anthropic:'Claude API', openai_compat:'Local / OpenAI-compatible'})[v] || v; }
+function applyTheme(){ document.body.classList.toggle('light', state.theme === 'light'); }
+function looksLikeSentence(line){
+  const t = String(line || '').trim();
+  if (!t) return false;
+  if (/[。！？.!?]$/.test(t)) return true;
+  if (/\b(?:the|this|that|there|here|should|would|could|because|please|thanks|error|issue|mode|direct|code)\b/i.test(t) && /\s/.test(t)) return true;
+  return false;
+}
+function esc(s){ return String(s||'').replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+function copyText(text){
+  try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text); return; } } catch(e){}
+  const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {} document.body.removeChild(ta);
+}
+function cleanZW(s){ return String(s||'').replace(/[\u200B\u200C\u200D\u2060\uFEFF]/g, ''); }
+function colorPython(code){
+  let t = esc(code);
+  t = t.replace(/('{3}[\s\S]*?'{3}|"{3}[\s\S]*?"{3})/g, m => '<span class="s">'+m+'</span>');
+  t = t.replace(/'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"/g, m => '<span class="s">'+m+'</span>');
+  const store = [];
+  t = t.replace(/<span class="s">[\s\S]*?<\/span>/g, m => '@@S'+(store.push(m)-1)+'@@');
+  t = t.replace(/\b(?:def|class|return|if|elif|else|for|while|try|except|finally|with|as|lambda|yield|import|from|pass|break|continue|in|is|and|or|not|assert|raise|global|nonlocal|True|False|None)\b/g, m => '<span class="k">'+m+'</span>');
+  t = t.replace(/\b(?:print|len|range|dict|list|set|tuple|int|float|str|bool|sum|min|max|abs|isinstance|enumerate|zip|map|filter|any|all|open|sorted|reversed|super)\b/g, m => '<span class="b">'+m+'</span>');
+  t = t.replace(/\b\d+(?:\.\d+)?\b/g, m => '<span class="n">'+m+'</span>');
+  t = t.replace(/#.*$/gm, m => '<span class="c">'+m+'</span>');
+  t = t.replace(/@@S(\d+)@@/g, (_,i) => store[+i]);
+  return t;
+}
+function isPythonishLine(line){
+  const t = String(line||'').trim();
+  if (!t) return false;
+  return /^(?:from|import|class|def|if|for|while|try|with|except|finally|return|lambda|@|#|pass|raise)\b/.test(t)
+      || /\bGlyphs\b|\bGS(?:Font|Glyph|Layer|Path|Node|Component|Anchor|Instance|FontMaster)\b/.test(t)
+      || /[A-Za-z_]\w*\s*=/.test(t)
+      || /\.append\(|\.extend\(|\.remove\(|\.beginUndo\(|\.endUndo\(/.test(t);
+}
+function likelyPythonBlock(text){
+  const t = cleanZW(String(text||'')).trim();
+  if (!t) return false;
+  if (/```|~~~/.test(t)) return false;
+  const lines = t.split('\n').filter(line => String(line).trim());
+  if (!lines.length) return false;
+  let codeish = 0, sentenceish = 0;
+  for (const line of lines){ if (isPythonishLine(line)) codeish++; if (looksLikeSentence(line)) sentenceish++; }
+  const ratio = codeish / lines.length;
+  if (lines.length >= 4 && ratio >= 0.75 && sentenceish <= 1) return true;
+  if (lines.length >= 2 && ratio >= 0.9 && sentenceish === 0) return true;
+  return false;
+}
+function renderTextBlock(block){ const txt = String(block || ''); if (!txt.trim()) return ''; if (likelyPythonBlock(txt)) return codeBlockHtml(txt.trim()); return '<p>' + esc(txt).replace(/\n/g, '<br>') + '</p>'; }
+function renderMixedTextChunk(chunk){
+  const src = String(chunk || '');
+  if (!src.trim()) return '';
+  const parts = src.split(/\n\s*\n/);
+  let html = '';
+  for (const part of parts){ if (part.trim()) html += renderTextBlock(part.trim()); }
+  return html;
+}
+function makeReadOnlyBlock(code){ const pre = document.createElement('pre'); const codeEl = document.createElement('code'); codeEl.className = 'lang-python'; codeEl.innerHTML = colorPython(code || ''); pre.appendChild(codeEl); return pre; }
+function initCodeEditorWrap(wrap){
+  if (!wrap || wrap.getAttribute('data-ready') === '1') return;
+  const preview = wrap.querySelector('.codePreview');
+  const previewCode = preview ? preview.querySelector('code') : null;
+  const ta = wrap.querySelector('textarea.codeEdit');
+  if (!preview || !previewCode || !ta) return;
+  wrap.setAttribute('data-ready', '1');
+  function syncHeight(){
+    const cs = window.getComputedStyle(ta);
+    const lineHeight = parseFloat(cs.lineHeight) || 19;
+    const padTop = parseFloat(cs.paddingTop) || 0;
+    const padBottom = parseFloat(cs.paddingBottom) || 0;
+    const lines = Math.max(1, String(ta.value || '').split('\n').length);
+    const nextHeight = Math.max(320, Math.ceil(lines * lineHeight + padTop + padBottom + 28));
+    wrap.style.height = nextHeight + 'px';
+  }
+  function syncScroll(){
+    preview.scrollTop = ta.scrollTop;
+    preview.scrollLeft = ta.scrollLeft;
+  }
+  function sync(){
+    const value = ta.value || '';
+    previewCode.innerHTML = colorPython(value || ' ');
+    syncHeight();
+    syncScroll();
+  }
+  ta.addEventListener('input', sync);
+  ta.addEventListener('scroll', syncScroll);
+  ta.addEventListener('keydown', function(e){
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = ta.selectionStart;
+      const end = ta.selectionEnd;
+      const value = ta.value || '';
+      ta.value = value.slice(0, start) + '    ' + value.slice(end);
+      ta.selectionStart = ta.selectionEnd = start + 4;
+      sync();
+    }
+  });
+  window.requestAnimationFrame(function(){ sync(); window.requestAnimationFrame(sync); });
+}
+function initCodeEditors(root){
+  const scope = root || document;
+  scope.querySelectorAll('.codeEditorWrap').forEach(initCodeEditorWrap);
+}
+function codeEditorHtml(code){
+  const raw = String(code || '');
+  return ''
+    + '<div class="codeEditorWrap">'
+    +   '<pre class="codePreview" aria-hidden="true"><code class="lang-python">'+colorPython(raw || ' ')+'</code></pre>'
+    +   '<textarea class="codeEdit" spellcheck="false" wrap="off" autocapitalize="off" autocomplete="off" autocorrect="off">'+esc(raw)+'</textarea>'
+    + '</div>';
+}
+function makeEditorWrap(code){
+  const host = document.createElement('div');
+  host.innerHTML = codeEditorHtml(code || '');
+  const wrap = host.firstElementChild;
+  initCodeEditorWrap(wrap);
+  return wrap;
+}
+function getCodeFromRendered(header){
+  const next = header ? header.nextElementSibling : null;
+  const raw = decodeURIComponent((header && header.getAttribute('data-raw')) || '');
+  if (!next) return raw;
+  if (next.classList.contains('codeEditorWrap')) { const ta = next.querySelector('textarea.codeEdit'); return ta ? ta.value : raw; }
+  if (next.classList.contains('codeEdit')) return next.value || raw;
+  return raw;
+}
+function codeBlockHtml(code){
+  const raw = String(code || ''); const encoded = encodeURIComponent(raw);
+  return ''
+    + '<div class="codeHeader" data-raw="'+encoded+'">'
+    +   '<button class="codeBtn" data-run="1">Run</button>'
+    +   '<button class="codeBtn" data-copy="1">Copy</button>'
+    +   '<button class="codeBtn" data-copy-macro="1">Copy to Macro</button>'
+    + '</div>'
+    + codeEditorHtml(raw);
+}
+function mdToHtml(md){
+  const src = cleanZW(String(md||'')).replace(/\r\n/g, '\n');
+  if (!src.trim()) return '';
+  const lines = src.split('\n');
+  const openRe = /^\s*(```|~~~)\s*([A-Za-z0-9._+-]*)\s*.*$/;
+  const closeRe = /^\s*(```|~~~)\s*.*$/;
+  let html = '', inCode = false, lang = '', buf = [], textBuf = [];
+  function flushText(){ if (!textBuf.length) return; html += renderMixedTextChunk(textBuf.join('\n')); textBuf = []; }
+  function flushCode(){
+    const raw = buf.join('\n'); const langNorm = (lang || '').toLowerCase(); if (langNorm === 'python_user_visible') lang = 'python';
+    if (langNorm === 'python' || langNorm === 'py' || likelyPythonBlock(raw)) html += codeBlockHtml(raw);
+    else {
+      const encoded = encodeURIComponent(raw);
+      html += ''
+        + '<div class="codeHeader" data-raw="'+encoded+'">'
+        +   '<button class="codeBtn" data-run="1">Run</button>'
+        +   '<button class="codeBtn" data-copy="1">Copy</button>'
+        +   '<button class="codeBtn" data-copy-macro="1">Copy to Macro</button>'
+        + '</div>'
+        + codeEditorHtml(raw);
+    }
+    buf = []; lang = ''; inCode = false;
+  }
+  for (let i = 0; i < lines.length; i++){
+    const line = lines[i];
+    if (!inCode){ const m = line.match(openRe); if (m){ flushText(); inCode = true; lang = m[2] || ''; continue; } textBuf.push(line); }
+    else { if (closeRe.test(line)) { flushCode(); continue; } buf.push(line); }
+  }
+  if (inCode) flushCode(); flushText(); return html;
+}
+function createMsgShell(role, id){
+  const wrap = document.createElement('div');
+  wrap.className = 'msg';
+  wrap.setAttribute('data-msg-id', id || '');
+  wrap.innerHTML = ''
+    + '<div class="msgHead">'
+    +   '<span class="msgRole">'+esc(role || 'assistant')+'</span>'
+    +   '<button class="msgClose" type="button" data-close-msg="'+esc(id || '')+'">×</button>'
+    + '</div>';
+  return wrap;
+}
+function addBubbleHtml(role, html, id){
+  if (!String(html || '').trim()) return;
+  const wrap = createMsgShell(role, id);
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble ' + role;
+  bubble.innerHTML = html;
+  wrap.appendChild(bubble);
+  chatEl.appendChild(wrap);
+  initCodeEditors(wrap);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+function addUser(text, id){ addBubbleHtml('user', esc(text), id); }
+function addText(role, text, id){ const t = String(text || '').trim(); if (!t) return; if (role === 'assistant') addBubbleHtml('assistant', mdToHtml(t), id); else addBubbleHtml(role, esc(t).replace(/\n/g,'<br>'), id); }
+function addCode(role, code, id){ addBubbleHtml(role, codeBlockHtml(code || ''), id); }
+function hydrateHistory(items){
+  chatEl.innerHTML = '';
+  (items || []).forEach(item => {
+    const role = item.role || 'assistant', kind = item.kind || 'text', content = item.content || '', id = item.id || '';
+    if (role === 'user') addUser(content, id); else if (kind === 'code') addCode(role, content, id); else addText(role, content, id);
+  });
+}
+function syncProviderFields(){
+  const provider = settingsProviderEl.value; const isCodex = provider === 'codex'; const isAnthropic = provider === 'anthropic'; const isLocal = provider === 'openai_compat';
+  settingsApiBaseEl.placeholder = isLocal ? 'http://127.0.0.1:1234/v1' : (isAnthropic ? 'https://api.anthropic.com/v1' : 'https://api.openai.com/v1');
+  settingsHintEl.textContent = isCodex
+    ? 'Codex uses the local CLI. Direct mode can use Glyphs MCP.'
+    : (isAnthropic
+      ? 'Claude API uses the Anthropic Messages endpoint. Direct mode becomes normal chat; Code mode returns Glyphs Python.'
+      : (isLocal
+        ? 'Local / OpenAI-compatible uses the Responses API when available, with chat completions fallback for older servers. If API Base points to LM Studio, Direct mode can use Glyphs MCP through /v1/responses.'
+        : 'OpenAI uses the Responses API. Direct mode becomes normal chat; Code mode returns Glyphs Python.'));
+}
+function syncUI(){
+  modeDirectEl.classList.toggle('active', state.mode === 'direct');
+  modeCodeEl.classList.toggle('active', state.mode === 'code');
+  serverEl.value = state.server || 'glyphs-mcp-server';
+  modelEl.value = state.model || '';
+  copyToMacroEl.checked = !!state.copyToMacro;
+  serverEl.disabled = !(state.mode === 'direct' && (state.provider === 'codex' || state.provider === 'openai_compat'));
+  providerBadge.textContent = 'Provider: ' + providerLabel(state.provider || 'codex');
+  if (advancedLabelEl) advancedLabelEl.textContent = 'Controls · ' + providerLabel(state.provider || 'codex');
+  applyTheme();
+}
+function renderTabs(info){
+  tabInfo = info || {names:['Chat 1'], active:0}; const names = tabInfo.names || ['Chat 1']; const active = tabInfo.active || 0; tabbar.innerHTML = '';
+  names.forEach((name, i) => { const t = document.createElement('div'); t.className = 'tab' + (i === active ? ' active' : ''); t.setAttribute('data-idx', i); t.innerHTML = '<span class="tabLabel">'+esc(name || ('Chat ' + (i+1)))+'</span><span class="x" title="Close" data-close="'+i+'">×</span>'; tabbar.appendChild(t); });
+  const plus = document.createElement('button'); plus.id = 'btnPlusTab'; plus.className = 'plus'; plus.textContent = '＋'; tabbar.appendChild(plus);
+}
+function openSettings(){ settingsProviderEl.value = state.provider || 'codex'; settingsModelEl.value = state.model || ''; settingsThemeEl.value = state.theme || 'dark'; settingsApiBaseEl.value = state.apiBase || ''; settingsApiKeyEl.value = state.apiKey || ''; syncProviderFields(); settingsOverlay.classList.add('open'); }
+function closeSettings(){ settingsOverlay.classList.remove('open'); }
+function sendAsk(){
+  const prompt = (promptEl.value || '').trim(); if (!prompt) return;
+  state.server = serverEl.value.trim() || 'glyphs-mcp-server'; state.model = modelEl.value.trim(); state.copyToMacro = copyToMacroEl.checked;
+  promptEl.value = '';
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) window.webkit.messageHandlers.bridge.postMessage({type:'ask', prompt:prompt, mode:state.mode, server:state.server, model:state.model, copyToMacro:state.copyToMacro, provider:state.provider, apiBase:state.apiBase, apiKey:state.apiKey, theme:state.theme});
+}
+function postBlankSnippet(){
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) window.webkit.messageHandlers.bridge.postMessage({type:'blankSnippet'});
+}
+modeDirectEl.onclick = function(){ state.mode = 'direct'; syncUI(); };
+modeCodeEl.onclick = function(){ state.mode = 'code'; syncUI(); };
+sendBtn.onclick = sendAsk; sendBtnTop.onclick = sendAsk;
+blankSnippetBtn.onclick = postBlankSnippet;
+document.getElementById('clearBtn').onclick = function(){ if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) window.webkit.messageHandlers.bridge.postMessage({type:'clearChat'}); };
+document.getElementById('openMacroBtn').onclick = function(){ if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) window.webkit.messageHandlers.bridge.postMessage({type:'openMacro'}); };
+document.getElementById('settingsBtn').onclick = openSettings;
+document.getElementById('settingsCancel').onclick = closeSettings;
+document.getElementById('settingsSave').onclick = function(){
+  state.provider = settingsProviderEl.value; state.model = settingsModelEl.value.trim(); state.theme = settingsThemeEl.value; state.apiBase = settingsApiBaseEl.value.trim(); state.apiKey = settingsApiKeyEl.value; modelEl.value = state.model || ''; syncUI(); closeSettings();
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) window.webkit.messageHandlers.bridge.postMessage({type:'saveSettings', settings:{provider:state.provider, model:state.model, theme:state.theme, apiBase:state.apiBase, apiKey:state.apiKey}});
+};
+settingsProviderEl.onchange = syncProviderFields;
+settingsOverlay.addEventListener('click', function(e){ if (e.target === settingsOverlay) closeSettings(); });
+promptEl.addEventListener('keydown', function(e){ if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'Enter') { e.preventDefault(); postBlankSnippet(); return; } if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') sendAsk(); });
+
+tabbar.addEventListener('click', function(e){
+  const closeIdx = e.target.getAttribute('data-close');
+  if (closeIdx !== null){ if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) window.webkit.messageHandlers.bridge.postMessage({type:'closeTab', index: parseInt(closeIdx, 10)}); return; }
+  if (e.target.id === 'btnPlusTab'){ if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) window.webkit.messageHandlers.bridge.postMessage({type:'newTab'}); return; }
+  let t = e.target; while (t && !t.classList.contains('tab')) t = t.parentNode; if (!t) return;
+  const idx = parseInt(t.getAttribute('data-idx'), 10); if (idx === (tabInfo.active || 0)) return;
+  if (__clickTimer) clearTimeout(__clickTimer);
+  __clickTimer = setTimeout(function(){ if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) window.webkit.messageHandlers.bridge.postMessage({type:'switchTab', index: idx}); __clickTimer = null; }, 180);
+});
+
+tabbar.addEventListener('dblclick', function(e){
+  if (__clickTimer) { clearTimeout(__clickTimer); __clickTimer = null; }
+  if (e.target && e.target.getAttribute('data-close') !== null) return;
+  let t = e.target; while (t && !t.classList.contains('tab')) t = t.parentNode; if (!t) return;
+  const idx = parseInt(t.getAttribute('data-idx'), 10); const labelEl = t.querySelector('.tabLabel'); if (!labelEl) return;
+  const orig = labelEl.textContent; const input = document.createElement('input'); input.className = 'tabEdit'; input.type = 'text'; input.value = orig; input.style.width = Math.max(100, Math.min(260, (labelEl.offsetWidth || 120) + 40)) + 'px';
+  labelEl.style.display = 'none'; t.insertBefore(input, labelEl); input.focus(); input.select();
+  let done = false;
+  function commit(){ if (done) return; done = true; const name = (input.value || '').trim(); input.remove(); labelEl.style.display = ''; if (!name || name === orig) return; if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) window.webkit.messageHandlers.bridge.postMessage({type:'renameTab', index: idx, name: name}); }
+  function cancel(){ if (done) return; done = true; input.remove(); labelEl.style.display = ''; }
+  input.addEventListener('keydown', function(ev){ if (ev.key === 'Enter') commit(); else if (ev.key === 'Escape') cancel(); ev.stopPropagation(); });
+  input.addEventListener('blur', commit); e.stopPropagation();
+});
+
+chatEl.addEventListener('click', function(e){
+  const closeId = e.target && e.target.getAttribute && e.target.getAttribute('data-close-msg');
+  if (closeId !== null && closeId !== '') {
+    e.preventDefault();
+    e.stopPropagation();
+    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
+      window.webkit.messageHandlers.bridge.postMessage({type:'deleteMessage', id: closeId});
+    }
+    return;
+  }
+
+  let t = e.target; while (t && !t.classList.contains('codeBtn')) t = t.parentNode; if (!t) return;
+  const header = t.closest('.codeHeader'); const next = header ? header.nextElementSibling : null; const raw = decodeURIComponent((header && header.getAttribute('data-raw')) || '');
+  if (t.getAttribute('data-copy') !== null) { copyText(getCodeFromRendered(header)); return; }
+  if (t.getAttribute('data-copy-macro') !== null) { const code = getCodeFromRendered(header); if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) window.webkit.messageHandlers.bridge.postMessage({type:'copyToMacro', code:code}); return; }
+  if (t.getAttribute('data-run') !== null) { const code = getCodeFromRendered(header); if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) window.webkit.messageHandlers.bridge.postMessage({type:'exec', code:code}); return; }
+});
+
+window.__fromNative = function(msg){
+  const type = msg.type, data = msg.data || {};
+  if (type === 'state') { state = Object.assign({}, state, data || {}); syncUI(); }
+  else if (type === 'tabs') renderTabs(data);
+  else if (type === 'hydrate') hydrateHistory(data.history || []);
+  else if (type === 'busy') { sendBtn.disabled = !!data.busy; sendBtnTop.disabled = !!data.busy; blankSnippetBtn.disabled = !!data.busy; statusEl.textContent = data.message || (data.busy ? 'Running…' : 'Ready'); }
+  else if (type === 'answerText') addText('assistant', data.text || '', data.id || '');
+  else if (type === 'answerCode') addCode('assistant', data.code || '', data.id || '');
+  else if (type === 'system') addText('system', data.text || '', data.id || '');
+  else if (type === 'error') addText('assistant', 'ERROR\n' + (data.message || ''), data.id || '');
+  else if (type === 'execResult') { const out = String(data.output || '').trim(); if (out) addText('system', 'Execution output\n' + out, data.id || ''); }
+};
+
+syncUI();
+initCodeEditors(document);
+if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.bridge) {
+  window.webkit.messageHandlers.bridge.postMessage({type:'uiReady'});
+  window.webkit.messageHandlers.bridge.postMessage({type:'getState'});
+}
+</script>
+</body>
+</html>
+'''
+
+
+def ensure_dir(path):
+    if not os.path.isdir(path):
+        os.makedirs(path)
+
+
 def objc_to_py(x):
-    # Pass through None/JSON basics
     if x is None or isinstance(x, NSNull):
         return None
     if isinstance(x, NSString):
         return str(x)
     if isinstance(x, NSNumber):
         try:
-            iv = int(x); fv = float(x)
+            iv = int(x)
+            fv = float(x)
             return iv if iv == fv else fv
         except Exception:
-            try: return float(x)
-            except Exception: return bool(x)
-
-    # If GUI objects ever sneak in, don't try to iterate them
-    if isinstance(x, (NSWindow, WKWebView, WKWebViewConfiguration, WKUserContentController)):
-        return None  # or: return str(x)
-
-    # NSDictionary: avoid direct NSArray iteration pitfalls
+            try:
+                return float(x)
+            except Exception:
+                return bool(x)
     if isinstance(x, NSDictionary):
         try:
             keys_arr = x.allKeys()
-            n = int(getattr(keys_arr, "count", lambda: 0)())
+            n = int(keys_arr.count())
             out = {}
             for i in range(n):
                 k = keys_arr.objectAtIndex_(i)
                 out[str(k)] = objc_to_py(x.objectForKey_(k))
             return out
         except Exception:
-            # Not a normal dictionary after all — bail gracefully
             return str(x)
-
-    # NSArray: index by count instead of for-in to dodge nsarray__iter__ surprises
     if isinstance(x, NSArray):
         try:
             n = int(x.count())
             return [objc_to_py(x.objectAtIndex_(i)) for i in range(n)]
         except Exception:
             return [str(x)]
-
-    # Native Python containers
     if isinstance(x, dict):
         return {str(k): objc_to_py(v) for k, v in x.items()}
     if isinstance(x, (list, tuple)):
         return [objc_to_py(v) for v in x]
     if isinstance(x, bytes):
         return x.decode("utf-8", "ignore")
-
-    # Fallback: stringify unknown objc objects
-    return str(x)
+    return x
 
 
 def jsonable(x):
@@ -954,655 +861,1373 @@ def jsonable(x):
     if isinstance(x, (str, int, float, bool)) or x is None:
         return x
     if isinstance(x, dict):
-        return {str(k): jsonable(v) for k,v in x.items()}
+        return {str(k): jsonable(v) for k, v in x.items()}
     if isinstance(x, (list, tuple)):
         return [jsonable(v) for v in x]
     return str(x)
 
-def sanitize_output(s):
-    if not isinstance(s, str):
-        s = str(s)
-    s = re.sub(r"<\|[^|>]{0,80}\|>", "", s)
-    s = re.sub(r"\b(?:analysis|commentary|final)\s+to=\S+(?:\s+code)?", "", s, flags=re.I)
-    s = s.replace("```python_user_visible", "```python").replace("```py", "```python")
-    return s.strip()
-    
-def _as_bool(v):
-    if isinstance(v, bool): return v
-    if isinstance(v, NSNumber):
-        try: return bool(int(v))
-        except Exception: return False
-    if isinstance(v, (int, float)): return v != 0
-    if isinstance(v, str): return v.strip().lower() in ("1","true","yes","on","y","t")
-    return bool(v)
-    
-import re
 
-def normalize_model_markdown(text: str) -> str:
-    """
-    Only wrap as Python if the content actually looks like Python.
-    Leave plain text alone. If fences exist, just standardize them.
-    """
-    s = (text or "").strip()
-    if not s:
-        return s
-
-    # Already fenced? Standardize aliases and return.
-    if "```" in s or "~~~" in s:
-        return (
-            s.replace("```py", "```python")
-             .replace("```python_user_visible", "```python")
-        )
-
-    # Heuristic: is this Python-ish?
-    lines = s.splitlines()
-    cue = re.compile(
-        r'^\s*(?:from|import|class|def|#|try:|except|finally:|with\b|for\b|while\b|if\b|@|'
-        r'Glyphs\b|GS(?:Font|Glyph|Layer|Path)\b|[A-Za-z_]\w*\s*=)'
-    )
-    hits = sum(1 for l in lines if cue.search(l))
-
-    # Not code → return as-is (this is the critical change)
-    if hits < 2:
-        return s
-
-    # Looks like code → wrap (optionally keep a short lead-in if present)
-    # find first cue line to split off any brief lead
-    start = None
-    for i, l in enumerate(lines):
-        if cue.search(l):
-            start = i
-            break
-    lead = ("\n".join(lines[:start]).strip() if start not in (None, 0) else "")
-    body = ("\n".join(lines[start:]).strip() if start is not None else s)
-
-    caption = "Here’s the code you asked for:"
-    intro = (lead + "\n\n") if lead else (caption + "\n\n")
-    return f"{intro}```python\n{body}\n```"
-
-    
-def _ensure_intro_line(user_q: str, answer: str) -> str:
-    """
-    If the model returned only code, prepend a one-line caption and ensure
-    there is exactly one fenced ```python block. Works for:
-    - fenced content starting with ``` or ~~~
-    - raw Python code without fences (we'll wrap it)
-    Otherwise, returns the answer unchanged.
-    """
-    if not isinstance(answer, str):
-        return answer
-
-    s = answer.lstrip()
-
-    # Case A: already fenced – just add the caption above it
-    if s.startswith("```") or s.startswith("~~~"):
-        caption = "Here’s the code you asked for:"
-        return caption + "\n\n" + answer
-
-    # Case B: looks like raw Python (no fences): wrap + caption
-    lines = s.splitlines()
-    looks_like_py = (
-        len(lines) >= 2 and
-        (
-            re.search(r'^\s*(from|import|class|def|#)', lines[0]) or
-            re.search(r'\bGlyphs\b|\bGS(Font|Glyph|Layer|Path)\b', s)
-        )
-    )
-    if looks_like_py:
-        caption = "Here’s the code you asked for:"
-        code = s.strip()
-        return f"{caption}\n\n```python\n{code}\n```"
-
-    # Not obviously code – leave it alone
-    return answer
+def extract_code_block(text):
+    if not text:
+        return ""
+    m = re.search(r"```(?:python|py)?\s*\n([\s\S]*?)```", text, re.IGNORECASE)
+    if m:
+        return m.group(1).strip()
+    return text.strip()
 
 
-# -------- ObjC bridge (V3, hardened) --------
-BRIDGE_CLASS_NAME = "GlyphsGPTBridgeV6"
+BRIDGE_CLASS_NAME = "GlyphsGPTCodexBridge"
 try:
-    Bridge = objc.lookUpClass(BRIDGE_CLASS_NAME)
+    GlyphsGPTCodexBridge = objc.lookUpClass(BRIDGE_CLASS_NAME)
 except objc.nosuchclass_error:
-    class GlyphsGPTBridgeV6(NSObject):
+    class GlyphsGPTCodexBridge(NSObject):
         def initWithOwner_(self, owner):
-            self = objc.super(GlyphsGPTBridgeV6, self).init()
+            self = objc.super(GlyphsGPTCodexBridge, self).init()
             if self is None:
                 return None
             self.owner = owner
             return self
 
-        def _coerce_dict(self, dct):
-            py = {}
-            for k in dct.allKeys():
-                key = str(k); val = dct.objectForKey_(k)
-                py[key] = self._coerce_any(val)
-            return py
-
-        def _coerce_array(self, arr):
-            return [self._coerce_any(arr.objectAtIndex_(i)) for i in range(arr.count())]
-
-        def _coerce_any(self, x):
-            if x is None or isinstance(x, NSNull):
-                return None
-            if isinstance(x, dict) or isinstance(x, list):
-                return x
-            if isinstance(x, NSString):
-                s = str(x)
-                try: return json.loads(s)
-                except Exception: return s
-            if isinstance(x, NSDictionary): return self._coerce_dict(x)
-            if isinstance(x, NSArray):      return self._coerce_array(x)
-            if isinstance(x, (bytes, str)):
-                try: return json.loads(x)
-                except Exception: return x if not isinstance(x, bytes) else x.decode("utf-8","ignore")
-            return x
-
         def userContentController_didReceiveScriptMessage_(self, controller, message):
             try:
-                raw = message.body()
-                payload = self._coerce_any(raw)
-                t = payload.get("type") if isinstance(payload, dict) else None
-                if not t:
-                    try: self.owner.send_error("Bad message body (type missing)")
-                    finally: return
-
-                if   t == "getSettings": self.owner.send_settings()
-                elif t == "saveSettings": self.owner.update_settings(payload.get("settings") or {})
-                elif t == "ask":         self.owner.handle_ask(payload.get("prompt",""))
-                elif t == "exec":        self.owner.handle_exec(payload.get("code",""))
-                elif t == "newChat":     self.owner.new_chat()
-                elif t == "switchTab":   self.owner.switch_tab(int(payload.get("index",0) or 0))
-                elif t == "newTab":      self.owner.new_tab()
-                elif t == "closeTab":    self.owner.close_tab(int(payload.get("index",0) or 0))
-                elif t == "renameTab":
-                    self.owner.rename_tab(payload.get("index", 0), payload.get("name", ""))
-                else:
-                    self.owner.send_error("Unknown type: %s" % t)
+                payload = objc_to_py(message.body()) or {}
+                msgType = payload.get("type")
+                if msgType == "uiReady":
+                    self.owner.on_ui_ready()
+                elif msgType == "getState":
+                    self.owner.send_state()
+                    self.owner.send_tabs()
+                    self.owner.send_hydrate()
+                elif msgType == "ask":
+                    self.owner.handle_ask(payload)
+                elif msgType == "stop":
+                    self.owner.stop_run()
+                elif msgType == "exec":
+                    self.owner.handle_exec(payload.get("code", ""))
+                elif msgType == "copyToMacro":
+                    self.owner.copy_to_macro(payload.get("code", ""))
+                elif msgType == "openMacro":
+                    self.owner.open_macro()
+                elif msgType == "switchTab":
+                    self.owner.switch_tab(int(payload.get("index", 0) or 0))
+                elif msgType == "newTab":
+                    self.owner.new_tab()
+                elif msgType == "closeTab":
+                    self.owner.close_tab(int(payload.get("index", 0) or 0))
+                elif msgType == "renameTab":
+                    self.owner.rename_tab(int(payload.get("index", 0) or 0), payload.get("name", ""))
+                elif msgType == "clearChat":
+                    self.owner.clear_chat()
+                elif msgType == "saveSettings":
+                    self.owner.save_settings(payload.get("settings") or {})
+                elif msgType == "blankSnippet":
+                    self.owner.post_blank_snippet()
+                elif msgType == "deleteMessage":
+                    self.owner.delete_message(str(payload.get("id") or ""))
             except Exception as e:
-                import traceback
-                tb = traceback.format_exc()
                 try:
-                    self.owner.send_error("Bridge error: %s" % e)
-                    self.owner.debug(tb)
+                    self.owner.send_error("Bridge error: %s\n%s" % (e, traceback.format_exc()))
                 except Exception:
-                    print("[GlyphsGPT Bridge error]", e); print(tb)
+                    print(traceback.format_exc())
 
-    Bridge = GlyphsGPTBridgeV6
 
-# -------------------------- Main window / logic --------------------------
-class HTMLChatUI(object):
+class GlyphsGPTCodex(object):
+
     def __init__(self):
-        self._load_state()
+        self._script_build = SCRIPT_BUILD
+        self.window = None
+        self.web = None
+        self.bridge = None
+        self.codexProcess = None
+        self._busy = False
+        self.active = 0
+        self.sessions = []
+        self._pageReady = False
+        self._pendingMessages = []
+        self._load_store()
         self._build_ui()
-        try: self._auto_detect_limits()
-        except Exception: pass
 
-    # ---------- state (sessions/tabs) ----------
-    def _load_state(self):
-        root_raw = Glyphs.defaults.get(PREFKEY)
+    # ---------- persistence ----------
+    def _default_session(self, index=1):
+        ses = copy.deepcopy(SESSION_DEFAULTS)
+        ses["name"] = "Chat %d" % index
+        ses["history"] = []
+        return ses
+
+    def _normalize_session(self, s, index):
+        out = self._default_session(index)
+        if isinstance(s, dict):
+            out.update({
+                "name": str(s.get("name") or out["name"]),
+                "mode": str(s.get("mode") or out["mode"]).lower(),
+                "server": str(s.get("server") or out["server"]),
+                "model": str(s.get("model") or out["model"]),
+                "provider": str(s.get("provider") or out["provider"]),
+                "apiBase": str(s.get("apiBase") or out["apiBase"]),
+                "apiKey": str(s.get("apiKey") or out["apiKey"]),
+                "theme": str(s.get("theme") or out["theme"]),
+                "copyToMacro": bool(s.get("copyToMacro", out["copyToMacro"])),
+            })
+            if out["mode"] not in ("direct", "code"):
+                out["mode"] = DEFAULT_MODE
+            if out["provider"] not in ("codex", "openai", "anthropic", "openai_compat"):
+                out["provider"] = DEFAULT_PROVIDER
+            if out["theme"] not in ("dark", "light"):
+                out["theme"] = DEFAULT_THEME
+            hist = []
+            for item in objc_to_py(s.get("history") or []):
+                if isinstance(item, dict):
+                    hist.append({
+                        "id": str(item.get("id") or uuid.uuid4().hex),
+                        "role": str(item.get("role") or "assistant"),
+                        "kind": str(item.get("kind") or "text"),
+                        "content": str(item.get("content") or ""),
+                    })
+            out["history"] = hist
+        return out
+
+    def _load_store(self):
+        data = {}
         try:
-            root = objc_to_py(root_raw) if root_raw else {}
-        except Exception as e:
-            # stored defaults are corrupt (e.g. NSWindow snuck in) → reset
-            try:
-                # best effort wipe
-                del Glyphs.defaults[PREFKEY]
-            except Exception:
-                Glyphs.defaults[PREFKEY] = {}
-            root = {}
-        if not isinstance(root, dict):
-            root = {}
-
-        if "sessions" not in root:
-            ses = copy.deepcopy(SESSION_DEFAULTS)
-            for k in SESSION_DEFAULTS.keys():
-                if k in root and k != "history":
-                    ses[k] = objc_to_py(root.get(k))
-            ses["history"] = objc_to_py(root.get("history", []))
-            ses["name"] = ses.get("name") or "Tab 1"
-            self.sessions = [ses]
+            if os.path.isfile(STATE_PATH):
+                with open(STATE_PATH, "r", encoding="utf-8") as f:
+                    data = json.load(f) or {}
+        except Exception:
+            data = {}
+        sessions = data.get("sessions") or []
+        if not isinstance(sessions, list) or not sessions:
+            sessions = [self._default_session(1)]
+        self.sessions = [self._normalize_session(s, i + 1) for i, s in enumerate(sessions)]
+        try:
+            self.active = int(data.get("active", 0) or 0)
+        except Exception:
             self.active = 0
-            self._save_all()
-        else:
-            self.sessions = objc_to_py(root.get("sessions")) or []
-            if not isinstance(self.sessions, list) or not self.sessions:
-                s = copy.deepcopy(SESSION_DEFAULTS); s["name"] = "Tab 1"
-                self.sessions = [s]
-            self.sessions = [objc_to_py(s) for s in self.sessions]
-            for i,s in enumerate(self.sessions,1):
-                if not s.get("name"): s["name"] = "Tab %d" % i
-                s["history"] = [dict(role=str(h.get("role","")), content=str(h.get("content",""))) for h in (s.get("history") or []) if isinstance(h, dict)]
-            self.active = int(root.get("active", 0) or 0)
-            self.active = max(0, min(self.active, len(self.sessions)-1))
+        self.active = max(0, min(self.active, len(self.sessions) - 1))
 
-    def _save_all(self):
-        payload = {"sessions": self.sessions, "active": int(self.active)}
-        Glyphs.defaults[PREFKEY] = jsonable(payload)
-
+    def _save_store(self):
+        try:
+            ensure_dir(STATE_DIR)
+            tmp = STATE_PATH + '.tmp'
+            with open(tmp, "w", encoding="utf-8") as f:
+                json.dump({"sessions": self.sessions, "active": self.active}, f, ensure_ascii=False, indent=2)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp, STATE_PATH)
+        except Exception:
+            pass
 
     def cur(self):
         return self.sessions[self.active]
 
-    def tab_names(self):
-        return [s.get("name") or ("Tab %d"%(i+1)) for i,s in enumerate(self.sessions)]
+    def _record(self, role, content, kind="text"):
+        item_id = uuid.uuid4().hex
+        self.cur().setdefault("history", []).append({
+            "id": item_id,
+            "role": str(role),
+            "kind": str(kind or "text"),
+            "content": str(content or ""),
+        })
+        self._save_store()
+        return item_id
 
-    # ---------- UI ----------
-    def _build_ui(self):
-        self.cfg = WKWebViewConfiguration.alloc().init()
-        self.ucc = WKUserContentController.alloc().init()
-        self.bridge = Bridge.alloc().initWithOwner_(self)
-        self.ucc.addScriptMessageHandler_name_(self.bridge, "bridge")
-        self.cfg.setUserContentController_(self.ucc)
+    # ---------- session / tab UI ----------
+    def _session_ui_state(self):
+        s = self.cur()
+        return {
+            "mode": s.get("mode", DEFAULT_MODE),
+            "server": s.get("server", DEFAULT_SERVER),
+            "model": s.get("model", DEFAULT_MODEL),
+            "provider": s.get("provider", DEFAULT_PROVIDER),
+            "apiBase": s.get("apiBase", ""),
+            "apiKey": s.get("apiKey", ""),
+            "theme": s.get("theme", DEFAULT_THEME),
+            "copyToMacro": bool(s.get("copyToMacro", False)),
+        }
 
-        self.win = NSWindow.alloc().initWithContentRect_styleMask_backing_defer_(((100,100),(900,760)), 15, 2, False)
-        self.win.setTitle_("GlyphsGPT with Chat (HTML)")
-        self.web = WKWebView.alloc().initWithFrame_configuration_(((0,0),(900,760)), self.cfg)
-        self.win.setContentView_(self.web)
-        self.win.makeKeyAndOrderFront_(None)
-        self.web.loadHTMLString_baseURL_(HTML, None)
-
-    def _js(self, expression): self.web.evaluateJavaScript_completionHandler_(expression, None)
-    def send(self, type_, data=None):
-        payload = {"type": type_, "data": jsonable(data or {})}
-        js_arg = json.dumps(payload, ensure_ascii=False)
-        self._js("window.__fromNative(%s);" % js_arg)
-
-    # after
-    def debug(self, msg):
-        if not DEBUG:
-            return                 # <- don’t render a UI bubble unless DEBUG is on
-        try:
-            self.send("debug", {"message": str(msg)})
-        except Exception:
-            pass
-
-    # ---------- tabs ----------
     def send_tabs(self):
         self.send("tabs", {
-            "names":  [s.get("name") or ("Tab %d" % (i+1)) for i, s in enumerate(self.sessions)],
-            "models": [s.get("llmModel","") for s in self.sessions],
+            "names": [s.get("name") or ("Chat %d" % (i + 1)) for i, s in enumerate(self.sessions)],
             "active": int(self.active),
         })
 
+    def send_hydrate(self):
+        self.send("hydrate", {"history": self.cur().get("history", [])})
+
     def switch_tab(self, idx):
         idx = int(idx)
-        if idx<0 or idx>=len(self.sessions): return
+        if idx < 0 or idx >= len(self.sessions):
+            return
         self.active = idx
-        self._save_all()
+        self._save_store()
         self.send_tabs()
-        self.send_settings()
-        self.send("hydrate", {"history": self.cur().get("history", [])})
+        self.send_state()
+        self.send_hydrate()
 
     def new_tab(self):
-        base = copy.deepcopy(objc_to_py(self.cur()))
-        base["history"] = []
-        base["name"] = "Tab %d" % (len(self.sessions)+1)
-        self.sessions.append(base)
-        self.active = len(self.sessions)-1
-        self._save_all()
+        src = self.cur()
+        ses = self._default_session(len(self.sessions) + 1)
+        ses["mode"] = src.get("mode", DEFAULT_MODE)
+        ses["server"] = src.get("server", DEFAULT_SERVER)
+        ses["model"] = src.get("model", DEFAULT_MODEL)
+        ses["provider"] = src.get("provider", DEFAULT_PROVIDER)
+        ses["apiBase"] = src.get("apiBase", "")
+        ses["apiKey"] = src.get("apiKey", "")
+        ses["theme"] = src.get("theme", DEFAULT_THEME)
+        ses["copyToMacro"] = bool(src.get("copyToMacro", False))
+        self.sessions.append(ses)
+        self.active = len(self.sessions) - 1
+        self._save_store()
         self.send_tabs()
-        self.send_settings()
-        self.send("hydrate", {"history": []})
+        self.send_state()
+        self.send_hydrate()
 
     def close_tab(self, idx):
-        if len(self.sessions)<=1:
-            self.cur()["history"] = []
-            self._save_all()
-            self.send_tabs()
-            self.send("hydrate", {"history": []})
-            return
         idx = int(idx)
-        if idx<0 or idx>=len(self.sessions): return
+        if idx < 0 or idx >= len(self.sessions):
+            return
+        if len(self.sessions) == 1:
+            self.clear_chat()
+            return
         del self.sessions[idx]
         if self.active >= len(self.sessions):
-            self.active = len(self.sessions)-1
-        self._save_all()
+            self.active = len(self.sessions) - 1
+        self._save_store()
         self.send_tabs()
-        self.send_settings()
-        self.send("hydrate", {"history": self.cur().get("history", [])})
+        self.send_state()
+        self.send_hydrate()
 
-    # ---------- settings ----------
-    def send_settings(self):
-        p = self.cur()
-        self.send("settings", {
-            "llmBase": p["llmBase"], "llmModel": p["llmModel"], "llmKey": p["llmKey"],
-            "ragURL": p["ragURL"], "ragToken": p["ragToken"], "topK": p["topK"],
-            "useRAG": _as_bool(p.get("useRAG", True)),          # ← was: bool(p["useRAG"])
-            "mode": int(p.get("mode", 0) or 0),
-            "remember": _as_bool(p.get("remember", True)),      # ← was: bool(p["remember"])
-            "maxContext": int(p.get("maxContext",20000) or 20000),
-            "maxOutput":  int(p.get("maxOutput",1024) or 1024),
-            "headroom":   int(p.get("headroom",512) or 512),
-        })
-        self.send_tabs()
-        self.send("hydrate", {"history": p.get("history", [])})
-
-    def update_settings(self, s):
-        p = self.cur()
-        s = objc_to_py(s or {})
-        p.update(dict(
-            llmBase=str(s.get("llmBase","")).strip(),
-            llmModel=str(s.get("llmModel","")).strip(),
-            llmKey=str(s.get("llmKey","")).strip(),
-            ragURL=str(s.get("ragURL","")).strip(),
-            ragToken=str(s.get("ragToken","")).strip(),
-            topK=int(s.get("topK",8) or 8),
-            useRAG=_as_bool(s.get("useRAG", p.get("useRAG", True))),
-            mode=int(s.get("mode",0) or 0),
-            remember=_as_bool(s.get("remember", p.get("remember", True))),
-            maxContext=int(s.get("maxContext", p.get("maxContext",20000)) or 20000),
-            maxOutput=int(s.get("maxOutput", p.get("maxOutput",1024)) or 1024),
-            headroom=int(s.get("headroom", p.get("headroom",512)) or 512),
-        ))
-        self._save_all()
-        try: self._auto_detect_limits()
-        except Exception: pass
-        self.send_settings()
-
-    def _budget_for(self, p):
-        model_context  = int(p.get("maxContext", 20000) or 20000)
-        reserved_output= int(p.get("maxOutput", 1024) or 1024)
-        headroom       = int(p.get("headroom", 512) or 512)
-        return max(512, model_context - reserved_output - headroom)
-
-    def _auto_detect_limits(self):
-        p = self.cur()
-        base = (p.get("llmBase") or "").rstrip("/")
-        model = p.get("llmModel") or ""
-        if not base or not model: return
-        url = base + "/models"
-        headers = {"Authorization": "Bearer "+p["llmKey"]} if p.get("llmKey") else {}
-        res = http_get_json(url, headers=headers)
-        ctx = None
-        try:
-            for item in (res.get("data") or []):
-                mid = item.get("id") or item.get("name") or ""
-                if mid == model:
-                    ctx = item.get("context_length") or item.get("max_context_length") \
-                          or item.get("n_ctx") or item.get("max_position_embeddings")
-                    break
-        except Exception:
-            ctx = None
-        if isinstance(ctx, int) and ctx > 0:
-            p["maxContext"] = ctx
-            self._save_all()
-            self.send("debug", {"message": "Detected model context: %d" % ctx})
-
-    # ---------- chat ----------
-    def new_chat(self):
-        self.cur()["history"] = []
-        self._save_all()
-        self.send("resetChat", {})
-
-    def handle_ask(self, prompt):
-        q = (prompt or "").strip()
-        if not q:
-            self.send_error("Empty prompt")
+    def rename_tab(self, idx, name):
+        idx = int(idx)
+        if idx < 0 or idx >= len(self.sessions):
             return
+        name = str(name or "").strip()
+        if not name:
+            return
+        self.sessions[idx]["name"] = name
+        self._save_store()
+        self.send_tabs()
 
-        p = self.cur()
-        mode = int(p.get("mode", 0))
-        include_rag = bool(p.get("useRAG", True))
+    def clear_chat(self):
+        self.cur()["history"] = []
+        self._save_store()
+        self.send_hydrate()
 
-        needs_code = bool(re.search(
-            r"(?:\bscript\b|\bcode\b|\bpython\b|\bwrite\b|\bgenerate\b|```|GS(?:Font|Glyph|Layer|Path)|\bvanilla\b)",
-            q, re.IGNORECASE
-        ))
-        
-        # Preferred output instructions for code requests
-        format_hint = (
-            "\n\nRESPONSE FORMAT (preferred):\n"
-            "1) A good enough explanation (2–5 sentences) describing what the script does and any caveats.\n"
-            "2) Exactly ONE fenced ```python code block.\n"
-            "3) Optional short note AFTER the code (≤ 3 sentences) for warnings, variants, or next steps.\n"
-            "Do not include additional code blocks outside the one Python block."
-        ) if needs_code else "\n\nFORMAT: text"
-        
-        ctx_text = ""; rag_chunks = 0; rag_top_score = None
-        if include_rag and (mode in (0,1,2)):
-            try:
-                headers = {}
-                if p.get("ragToken"):
-                    headers["Authorization"] = "Bearer " + p["ragToken"]
-                top_k_req = min(int(p.get("topK", 8) or 8), MAX_CONTEXT_CHUNKS)
-                rag = http_post_json(p["ragURL"], {"query": q, "top_k": top_k_req}, headers=headers)
-                results = rag.get("results", []) or []
-                rag_chunks = len(results)
-                if results and isinstance(results[0], dict):
-                    rag_top_score = results[0].get("score", None)
+    def post_blank_snippet(self):
+        item_id = self._record("assistant", "", "code")
+        self.send("answerCode", {"code": "", "id": item_id})
 
-                parts = []
-                for i, r in enumerate(results[:MAX_CONTEXT_CHUNKS], 1):
-                    meta = (r.get("meta", {}) or {})
-                    src = meta.get("path") or meta.get("source") or "?"
-                    txt = (r.get("text", "") or "").strip()
-                    if len(txt) > CHUNK_CHAR_LIMIT:
-                        txt = txt[:CHUNK_CHAR_LIMIT] + " …"
-                    parts.append(f"[S{i}] {src}\n{txt}")
-                ctx_text = "\n\n".join(parts)
-            except Exception as e:
-                self.debug("RAG error: %s" % e)
-                ctx_text = ""; rag_chunks = 0; rag_top_score = None
+    def delete_message(self, message_id):
+        message_id = str(message_id or "").strip()
+        if not message_id:
+            return
+        cur = self.cur()
+        old = cur.get("history", [])
+        new = [item for item in old if str(item.get("id") or "") != message_id]
+        if len(new) == len(old):
+            return
+        cur["history"] = new
+        self._save_store()
+        self.send_hydrate()
 
-        has_context = (rag_chunks > 0) and (rag_top_score is None or rag_top_score >= 0.40)
+    def save_settings(self, settings):
+        settings = objc_to_py(settings or {})
+        cur = self.cur()
+        provider = str(settings.get("provider") or cur.get("provider") or DEFAULT_PROVIDER).strip().lower()
+        if provider not in ("codex", "openai", "anthropic", "openai_compat"):
+            provider = DEFAULT_PROVIDER
+        theme = str(settings.get("theme") or cur.get("theme") or DEFAULT_THEME).strip().lower()
+        if theme not in ("dark", "light"):
+            theme = DEFAULT_THEME
+        cur["provider"] = provider
+        cur["model"] = str(settings.get("model") or cur.get("model") or "")
+        cur["apiBase"] = str(settings.get("apiBase") or cur.get("apiBase") or "")
+        cur["apiKey"] = str(settings.get("apiKey") or cur.get("apiKey") or "")
+        cur["theme"] = theme
+        if "mode" in settings:
+            mode = str(settings.get("mode") or cur.get("mode") or DEFAULT_MODE).strip().lower()
+            cur["mode"] = mode if mode in ("direct", "code") else DEFAULT_MODE
+        if "server" in settings:
+            cur["server"] = str(settings.get("server") or cur.get("server") or DEFAULT_SERVER)
+        if "copyToMacro" in settings:
+            cur["copyToMacro"] = bool(settings.get("copyToMacro"))
+        self._save_store()
+        self.send_state()
 
-        hist = (p.get("history") or [])[-40:]
-        messages = []
-
-        if mode == 1:  # Grounded
-            if not has_context and needs_code:
-                self._finish_answer(p, q, "insufficient context", ctx_text)
-                return
-            base_prompt = PROMPT_GROUNDED if has_context else PROMPT_CHAT
-            sys_prompt = base_prompt + format_hint
-            if has_context:
-                messages = [{"role": "system", "content": sys_prompt}] + hist + [
-                    {"role": "user", "content": f"QUESTION:\n{q}\n\nCONTEXT:\n{ctx_text}"}
-                ]
-            else:
-                messages = [{"role": "system", "content": sys_prompt}] + hist + [
-                    {"role": "user", "content": q}
-                ]
-
-        elif mode == 2:  # Hybrid
-            sys_prompt = PROMPT_GROUNDED + format_hint
-            messages = [{"role": "system", "content": sys_prompt}] + hist + [
-                {"role": "user", "content": f"QUESTION:\n{q}\n\nCONTEXT (optional):\n{ctx_text}"}
-            ]
-
-        elif mode == 3:  # Chat
-            sys_prompt = PROMPT_CHAT + format_hint
-            messages = [{"role": "system", "content": sys_prompt}] + hist + [
-                {"role": "user", "content": q}
-            ]
-
-        else:  # Auto
-            if has_context:
-                sys_prompt = PROMPT_GROUNDED + format_hint
-                messages = [{"role": "system", "content": sys_prompt}] + hist + [
-                    {"role": "user", "content": f"QUESTION:\n{q}\n\nCONTEXT:\n{ctx_text}"}
-                ]
-            else:
-                sys_prompt = PROMPT_CHAT + format_hint
-                messages = [{"role": "system", "content": sys_prompt}] + hist + [
-                    {"role": "user", "content": q}
-                ]
-
-        budget = self._budget_for(p)
-        messages = fit_messages_to_budget(messages, budget)
-        ans = self._chat(p, messages, temperature=0.2).strip()
-        self._finish_answer(p, q, ans, ctx_text)
-
-    def _finish_answer(self, p, q, ans, ctx_text):
-        # Turn “prose + unfenced code” into “prose + ```python ...```”
-        ans = normalize_model_markdown(ans)
-    
-        # Final cleanup of odd tokens / tag variants
-        ans = sanitize_output(ans)
-    
-        if bool(p.get("remember", True)):
-            p["history"] = (p.get("history") or []) + [
-                {"role":"user","content": q},
-                {"role":"assistant","content": ans},
-            ]
-            p["history"] = p["history"][-80:]
-            self._save_all()
-    
-        self.send("answer", {"answer": ans, "context": ctx_text})
-
-
-    # ---- Debug + compat shims (paste inside class HTMLChatUI) -----------------
-
-    def _short(self, x, limit=1500):
-        """Pretty, trimmed text for debug bubbles."""
+    # ---------- window ----------
+    def _ui_is_alive(self):
         try:
-            s = json.dumps(x, ensure_ascii=False) if not isinstance(x, str) else x
+            return self.window is not None and self.web is not None and self.window.contentView() is not None
         except Exception:
-            s = str(x)
-        return s if len(s) <= limit else s[:limit] + " …(truncated)…"
+            return False
 
-    def _post_chat_with_compat(self, url, headers, payload_base, max_out):
-        """
-        POST to /chat/completions with graceful fallbacks:
-        - max_tokens -> max_completion_tokens
-        - drop temperature/top_p if the model only supports defaults
-        - hint if the model expects the /v1/responses API
-        - **NEW**: dynamic timeout + retry backoff for slow generations
-        """
-        pay = dict(payload_base)
-        pay["max_tokens"] = int(max_out)
-    
-        # --- NEW: timeout based on size of the requested completion ---
-        # 20s base + ~40ms per requested token, capped between 35s and 300s
-        timeout_s = max(35, min(300, 20 + int(int(max_out) * 0.04)))
-    
-        attempts = 0
-        last_err = None
-        while attempts < 6:
-            attempts += 1
-            try:
-                return http_post_json(url, pay, headers=headers, timeout=timeout_s)
-            except RuntimeError as e:
-                s = str(e)
-                last_err = e
-    
-                # --- NEW: if we hit a timeout, back off and try again ---
-                if ("timed out" in s.lower()) or ("timeout" in s.lower()) or ("deadline" in s.lower()):
-                    timeout_s = min(300, int(timeout_s * 1.6) + 5)  # backoff
-                    continue
-    
-                # 1) Token knob rename
-                if ("Unsupported parameter" in s and "'max_tokens'" in s) and ("max_tokens" in pay):
-                    pay.pop("max_tokens", None)
-                    pay["max_completion_tokens"] = int(max_out)
-                    continue
-    
-                # 2) Temperature locked to default
-                if (('"param": "temperature"' in s) or ("Unsupported value: 'temperature'" in s)) and ("temperature" in pay):
-                    pay.pop("temperature", None)
-                    continue
-    
-                # 3) top_p locked to default
-                if (('"param": "top_p"' in s) or ("Unsupported value: 'top_p'" in s)) and ("top_p" in pay):
-                    pay.pop("top_p", None)
-                    continue
-    
-                # 4) Responses API hint
-                if ("responses" in s.lower()) or ("max_output_tokens" in s.lower()):
-                    raise RuntimeError("This model expects the /v1/responses API (use max_output_tokens).") from e
-    
-                break  # not a known recoverable error
-    
-        raise last_err
-    
+    def _ensure_ui(self):
+        if self._ui_is_alive():
+            return
+        self.window = None
+        self.web = None
+        self.bridge = None
+        self._build_ui()
 
-    def _chat(self, p, messages, temperature=0.2):
-        # Soft preflight: don't let /models failure block the request
+    def _build_ui(self):
+        self._pageReady = False
+        self._pendingMessages = []
+        cfg = WKWebViewConfiguration.alloc().init()
+        ucc = WKUserContentController.alloc().init()
+        self.bridge = GlyphsGPTCodexBridge.alloc().initWithOwner_(self)
+        ucc.addScriptMessageHandler_name_(self.bridge, "bridge")
+        cfg.setUserContentController_(ucc)
+
+        self.window = NSWindow.alloc().initWithContentRect_styleMask_backing_defer_(((80, 80), (1100, 820)), 15, 2, False)
+        self.window.setTitle_("GlyphsGPTCodex")
         try:
-            _assert_chat_model_exists(p)
-        except Exception as e:
-            self.debug(f"Model check skipped: {e}")
-
-        url = "%s/chat/completions" % (p['llmBase'].rstrip('/'))
-        headers = {"Authorization": "Bearer "+p['llmKey']} if p.get("llmKey") else {}
-
-        payload_base = {
-            "model": p["llmModel"].strip(),
-            "messages": _sanitize_messages(messages),
-            # knobs (server may prune these via the compat shim)
-            "temperature": float(temperature),
-            "top_p": 0.9,
-        }
-        max_out = int(p.get("maxOutput", 1024) or 1024)
-
-        # Compact request summary (no message text)
-        self.debug("Request → " + self._short({
-            "url": url,
-            "model": payload_base["model"],
-            "n_messages": len(payload_base["messages"]),
-            "has_key": bool(p.get("llmKey")),
-            "max_out": max_out,
-            "knobs": [k for k in ("temperature","top_p") if k in payload_base],
-        }))
-
-        res = self._post_chat_with_compat(url, headers, payload_base, max_out)
-
-        # Surface server-side 'error' objects verbosely
-        if isinstance(res, dict) and "error" in res:
-            self.debug("Raw response (error):\n" + self._short(res))
-            raise RuntimeError(self._short(res))
-
-        # Normal chat.completions shape
-        try:
-            content = res["choices"][0]["message"]["content"]
+            self.window.setReleasedWhenClosed_(False)
         except Exception:
-            # Show the whole JSON so we can see what's wrong
-            import json
-            self.debug("Unexpected response shape:\n```json\n"+json.dumps(res, ensure_ascii=False, indent=2)[:12000]+"\n```")
-            raise RuntimeError("Unexpected LLM response (see debug bubble).")
-            
-        # >>> ADD THIS: show EXACT model text before any processing <<<
+            pass
         try:
-            self.debug("RAW model content (verbatim, before edits):\n```text\n"+content+"\n```")
+            self.window.setFrameAutosaveName_(WINDOW_AUTOSAVE)
         except Exception:
             pass
 
-        if not isinstance(content, str) or not content.strip():
-            self.debug("Empty content; raw response:\n" + self._short(res))
-            raise RuntimeError("Model returned empty message (see debug bubble).")
+        self.web = WKWebView.alloc().initWithFrame_configuration_(((0, 0), (1100, 820)), cfg)
+        self.window.setContentView_(self.web)
+        self.web.loadHTMLString_baseURL_(HTML, None)
 
-        return content
-
-    def rename_tab(self, idx, name):
-        try: idx = int(idx)
-        except Exception: return
-        name = (name or "").strip()
-        if not (0 <= idx < len(self.sessions)) or not name:
-            return
-        self.sessions[idx]["name"] = name
-        self._save_all()
+    def show(self):
+        self._ensure_ui()
+        self.window.makeKeyAndOrderFront_(None)
+        self.send_state()
         self.send_tabs()
-        
+        self.send_hydrate()
+
+    def _js(self, expression):
+        if self.web is not None:
+            self.web.evaluateJavaScript_completionHandler_(expression, None)
+
+    def on_ui_ready(self):
+        self._pageReady = True
+        pending = list(self._pendingMessages)
+        self._pendingMessages = []
+        for payload in pending:
+            self._js("window.__fromNative(%s);" % json.dumps(payload, ensure_ascii=False))
+        self.send_state()
+        self.send_tabs()
+        self.send_hydrate()
+
+    def send(self, type_, data=None):
+        payload = {"type": type_, "data": jsonable(data or {})}
+        if not self._pageReady:
+            self._pendingMessages.append(payload)
+            return
+        self._js("window.__fromNative(%s);" % json.dumps(payload, ensure_ascii=False))
+
+    def send_state(self):
+        self.send("state", self._session_ui_state())
+
+    def set_busy(self, busy, message=None):
+        self._busy = bool(busy)
+        self.send("busy", {"busy": self._busy, "message": message or ("Running…" if busy else "Ready")})
+
+    def send_error(self, message, record=True):
+        item_id = self._record("assistant", "ERROR\n" + str(message), "text") if record else ""
+        self.send("error", {"message": str(message), "id": item_id})
+
+    def send_system(self, text, record=True):
+        item_id = self._record("system", str(text), "text") if record else ""
+        self.send("system", {"text": str(text), "id": item_id})
+
+    # ---------- codex ----------
+    def _codex_path(self):
+        candidates = [
+            shutil.which("codex"),
+            "/Applications/Codex.app/Contents/Resources/codex",
+            "/opt/homebrew/bin/codex",
+            "/usr/local/bin/codex",
+            os.path.expanduser("~/.local/bin/codex"),
+        ]
+        for path in candidates:
+            if path and os.path.isfile(path) and os.access(path, os.X_OK):
+                return path
+        return None
+
+    def _workspace_dir(self):
+        try:
+            font = Glyphs.font
+            if font and font.filepath:
+                folder = os.path.dirname(str(font.filepath))
+                if os.path.isdir(folder):
+                    return folder
+        except Exception:
+            pass
+        return os.path.expanduser("~")
+
+    def _font_context(self):
+        lines = []
+        try:
+            font = Glyphs.font
+            if font is None:
+                return "No font is open in Glyphs."
+            lines.append("Open font familyName: %s" % (font.familyName or ""))
+            if font.filepath:
+                lines.append("Open font path: %s" % font.filepath)
+            try:
+                selected = []
+                for layer in font.selectedLayers:
+                    if layer and layer.parent:
+                        selected.append(layer.parent.name)
+                if selected:
+                    lines.append("Selected glyphs: %s" % ", ".join(selected[:20]))
+            except Exception:
+                pass
+            try:
+                if font.currentTab is not None and getattr(font.currentTab, "text", None):
+                    lines.append("Current tab text: %s" % font.currentTab.text)
+            except Exception:
+                pass
+        except Exception as e:
+            lines.append("Font context unavailable: %s" % e)
+        return "\n".join(lines)
+
+    def _mcp_is_alive(self):
+        raw = http_get("http://127.0.0.1:9680/mcp/", headers={"Accept": "application/json"}, timeout=1.5)
+        return raw is not None
+
+    def _history_for_prompt(self, limit=12):
+        items = self.cur().get("history", [])[-limit:]
+        out = []
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            role = str(item.get("role") or "assistant").upper()
+            kind = str(item.get("kind") or "text")
+            content = str(item.get("content") or "").strip()
+            if not content:
+                continue
+            if role == "SYSTEM" and (content.startswith("Execution output") or content == "Stopped."):
+                continue
+            if kind == "code":
+                content = "```python\n%s\n```" % content
+            out.append("[%s]\n%s" % (role, content))
+        return "\n\n".join(out)
+
+    def _build_prompt(self, provider, mode, server, userPrompt):
+        ctx = self._font_context()
+        hist = self._history_for_prompt()
+        if mode == "code":
+            return (
+                "You are in CODE mode for Glyphs.\n"
+                "Return only Python code for Glyphs 3 Python 3.11.\n"
+                "Do NOT include explanation.\n"
+                "Do NOT include markdown fences unless necessary.\n"
+                "Include all required imports.\n"
+                "Prefer current font and current selection rather than hard-coded paths.\n\n"
+                "Glyphs context:\n%s\n\n"
+                "Recent tab history:\n%s\n\n"
+                "Current request:\n%s"
+            ) % (ctx, hist or "(none)", userPrompt)
+        if provider == "codex":
+            return (
+                "You are controlling Glyphs through Codex.\n"
+                "Use the configured MCP server named '%s'.\n"
+                "Do the task directly through MCP tools when possible.\n"
+                "Do not return Python code unless explicitly asked.\n"
+                "Return a concise summary of what you changed or found.\n\n"
+                "Glyphs context:\n%s\n\n"
+                "Recent tab history:\n%s\n\n"
+                "Current request:\n%s"
+            ) % (server, ctx, hist or "(none)", userPrompt)
+        return (
+            "You are a helpful assistant for Glyphs.\n"
+            "In Direct mode here, answer normally because you cannot execute MCP tools.\n"
+            "When code is useful, include fenced python blocks.\n\n"
+            "Glyphs context:\n%s\n\n"
+            "Recent tab history:\n%s\n\n"
+            "Current request:\n%s"
+        ) % (ctx, hist or "(none)", userPrompt)
+
+    def _build_lmstudio_direct_system_prompt(self, plugin_id):
+        ctx = self._font_context()
+        hist = self._history_for_prompt()
+        return (
+            "You are controlling Glyphs through LM Studio with MCP access.\n"
+            "Use the configured LM Studio integration '%s' whenever live Glyphs state or actions are needed.\n"
+            "Prefer MCP tools over guessing whenever the request depends on the current font, selection, tab, layers, paths, or any mutable Glyphs state.\n"
+            "Do not return Python code unless explicitly asked.\n"
+            "Return a concise summary of what you changed or found.\n\n"
+            "Glyphs context:\n%s\n\n"
+            "Recent tab history:\n%s" 
+        ) % (plugin_id, ctx, hist or "(none)")
+
+    def _build_command(self, mode, server, model, outputPath):
+        codex = self._codex_path()
+        if not codex:
+            raise RuntimeError("Could not find Codex CLI. Checked PATH and Codex.app bundled binary.")
+        cmd = [
+            codex,
+            "exec",
+            "--skip-git-repo-check",
+            "--full-auto",
+            "--output-last-message", outputPath,
+        ]
+        if model:
+            cmd.extend(["-m", model])
+        cmd.append("-")
+        return cmd
+
+    def _extract_first_code_block(self, text):
+        if not text:
+            return ""
+        m = re.search(r"```(?:python|py)?\s*\n([\s\S]*?)```", text, re.IGNORECASE)
+        if m:
+            return m.group(1).strip()
+        return ""
+
+    def _build_api_messages(self, mode):
+        system = self._build_prompt("api", mode, self.cur().get("server", DEFAULT_SERVER), "")
+        system = re.sub(r"\n\nCurrent request:\n\s*$", "", system)
+        messages = []
+        for item in self.cur().get("history", [])[-14:]:
+            if not isinstance(item, dict):
+                continue
+            role = str(item.get("role") or "assistant")
+            kind = str(item.get("kind") or "text")
+            content = str(item.get("content") or "").strip()
+            if not content:
+                continue
+            if role == "system" and (content.startswith("Execution output") or content == "Stopped."):
+                continue
+            api_role = "user" if role == "user" else "assistant"
+            if kind == "code":
+                content = "```python\n%s\n```" % content
+            elif role == "system":
+                content = "[System note]\n" + content
+            messages.append({"role": api_role, "content": content})
+        return system, messages
+
+    def _http_post_json(self, url, headers, payload, timeout=90):
+        res = http_post_json(url, payload, headers=headers, timeout=timeout)
+        if isinstance(res, dict):
+            return res
+        raise RuntimeError("Invalid JSON from %s\n%s" % (url, str(res)[:1000]))
+
+    def _is_lmstudio_base(self, apiBase):
+        base = str(apiBase or "").strip().lower()
+        if not base:
+            return True
+        return ("127.0.0.1:1234" in base) or ("localhost:1234" in base)
+
+    def _lmstudio_root(self, apiBase):
+        base = str(apiBase or "http://127.0.0.1:1234/v1").strip() or "http://127.0.0.1:1234/v1"
+        base = base.rstrip("/")
+        for suffix in ("/api/v1", "/v1"):
+            if base.endswith(suffix):
+                return base[:-len(suffix)]
+        return base
+
+    def _lmstudio_headers(self, apiKey):
+        headers = {"Content-Type": "application/json"}
+        key = str(apiKey or "").strip()
+        if key:
+            headers["Authorization"] = "Bearer %s" % key
+        return headers
+
+    def _lmstudio_plugin_id(self, server):
+        raw = str(server or "").strip()
+        if not raw or raw == DEFAULT_SERVER:
+            return DEFAULT_LMSTUDIO_PLUGIN
+        if raw.startswith("mcp/"):
+            return raw
+        if raw in ("glyphs-mcp", "glyphs_mcp", "glyphsmcp"):
+            return DEFAULT_LMSTUDIO_PLUGIN
+        if raw == "glyphs-mcp-server":
+            return DEFAULT_LMSTUDIO_PLUGIN
+        if "/" in raw:
+            return raw
+        return "mcp/%s" % raw
+
+    def _normalize_openai_base(self, apiBase, defaultBase):
+        base = str(apiBase or defaultBase or "").strip()
+        if not base:
+            return ""
+        base = base.rstrip("/")
+        if base.endswith("/v1"):
+            return base
+        if re.search(r"/v1(?:/.*)?$", base):
+            return re.sub(r"(/v1)(?:/.*)?$", r"\1", base)
+        return base + "/v1"
+
+    def _responses_input_from_messages(self, messages):
+        items = []
+        for item in messages or []:
+            if not isinstance(item, dict):
+                continue
+            role = str(item.get("role") or "user").strip().lower() or "user"
+            if role not in ("user", "assistant", "system", "developer"):
+                role = "user"
+            content_type = "output_text" if role == "assistant" else "input_text"
+            content = item.get("content")
+            if isinstance(content, list):
+                parts = []
+                for part in content:
+                    if isinstance(part, dict):
+                        ptype = str(part.get("type") or "").strip()
+                        if ptype == "refusal" and role == "assistant":
+                            refusal = str(part.get("refusal") or part.get("text") or "").strip()
+                            if refusal:
+                                parts.append({"type": "refusal", "refusal": refusal})
+                            continue
+                        text = str(part.get("text") or part.get("content") or part.get("value") or "").strip()
+                    else:
+                        text = str(part or "").strip()
+                    if text:
+                        parts.append({"type": content_type, "text": text})
+                if not parts:
+                    continue
+                items.append({"role": role, "content": parts})
+                continue
+            text = str(content or "").strip()
+            if not text:
+                continue
+            items.append({"role": role, "content": [{"type": content_type, "text": text}]})
+        return items
+
+    def _extract_responses_text(self, res):
+        texts = []
+        tool_notes = []
+        approval_notes = []
+
+        def _append_textish(val):
+            if val is None:
+                return
+            if isinstance(val, str):
+                s = val.strip()
+                if s:
+                    texts.append(s)
+                return
+            if isinstance(val, list):
+                for it in val:
+                    _append_textish(it)
+                return
+            if isinstance(val, dict):
+                t = str(val.get("type") or "").strip()
+                if t in ("output_text", "text", "input_text", "summary_text"):
+                    txt = val.get("text")
+                    if isinstance(txt, dict):
+                        txt = txt.get("value") or txt.get("text") or ""
+                    s = str(txt or "").strip()
+                    if s:
+                        texts.append(s)
+                    return
+                if "text" in val or "content" in val or "value" in val or "summary" in val:
+                    _append_textish(val.get("text") or val.get("content") or val.get("value") or val.get("summary"))
+                return
+
+        _append_textish(res.get("output_text"))
+
+        for item in (res.get("output") or []):
+            if not isinstance(item, dict):
+                continue
+            item_type = str(item.get("type") or "").strip()
+            if item_type == "message":
+                _append_textish(item.get("content"))
+            elif item_type in ("reasoning", "summary"):
+                _append_textish(item.get("summary") or item.get("content"))
+            elif item_type in ("function_call", "mcp_call", "mcp_tool_call"):
+                name = str(item.get("name") or item.get("tool_name") or item.get("tool") or item_type).strip()
+                if name:
+                    tool_notes.append(name)
+            elif item_type == "mcp_approval_request":
+                label = str(item.get("server_label") or "MCP").strip()
+                name = str(item.get("name") or "").strip()
+                approval_notes.append("Approval required for %s%s" % (label, (": " + name) if name else ""))
+
+        texts = [t for t in texts if t]
+        if texts:
+            return "\n\n".join(texts)
+
+        err = res.get("error") or {}
+        err_msg = str(err.get("message") or "").strip()
+        if err_msg:
+            raise RuntimeError(err_msg)
+
+        incomplete = res.get("incomplete_details") or {}
+        reason = str(incomplete.get("reason") or "").strip()
+        if reason:
+            raise RuntimeError("Response incomplete: %s" % reason)
+
+        if approval_notes:
+            raise RuntimeError("\n".join(approval_notes))
+        if tool_notes:
+            return "Tools ran but no final message was returned.\n" + "\n".join(tool_notes)
+
+        try:
+            sample = json.dumps({
+                "status": res.get("status"),
+                "output": res.get("output"),
+                "incomplete_details": res.get("incomplete_details"),
+            }, ensure_ascii=False)[:2000]
+        except Exception:
+            sample = str(res)[:2000]
+        raise RuntimeError("Provider returned no message. Raw response: %s" % sample)
+
+    def _call_openai_responses(self, apiBase, apiKey, model, system, messages, tools=None, temperature=None, timeout=180):
+        base = self._normalize_openai_base(apiBase, "https://api.openai.com/v1")
+        if not model:
+            raise RuntimeError("Set a model in Settings.")
+        headers = {"Content-Type": "application/json"}
+        if apiKey:
+            headers["Authorization"] = "Bearer %s" % apiKey
+        payload = {
+            "model": model,
+            "instructions": system,
+            "input": self._responses_input_from_messages(messages),
+            "text": {"format": {"type": "text"}},
+        }
+        if tools:
+            payload["tools"] = tools
+            payload["tool_choice"] = "auto"
+        if temperature is not None:
+            payload["temperature"] = temperature
+        res = self._http_post_json(base + "/responses", headers, payload, timeout=timeout)
+        return self._extract_responses_text(res)
+
+    def _call_openai_like(self, apiBase, apiKey, model, system, messages):
+        base = self._normalize_openai_base(apiBase, "https://api.openai.com/v1")
+        if not model:
+            raise RuntimeError("Set a model in Settings.")
+        headers = {"Content-Type": "application/json"}
+        if apiKey:
+            headers["Authorization"] = "Bearer %s" % apiKey
+        payload = {"model": model, "messages": [{"role": "system", "content": system}] + messages}
+        res = self._http_post_json(base + "/chat/completions", headers, payload, timeout=120)
+        choice = ((res.get("choices") or [{}])[0] or {})
+        msg = choice.get("message") or {}
+        content = msg.get("content")
+        if isinstance(content, list):
+            return "".join(part.get("text", "") for part in content if isinstance(part, dict))
+        return str(content or "")
+
+    def _use_chat_completions_fallback(self, exc):
+        txt = str(exc or "")
+        lowered = txt.lower()
+        return (
+            "http 404" in lowered
+            or "not found" in lowered
+            or "/responses" in lowered
+            or "unknown path" in lowered
+            or "unsupported" in lowered
+            or "unrecognized request url" in lowered
+        )
+
+    def _lmstudio_mcp_label_and_url(self, server):
+        raw = str(server or "").strip()
+        if not raw or raw == DEFAULT_SERVER:
+            return "glyphs-mcp", DEFAULT_GLYPHS_MCP_URL
+        if raw.startswith("http://") or raw.startswith("https://"):
+            label = re.sub(r"[^a-zA-Z0-9._-]+", "-", raw.split("://", 1)[-1]).strip("-") or "glyphs-mcp"
+            return label, raw
+        if raw.startswith("mcp/"):
+            label = raw.split("/", 1)[1].strip() or "glyphs-mcp"
+            return label, DEFAULT_GLYPHS_MCP_URL
+        if raw in ("glyphs-mcp", "glyphs_mcp", "glyphsmcp", "glyphs-mcp-server"):
+            return "glyphs-mcp", DEFAULT_GLYPHS_MCP_URL
+        return re.sub(r"[^a-zA-Z0-9._-]+", "-", raw).strip("-") or "glyphs-mcp", DEFAULT_GLYPHS_MCP_URL
+
+    def _build_lmstudio_responses_tools(self, server):
+        label, url = self._lmstudio_mcp_label_and_url(server)
+        return [{"type": "mcp", "server_label": label, "server_url": url}]
+
+    def _flatten_messages_for_input(self, messages):
+        parts = []
+        for item in messages or []:
+            if not isinstance(item, dict):
+                continue
+            role = str(item.get("role") or "user").strip().lower() or "user"
+            content = item.get("content")
+            if isinstance(content, list):
+                text = "\n".join(str((part or {}).get("text") or (part or {}).get("content") or "").strip() if isinstance(part, dict) else str(part or "").strip() for part in content)
+            else:
+                text = str(content or "").strip()
+            text = text.strip()
+            if text:
+                parts.append("%s: %s" % (role.capitalize(), text))
+        return "\n\n".join(parts).strip()
+
+    def _call_lmstudio_responses(self, apiBase, apiKey, model, server, system, messages):
+        tools = self._build_lmstudio_responses_tools(server)
+        try:
+            return self._call_openai_responses(apiBase, apiKey, model, system, messages, tools=tools, temperature=0, timeout=180)
+        except Exception as e:
+            lowered = str(e or "").lower()
+            if "invalid type for 'input'" not in lowered and "invalid_union" not in lowered:
+                raise
+            base = self._normalize_openai_base(apiBase, "http://127.0.0.1:1234/v1")
+            if not model:
+                raise RuntimeError("Set a model in Settings.")
+            headers = {"Content-Type": "application/json"}
+            if apiKey:
+                headers["Authorization"] = "Bearer %s" % apiKey
+            payload = {
+                "model": model,
+                "instructions": system,
+                "input": self._flatten_messages_for_input(messages),
+                "tools": tools,
+                "tool_choice": "auto",
+                "temperature": 0,
+            }
+            res = self._http_post_json(base + "/responses", headers, payload, timeout=180)
+            return self._extract_responses_text(res)
+
+    def _call_lmstudio_chat(self, apiBase, apiKey, model, server, prompt):
+        if not model:
+            raise RuntimeError("Set a model in Settings.")
+        root = self._lmstudio_root(apiBase)
+        headers = self._lmstudio_headers(apiKey)
+        label, url = self._lmstudio_mcp_label_and_url(server)
+        system = self._build_lmstudio_direct_system_prompt("mcp/%s" % label)
+        payload = {
+            "model": model,
+            "input": prompt,
+            "system_prompt": system,
+            "integrations": [{
+                "type": "ephemeral_mcp",
+                "server_label": label,
+                "server_url": url,
+            }],
+            "temperature": 0,
+        }
+        res = self._http_post_json(root + "/api/v1/chat", headers, payload, timeout=180)
+        output = res.get("output") or []
+        texts = []
+        tool_notes = []
+        invalids = []
+        for item in output:
+            if not isinstance(item, dict):
+                continue
+            item_type = str(item.get("type") or "")
+            if item_type == "message":
+                content = str(item.get("content") or "").strip()
+                if content:
+                    texts.append(content)
+            elif item_type == "tool_call":
+                tool = str(item.get("tool") or "").strip()
+                provider_info = item.get("provider_info") or {}
+                source = str(provider_info.get("plugin_id") or provider_info.get("server_label") or "").strip()
+                note = tool or "tool_call"
+                if source:
+                    note += " @ " + source
+                tool_notes.append(note)
+            elif item_type == "invalid_tool_call":
+                reason = str(item.get("reason") or "Invalid LM Studio tool call.").strip()
+                meta = item.get("metadata") or {}
+                tool_name = str(meta.get("tool_name") or "").strip()
+                if tool_name:
+                    reason += " Tool: %s" % tool_name
+                invalids.append(reason)
+        texts = [t for t in texts if t]
+        if texts:
+            return texts[-1]
+        if invalids:
+            raise RuntimeError("\n".join(invalids))
+        if tool_notes:
+            return "Tools ran but no final message was returned.\n" + "\n".join(tool_notes)
+        raise RuntimeError("LM Studio returned no message.")
+
+    def _call_anthropic(self, apiBase, apiKey, model, system, messages):
+        if not apiKey:
+            raise RuntimeError("Set an Anthropic API key in Settings.")
+        if not model:
+            raise RuntimeError("Set a model in Settings.")
+        base = (apiBase or "https://api.anthropic.com/v1").rstrip("/")
+        headers = {"Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01"}
+        payload = {"model": model, "max_tokens": 4096, "system": system, "messages": messages}
+        res = self._http_post_json(base + "/messages", headers, payload, timeout=120)
+        return "".join(part.get("text") or "" for part in (res.get("content") or []) if isinstance(part, dict) and part.get("type") == "text")
+
+    def _run_api_thread(self, provider, mode, copyToMacro):
+        text = ""
+        errorText = ""
+        try:
+            cur = self.cur()
+            system, messages = self._build_api_messages(mode)
+            if provider == "anthropic":
+                text = self._call_anthropic(cur.get("apiBase", ""), cur.get("apiKey", ""), cur.get("model", ""), system, messages)
+            else:
+                base = cur.get("apiBase", "")
+                key = cur.get("apiKey", "")
+                if provider == "openai_compat" and not base:
+                    base = "http://127.0.0.1:1234/v1"
+                elif provider == "openai_compat" and self._is_lmstudio_base(base):
+                    base = self._lmstudio_root(base) + "/v1"
+                elif provider == "openai" and not key:
+                    raise RuntimeError("Set an OpenAI API key in Settings.")
+
+                if provider == "openai":
+                    try:
+                        text = self._call_openai_responses(base, key, cur.get("model", ""), system, messages)
+                    except Exception as e:
+                        lowered = str(e or "").lower()
+                        if mode == "direct" and ("provider returned no message" in lowered or "response incomplete" in lowered):
+                            text = self._call_openai_like(base, key, cur.get("model", ""), system, messages)
+                        else:
+                            raise
+                elif provider == "openai_compat" and mode == "direct" and self._is_lmstudio_base(base):
+                    try:
+                        text = self._call_lmstudio_responses(base, key, cur.get("model", ""), cur.get("server", DEFAULT_SERVER), system, messages)
+                    except Exception as e:
+                        if self._use_chat_completions_fallback(e) or "invalid type for 'input'" in str(e or "").lower() or "invalid_union" in str(e or "").lower():
+                            text = self._call_lmstudio_chat(base, key, cur.get("model", ""), cur.get("server", DEFAULT_SERVER), self._last_user_prompt())
+                        else:
+                            raise
+                else:
+                    try:
+                        text = self._call_openai_responses(base, key, cur.get("model", ""), system, messages)
+                    except Exception as e:
+                        if self._use_chat_completions_fallback(e):
+                            text = self._call_openai_like(base, key, cur.get("model", ""), system, messages)
+                        else:
+                            raise
+        except Exception:
+            errorText = traceback.format_exc()
+        callAfter(self._finish_run, provider, mode, text, "", "", errorText, copyToMacro)
+
+    def _last_user_prompt(self):
+        hist = self.cur().get("history", [])
+        for item in reversed(hist):
+            if isinstance(item, dict) and str(item.get("role") or "") == "user":
+                return str(item.get("content") or "")
+        return ""
+
+    def handle_ask(self, payload):
+        if self._busy:
+            return
+        payload = objc_to_py(payload or {})
+        prompt = (payload.get("prompt") or "").strip()
+        mode = (payload.get("mode") or DEFAULT_MODE).strip().lower()
+        server = (payload.get("server") or DEFAULT_SERVER).strip() or DEFAULT_SERVER
+        model = (payload.get("model") or "").strip()
+        copyToMacro = bool(payload.get("copyToMacro"))
+
+        cur = self.cur()
+        provider = str(payload.get("provider") or cur.get("provider") or DEFAULT_PROVIDER).strip().lower()
+        if provider not in ("codex", "openai", "anthropic", "openai_compat"):
+            provider = DEFAULT_PROVIDER
+        theme = str(payload.get("theme") or cur.get("theme") or DEFAULT_THEME).strip().lower()
+        if theme not in ("dark", "light"):
+            theme = DEFAULT_THEME
+
+        cur.update({
+            "mode": mode if mode in ("direct", "code") else DEFAULT_MODE,
+            "server": server,
+            "model": model,
+            "copyToMacro": copyToMacro,
+            "provider": provider,
+            "apiBase": str(payload.get("apiBase") or cur.get("apiBase") or ""),
+            "apiKey": str(payload.get("apiKey") or cur.get("apiKey") or ""),
+            "theme": theme,
+        })
+        self._save_store()
+        self.send_state()
+
+        if not prompt:
+            self.send_error("Empty prompt.")
+            return
+
+        user_id = self._record("user", prompt, "text")
+        self.send("answerText", {"text": prompt, "id": user_id})
+
+        provider = cur.get("provider", DEFAULT_PROVIDER)
+        if provider == "codex" and cur["mode"] == "direct" and not self._mcp_is_alive():
+            self.send_error(
+                "Glyphs MCP server is not responding at http://127.0.0.1:9680/mcp/\n"
+                "In Glyphs, run: Edit → Start Glyphs MCP Server"
+            )
+            return
+
+        if provider == "codex":
+            finalPrompt = self._build_prompt(provider, cur["mode"], server, prompt)
+            self.set_busy(True, "Running Codex…")
+            thread = threading.Thread(target=self._run_codex_thread, args=(cur["mode"], finalPrompt, model, copyToMacro, server))
+        else:
+            self.set_busy(True, "Running %s…" % provider)
+            thread = threading.Thread(target=self._run_api_thread, args=(provider, cur["mode"], copyToMacro))
+        thread.daemon = True
+        thread.start()
+
+    def _run_codex_thread(self, mode, finalPrompt, model, copyToMacro, server):
+        stdoutText = ""
+        stderrText = ""
+        outputText = ""
+        errorText = ""
+        tmp = None
+        try:
+            fd, outputPath = tempfile.mkstemp(prefix="glyphsgptcodex_", suffix=".txt")
+            os.close(fd)
+            tmp = outputPath
+            cmd = self._build_command(mode, server, model, outputPath)
+            env = os.environ.copy()
+            env["PATH"] = ":".join([
+                "/Applications/Codex.app/Contents/Resources",
+                "/opt/homebrew/bin",
+                "/usr/local/bin",
+                env.get("PATH", ""),
+            ])
+            cwd = self._workspace_dir() if mode == "direct" else os.path.expanduser("~")
+            self.codexProcess = subprocess.Popen(
+                cmd,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=cwd,
+                env=env,
+                text=True,
+            )
+            stdoutText, stderrText = self.codexProcess.communicate(finalPrompt)
+            if os.path.exists(outputPath):
+                with open(outputPath, "r", encoding="utf-8", errors="ignore") as f:
+                    outputText = f.read()
+            if self.codexProcess.returncode not in (0, None):
+                if not outputText.strip() and stderrText.strip():
+                    errorText = stderrText.strip()
+        except Exception:
+            errorText = traceback.format_exc()
+        finally:
+            self.codexProcess = None
+            if tmp and os.path.exists(tmp):
+                try:
+                    os.remove(tmp)
+                except Exception:
+                    pass
+        callAfter(self._finish_run, "codex", mode, outputText, stdoutText, stderrText, errorText, copyToMacro)
+
+    @objc.python_method
+    def _finish_run(self, provider, mode, outputText, stdoutText, stderrText, errorText, copyToMacro):
+        self.set_busy(False, "Ready")
+        if errorText:
+            self.send_error(errorText)
+            return
+
+        text = (outputText or "").strip()
+        if not text and (stdoutText or stderrText):
+            text = ((stdoutText or "") + ("\n" + stderrText if stderrText else "")).strip()
+        if not text:
+            self.send_error("Provider returned no message.")
+            return
+
+        if mode == "code":
+            code = extract_code_block(text)
+            item_id = self._record("assistant", code, "code")
+            self.send("answerCode", {"code": code, "id": item_id})
+            if copyToMacro and code.strip():
+                self.copy_to_macro(code, announce=False)
+        else:
+            item_id = self._record("assistant", text, "text")
+            self.send("answerText", {"text": text, "id": item_id})
+            if copyToMacro:
+                code = self._extract_first_code_block(text)
+                if code:
+                    self.copy_to_macro(code, announce=False)
+
+    def stop_run(self):
+        proc = self.codexProcess
+        if proc is None:
+            return
+        try:
+            proc.terminate()
+        except Exception:
+            pass
+        self.codexProcess = None
+        self.send_system("Stopped.")
+        self.set_busy(False, "Stopped")
+
+    # ---------- execution ----------
+    def _build_exec_env(self):
+        import GlyphsApp as GA
+        env = {
+            "__builtins__": __builtins__,
+            "__name__": "__main__",
+            "__file__": "<GlyphsGPTCodex>",
+            "Glyphs": GA.Glyphs,
+            "objc": objc,
+            "AppKit": AK,
+            "Foundation": FN,
+            "os": os,
+            "re": re,
+            "json": json,
+            "traceback": traceback,
+            "subprocess": subprocess,
+            "tempfile": tempfile,
+            "shutil": shutil,
+            "threading": threading,
+            "io": io,
+            "contextlib": contextlib,
+        }
+        for module in (GA, AK, FN):
+            for name in dir(module):
+                if name.startswith("_"):
+                    continue
+                try:
+                    env[name] = getattr(module, name)
+                except Exception:
+                    pass
+        try:
+            font = GA.Glyphs.font
+            env["font"] = font
+            env["currentFont"] = font
+            env["selectedLayers"] = list(font.selectedLayers) if font is not None else []
+            env["currentTab"] = font.currentTab if font is not None else None
+            env["selectedFontMaster"] = font.selectedFontMaster if font is not None else None
+        except Exception:
+            env["font"] = None
+            env["currentFont"] = None
+            env["selectedLayers"] = []
+            env["currentTab"] = None
+            env["selectedFontMaster"] = None
+        return env
+
+    def _append_to_macro_log(self, text):
+        text = str(text or "").rstrip()
+        if not text:
+            return
+        try:
+            Glyphs.showMacroWindow()
+        except Exception:
+            pass
+        try:
+            print(text)
+        except Exception:
+            pass
+
     def handle_exec(self, code):
-        code = (code or "").strip()
+        code = str(code or "").replace("\r\n", "\n").strip()
         if not code:
-            self.send("error", {"message":"(nothing to execute)"}); return
+            self.send_error("Nothing to execute.", record=False)
+            return
         buf = io.StringIO()
         try:
-            import GlyphsApp as GA
-            env = {"__builtins__": __builtins__, "Glyphs": GA.Glyphs}
-            for name in dir(GA):
-                if not name.startswith("_"):
-                    try: env[name] = getattr(GA, name)
-                    except Exception: pass
+            env = self._build_exec_env()
+            compiled = compile(code, "<GlyphsGPTCodex>", "exec")
             with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
-                exec(code, env, env)
-            out = buf.getvalue().strip() or "(done; no output)"
-            self.send("execResult", {"output": out})
+                exec(compiled, env, env)
+            out = buf.getvalue().strip()
+            if out:
+                item_id = self._record("system", "Execution output\n" + out, "text")
+                self.send("execResult", {"output": out, "id": item_id})
+                self._append_to_macro_log(out)
+        except SystemExit:
+            out = buf.getvalue().strip()
+            if out:
+                out += "\n"
+            out += "SystemExit"
+            item_id = self._record("system", "Execution output\n" + out, "text")
+            self.send("execResult", {"output": out, "id": item_id})
+            self._append_to_macro_log(out)
         except Exception:
-            self.send("execResult", {"output": traceback.format_exc()})
+            out = buf.getvalue().strip()
+            tb = traceback.format_exc()
+            merged = ((out + "\n") if out else "") + tb
+            item_id = self._record("system", "Execution output\n" + merged, "text")
+            self.send("execResult", {"output": merged, "id": item_id})
+            self._append_to_macro_log(merged)
 
-    def send_error(self, msg):
-        if DEBUG: print("[ERROR]", msg)
-        self.send("error", {"message": str(msg)})
+    def _walk_views(self, view):
+        if view is None:
+            return
+        yield view
+        try:
+            subviews = list(view.subviews())
+        except Exception:
+            subviews = []
+        for sub in subviews:
+            for item in self._walk_views(sub):
+                yield item
+        try:
+            if isinstance(view, AK.NSScrollView):
+                doc = view.documentView()
+                if doc is not None:
+                    for item in self._walk_views(doc):
+                        yield item
+        except Exception:
+            pass
 
-HTMLChatUI()
+    def _find_macro_text_view(self):
+        controller = None
+        try:
+            controller = Glyphs.delegate().macroPanelController()
+        except Exception:
+            controller = None
+        if controller is None:
+            return None
+
+        for name in ("textView", "codeTextView", "macroTextView", "editorTextView"):
+            try:
+                candidate = getattr(controller, name)()
+            except Exception:
+                candidate = None
+            if candidate is not None and isinstance(candidate, AK.NSTextView):
+                try:
+                    if candidate.isEditable():
+                        return candidate
+                except Exception:
+                    return candidate
+
+        try:
+            window = controller.window()
+        except Exception:
+            window = None
+        if window is None:
+            return None
+
+        best = None
+        bestScore = -1
+        try:
+            firstResponder = window.firstResponder()
+        except Exception:
+            firstResponder = None
+
+        for view in self._walk_views(window.contentView()):
+            if not isinstance(view, AK.NSTextView):
+                continue
+            try:
+                if not view.isEditable():
+                    continue
+            except Exception:
+                pass
+            score = 0
+            if firstResponder is view:
+                score += 1000
+            try:
+                if hasattr(view, 'isFieldEditor') and view.isFieldEditor():
+                    score -= 500
+            except Exception:
+                pass
+            try:
+                if hasattr(view, 'isRichText') and not view.isRichText():
+                    score += 100
+            except Exception:
+                pass
+            try:
+                frame = view.frame()
+                score += int(frame.size.width * frame.size.height)
+            except Exception:
+                pass
+            if score > bestScore:
+                best = view
+                bestScore = score
+        return best
+
+    def _set_text_view_string(self, textView, code):
+        try:
+            if textView is None:
+                return False
+            try:
+                textView.window().makeKeyAndOrderFront_(None)
+            except Exception:
+                pass
+            try:
+                textView.window().makeFirstResponder_(textView)
+            except Exception:
+                pass
+
+            current = ''
+            try:
+                current = str(textView.string() or '')
+            except Exception:
+                current = ''
+            fullRange = FN.NSMakeRange(0, len(current))
+
+            replaced = False
+            try:
+                storage = textView.textStorage()
+                if storage is not None:
+                    storage.beginEditing()
+                    storage.replaceCharactersInRange_withString_(fullRange, code)
+                    storage.endEditing()
+                    replaced = True
+            except Exception:
+                replaced = False
+
+            if not replaced:
+                try:
+                    textView.setString_(code)
+                    replaced = True
+                except Exception:
+                    replaced = False
+
+            if not replaced:
+                return False
+
+            sel = FN.NSMakeRange(len(code), 0)
+            try:
+                textView.setSelectedRange_(sel)
+            except Exception:
+                pass
+            try:
+                textView.scrollRangeToVisible_(sel)
+            except Exception:
+                pass
+            try:
+                textView.didChangeText()
+            except Exception:
+                pass
+            return True
+        except Exception:
+            return False
+
+    def copy_to_macro(self, code, announce=True):
+        code = (code or "").replace("\r\n", "\n").strip()
+        if not code:
+            self.send_error("Nothing to copy.", record=False)
+            return
+
+        clipboardOK = False
+        try:
+            pb = NSPasteboard.generalPasteboard()
+            pb.clearContents()
+            try:
+                clipboardOK = bool(pb.setString_forType_(code, NSPasteboardTypeString))
+            except Exception:
+                clipboardOK = False
+            if not clipboardOK:
+                try:
+                    clipboardOK = bool(pb.writeObjects_([NSString.stringWithString_(code)]))
+                except Exception:
+                    clipboardOK = False
+        except Exception:
+            clipboardOK = False
+
+        self.open_macro()
+
+        def _finish_copy():
+            inserted = False
+            try:
+                textView = self._find_macro_text_view()
+                inserted = self._set_text_view_string(textView, code)
+            except Exception:
+                inserted = False
+            if announce and not (clipboardOK or inserted):
+                self.send_error("Could not send code to Macro Panel.", record=False)
+
+        callAfter(_finish_copy)
+
+    def open_macro(self):
+        try:
+            Glyphs.showMacroWindow()
+        except Exception as e:
+            self.send_error("Could not open Macro Window: %s" % e, record=False)
+
+
+def _get_app_singleton():
+    app = getattr(builtins, APP_SINGLETON_KEY, None)
+    if app is None or not isinstance(app, GlyphsGPTCodex) or getattr(app, '_script_build', None) != SCRIPT_BUILD:
+        try:
+            if app is not None and getattr(app, 'window', None) is not None:
+                app.window.close()
+        except Exception:
+            pass
+        app = GlyphsGPTCodex()
+        setattr(builtins, APP_SINGLETON_KEY, app)
+    return app
+
+
+__GlyphsGPTCodex__ = _get_app_singleton()
+__GlyphsGPTCodex__.show()

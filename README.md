@@ -1,221 +1,250 @@
-### GlyphsGPT with Chat — AI-driven Macro Editor for Glyphs App
+# GlyphsGPT with Chat
 
-**Build and edit code by chatting**, then **run the script instantly**—no scripting background needed.  
-GlyphsGPT turns your plain-language requests into ready-to-run Python macros inside Glyphs, so you can stay in design flow.
+An AI control panel for **Glyphs 3**.
 
-**Why designers love it**
-- **AI-driven:** describe the change (“rename selected glyphs to .alt and update components”) and get the macro.
-- **Chat to edit:** say “make it only affect uppercase” or “add an undo group” and the code updates.
-- **One-click run:** execute right in the panel; no switching tools or saving files.
-- **Cost-free option:** works with **local LLMs** (e.g., LM Studio), so you can use it with **no API cost**.
-   - Works with **GPT-5** or any **gpt-oss**.
-- **Optional citations (RAG):** plug in your own docs/specs to get grounded, cited answers when needed.
+`GlyphsGPT with Chat.py` is designed to help you **control Glyphs with AI**, either by using **MCP-based workflows** or by generating **Glyphs Python** code when direct control is not available or not ideal.
 
-**Great for**
-- Batch renaming, kerning tweaks, anchors/metrics housekeeping
-- Generating repetitive drawing or export helpers
-- Learning by example—see clean Python you can keep and reuse
+It can be used as:
 
-Keep designing. Let the assistant handle the code.
-
-<img width="898" height="789" alt="Screenshot 2025-08-15 at 17 45 14" src="https://github.com/user-attachments/assets/2cbe0511-8faf-424e-b17f-4bb676c18b52" />
-
-This script adds a compact chat window inside Glyphs. Type a request in plain English, get a ready-to-run Python snippet, edit it inline, and execute without leaving the app.
-
-
+- an AI control surface for Glyphs
+- an MCP-enabled interface for Glyphs workflows
+- a generator for Glyphs Python code
+- a conversational alternative to the Macro Panel
 
 ---
 
-## Install (designer-friendly)
-1. In Glyphs, open **Scripts → Open Scripts Folder**.  
-2. From this repo, download and place ONE of these files into that folder:
+## Screenshot
 
-   - **Recommended (no SSL fuss):**  
-     `GlyphsGPTwithChat/GlyphsGPTwithChat/GlyphsGPT with Chat for Default Python.py`
-
-   - **Advanced (uses Python’s ssl):**  
-     `GlyphsGPTwithChat/GlyphsGPTwithChat/GlyphsGPT with Chat.py`
-
-3. Back in Glyphs, choose **Scripts → Reload Scripts** (⌥⌘⇧Y).  
-4. Run **Scripts → GlyphsGPT with Chat**.
-
-> Tip: Start with the **“for Default Python”** version—it's the least picky about certificates.
+![GlyphsGPT with Chat screenshot](screenshot.png)
 
 ---
 
-## First run (about a minute)
-1. Click **⚙ Settings** in the chat window.  
-2. Pick a model:
-   
-<img width="717" height="441" alt="Screenshot 2025-08-15 at 17 52 36" src="https://github.com/user-attachments/assets/d0e33340-4535-402f-a09b-e7ce552e2fa8" />
+## What this script is for
 
-   **OpenAI**
-   - **LM Base:** `https://api.openai.com/v1`  
-   - **Model:** e.g. `gpt-5`  
-   - **LM Key:** your API key
-     
-<img width="719" height="442" alt="Screenshot 2025-08-15 at 18 01 52" src="https://github.com/user-attachments/assets/3573d31a-b414-423d-bce0-73a3474a93bb" />
+The main goal of this script is to make **AI-driven work inside Glyphs** faster and more practical.
 
-   **Local server (OpenAI-compatible)**
-   - **LM Base:** e.g. `http://localhost:1234/v1`  
-   - **Model:** whatever your server exposes
+In actual use, that usually means one of these two workflows:
 
-3. Type:  
-   *“Select all open paths in the current glyph and close them.”*  
-   Then hit **Ask**.
+### 1. Direct AI control of Glyphs
+In **Direct mode**, the assistant can be used as a control interface for Glyphs-oriented workflows.
 
----
-## Optional: Grounded answers (RAG)
+This is the mode intended for:
+- checking the current state of the font
+- inspecting glyph-related information
+- using MCP-based tool workflows
+- interacting with Glyphs more directly through AI
 
-<img width="718" height="443" alt="Screenshot 2025-08-15 at 17 51 29" src="https://github.com/user-attachments/assets/1afccef2-3951-40a8-9d88-76225e755ef7" />
-Want the assistant to cite *your* docs/specs? Run a tiny local RAG server.
+### 2. Glyphs Python generation
+In **Code mode**, the assistant focuses on generating **Glyphs Python** code.
 
-### What you’ll do
-1. Put files in `RAG/corpus/` (TXT, MD, and PDFs work best).
-2. Build a searchable index from those files.
-3. Start the local search server.
-4. In the Glyphs script **Settings**, set **RAG URL** to `http://localhost:8001/search` and use **Auto** or **Grounded** mode.
+This is useful when:
+- direct tool-based control is unavailable
+- you want a script instead of a direct action
+- you want to inspect or edit the generated logic yourself
+- you prefer a workflow closer to the Macro Panel
+
+In practice, `GlyphsGPT with Chat.py` sits somewhere between:
+- an AI control panel for Glyphs
+- an MCP-aware assistant
+- a Glyphs Python generator
+- a more conversational replacement for the Macro Panel
 
 ---
 
-### 1) Install (first time only)
-```bash
-cd RAG
-pip3 install -U fastapi uvicorn sentence-transformers pypdf faiss-cpu
-```
+## How it works
 
-### 2) Build the index (run whenever you add/change docs)
-```bash
-cd RAG
-python3 build_index.py \
-  --source ./corpus \
-  --outdir ./index \
-  --model sentence-transformers/all-MiniLM-L6-v2 \
-  --chunk 900 --overlap 150
-# If your Python is 'python' instead of 'python3', use: python build_index.py ...
-```
+GlyphsGPT with Chat supports two main approaches:
 
-### 3) Start the server
-```bash
-cd RAG
-export RAG_INDEX_DIR="$(pwd)/index"     # macOS/Linux
-uvicorn server:app --host 0.0.0.0 --port 8001
-```
+### MCP-based control
+For AI workflows that directly interact with Glyphs state and tools, this project is intended to work with:
 
-Windows (PowerShell):
-```powershell
-cd RAG
-$env:RAG_INDEX_DIR = (Get-Location).Path + "\index"
-uvicorn server:app --host 0.0.0.0 --port 8001
-```
+- **Glyphs-mcp** by thierryc  
+  https://github.com/thierryc/Glyphs-mcp
 
-Leave this Terminal window open while you use the tool.
+This is the recommended setup for **Direct mode** when the goal is actual AI-assisted control of Glyphs.
+
+### Code generation
+When direct control is not available, or when you want explicit code output, **Code mode** generates **Glyphs Python** that you can review, modify, and run yourself.
 
 ---
 
-### 4) Point the Glyphs script to your server
-In **Settings**, set:
-- **RAG URL**: `http://localhost:8001/search`
-- **Mode**: **Auto** or **Grounded**
+## Requirements
 
-### Quick check
-Open a browser to: `http://127.0.0.1:8001/search?q=kerning`  
-If you see JSON results, your RAG server is working.
+- **Glyphs 3**
+- Python environment provided by Glyphs
+- `GlyphsGPT with Chat.py`
 
-### Notes
-- Re-run the **Build the index** step anytime you add or change files in `RAG/corpus/`.
-- If `pip3` isn’t found, try `pip`.
+Depending on your setup, you will also need one or more of the following:
 
-
-
----
-
-## Troubleshooting
-- **SSL / certificate error**  
-  Use **“GlyphsGPT with Chat for Default Python.py.”** It routes network calls via Apple’s APIs to avoid common embedded-Python SSL issues.
-- **No response / blank answers**  
-  Check **LM Base / Model / Key** in Settings. Try **Chat** mode first.
-- **“Unsupported parameter: max_tokens”**  
-  Update to the latest script (already handled).
-- **Blank window**  
-  Requires a recent Glyphs 3 with WKWebView. Restart Glyphs after install.
+- **Glyphs-mcp** for practical Direct mode control workflows
+- **Codex CLI**
+- **OpenAI API key**
+- **Anthropic API key**
+- **a local OpenAI-compatible server** such as LM Studio
 
 ---
 
-## Use a Local Model (Recommended: LM Studio)
-<img width="1723" height="1032" alt="スクリーンショット 2025-08-15 18 12 47" src="https://github.com/user-attachments/assets/e8e725b8-aa6c-46b9-924a-b275cf57962c" />
+## Installation
 
-You can run GlyphsGPT entirely offline using **LM Studio**. This is the easiest way for non-developers.
+### 1. Install the script
 
-### 1) Install LM Studio
-- Download LM Studio (macOS app) from **lmstudio.ai** and open it.
+Copy `GlyphsGPT with Chat.py` into your Glyphs Scripts folder.
 
-### 2) Get the model
-- In LM Studio, open **Discover → Models** and search for **`gpt-oss-20b`**.
-- Click **Download** (choose any quantization that fits your Mac; if unsure, start with the default).
+Then:
 
-> Tip: If your Mac runs out of memory, pick a *smaller* quantization or lower the Context Length later.
+1. Open **Glyphs 3**
+2. Launch the script from the **Scripts** menu
 
-### 3) Load the model & start the server
-- Click **Load** on `gpt-oss-20b`.
-- Open the small **⚙ Settings** panel (next to “Status: Running”) and use these toggles:
-  - **Server Port**: `1234`
-  - **Serve on Local Network**: **ON**
-  - **Enable CORS**: **ON** (makes the in-app web UI happier)
-  - **Just-in-Time Model Loading**: ON (default)
-- In the right sidebar (Load tab), suggested starting values:
-  - **Context Length**: `20000` (you can reduce if memory is tight)
-  - **GPU Offload**: max your slider allows
-  - **CPU Thread Pool**: ~`8–12` threads
+### 2. Install Glyphs MCP for Direct mode
 
-**Baseline that works well on my machine**
-- Mac Studio **M2 Max**, **32 GB** RAM
-- Model: `openai/gpt-oss-20b`
-- GPU Offload: full slider
-- Context Length: 20k
-- Threads: 11
+For real Glyphs control in **Direct mode**, install:
 
-LM Studio will show “Reachable at: `http://<your-local-ip>:1234`”.
+- **Glyphs-mcp**  
+  https://github.com/thierryc/Glyphs-mcp
 
-### 4) Point GlyphsGPT to LM Studio
-Open **Settings** in GlyphsGPT and fill:
+Without MCP, Direct mode may still behave like a normal assistant chat depending on the provider, but it will not provide the intended level of direct Glyphs control.
 
-- **LM Base**: `http://<your-local-ip>:1234/v1`
-  - Example if you’re on the same Mac: `http://localhost:1234/v1`
-- **Model**: `openai/gpt-oss-20b`
-- **LM Key**: *(leave empty)*
-- **Include retrieval (RAG)**: off unless you’re using the optional RAG server
+### 3. Configure a provider
 
-Leave the other defaults as is:
-- **Max context (tokens)**: `20000`
-- **Max output tokens**: `1024`
-- **Headroom (safety)**: `512`
-
-Click **Save**.
-
-### 5) Quick check
-Open a new chat and ask: “What model are you?”  
-You should see a response generated locally by LM Studio.
+Open the **Tab Settings** panel and configure the provider you want to use.
 
 ---
 
-#### Troubleshooting
+## Modes
 
-- **No connection / timeouts**  
-  Make sure LM Studio shows “Reachable at: `http://…:1234`” and **Serve on Local Network** is ON.
-- **Model name mismatch**  
-  The **Model** field in GlyphsGPT must match LM Studio’s model ID exactly: `openai/gpt-oss-20b`.
-- **Out of memory / crashes**  
-  Lower **Context Length** (e.g., 8k) or download a smaller quantization of the model.
-- **Slow or short answers**  
-  Increase **Max output tokens** in GlyphsGPT (e.g., 1536) or reduce **Headroom** slightly (e.g., 384).
+## Direct mode
 
-> Optional: If you later use the RAG server, set **RAG URL** to `http://localhost:8001/search` and switch mode to **Auto** or **Grounded**.
+**Direct mode** is for AI-assisted control workflows.
+
+This is the mode to use when you want the assistant to behave more like an AI operator for Glyphs rather than a pure code generator.
+
+For the intended workflow, **Glyphs-mcp should be installed and available**.
+
+Typical uses:
+- ask about the current font state
+- inspect Glyphs-related context
+- perform MCP-oriented workflows
+- use the assistant as a control surface inside Glyphs
+
+## Code mode
+
+**Code mode** is for generating **Glyphs Python**.
+
+This mode is useful even without MCP, because it can still produce code that you can run manually or adapt.
+
+Typical uses:
+- generate Glyphs scripts
+- draft automation helpers
+- prototype code quickly
+- use the tool like a smarter Macro Panel
 
 ---
 
-## License
-Apache-2.0 — see `LICENSE`.
+## Providers
+
+GlyphsGPT with Chat supports multiple providers.
+
+### Codex CLI
+Use this for Codex-style local workflows.
+
+### OpenAI API
+Use this with your OpenAI API key.
+
+Typical configuration:
+- **Provider**: `OpenAI API`
+- **API Base**: `https://api.openai.com/v1`
+
+### Claude API
+Use this with your Anthropic API key.
+
+Typical configuration:
+- **Provider**: `Claude API`
+- **API Base**: `https://api.anthropic.com/v1`
+
+### Local / OpenAI-compatible
+Use this for local or self-hosted servers that expose an OpenAI-compatible API.
+
+Typical examples:
+- LM Studio
+- local model gateways
+- compatible proxy endpoints
+
+Typical configuration:
+- **Provider**: `Local / OpenAI-compatible`
+- **API Base**: for example `http://127.0.0.1:1234/v1`
 
 ---
 
+## Recommended local LLMs
+
+Recommended local models:
+
+- **gpt-oss-20b**
+- **gpt-oss-120b**
+
+`gpt-oss-20b` is easier to run locally.  
+`gpt-oss-120b` is more capable when hardware allows it.
+
+---
+
+## Basic workflow
+
+A typical workflow looks like this:
+
+1. Open GlyphsGPT with Chat inside Glyphs
+2. Choose a tab
+3. Select a provider
+4. Configure model and connection settings
+5. Choose **Direct** or **Code**
+6. Send a prompt
+7. Review the result
+8. Iterate
+
+In practice:
+
+- use **Direct mode** for AI-assisted control workflows
+- use **Code mode** for explicit Glyphs Python generation
+- use it as a more conversational alternative to the Macro Panel
+
+---
+
+## Session behavior
+
+- settings are stored **per tab**
+- new tabs inherit the current tab configuration
+- local state is saved for convenience
+
+This makes it easy to separate:
+- different providers
+- different models
+- Direct mode vs Code mode
+- different projects or experiments
+
+---
+
+## Local state
+
+This script stores local state outside the script file itself.
+
+That means the script file can usually be shared safely, while runtime settings such as API keys and local state are stored separately on your machine.
+
+**Do not commit your local state file to Git.**
+
+---
+
+## Security note
+
+Before publishing this script, make sure you are **not uploading local state or secret files**.
+
+Recommended checks before pushing to GitHub:
+
+- verify that API keys are **not** hardcoded
+- verify that local state files are **not** tracked
+- verify that personal paths or temporary files are excluded
+
+Example `.gitignore`:
+
+```gitignore
+.DS_Store
+*.tmp
+GlyphsGPT with Chat_state.json
