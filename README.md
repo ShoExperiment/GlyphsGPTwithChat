@@ -15,7 +15,7 @@ It can be used as:
 
 ## Screenshot
 
-![GlyphsGPT with Chat screenshot](./screenshot.png)
+![GlyphsGPT with Chat screenshot](screenshot.png)
 
 ---
 
