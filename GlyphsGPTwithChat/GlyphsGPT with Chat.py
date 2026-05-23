@@ -3,7 +3,7 @@
 from __future__ import division, print_function, unicode_literals
 
 __doc__ = """
-GlyphsGPT with Chat
+GlyphsGPTCodex
 A standalone Glyphs script with an HTML chat UI that uses Codex.
 - Direct mode: Codex + Glyphs MCP
 - Code mode: Codex returns Glyphs Python code, displayed/editable/executable in-app
@@ -70,7 +70,7 @@ def _ns_request_json(method, url, body, headers, timeout=None):
     req.setCachePolicy_(1)
 
     headers = dict(headers or {})
-    headers.setdefault("User-Agent", "GlyphsGPTwithChat/AppleTLS")
+    headers.setdefault("User-Agent", "GlyphsGPTCodex/AppleTLS")
     headers.setdefault("Connection", "close")
     for k, v in headers.items():
         req.setValue_forHTTPHeaderField_(str(v), str(k))
@@ -214,15 +214,15 @@ def http_get(url, headers=None, timeout=2.0):
     except Exception:
         return None
 
-WINDOW_AUTOSAVE = "com.shotaronakano.GlyphsGPTwithChat.window"
-APP_SINGLETON_KEY = "__GlyphsGPTwithChat_singleton__"
+WINDOW_AUTOSAVE = "com.shotaronakano.GlyphsGPTCodex.window"
+APP_SINGLETON_KEY = "__GlyphsGPTCodex_singleton__"
 DEFAULT_SERVER = "glyphs-mcp-server"
 DEFAULT_MODE = "direct"
 DEFAULT_MODEL = ""
 DEFAULT_PROVIDER = "codex"
 DEFAULT_THEME = "dark"
 STATE_DIR = os.path.expanduser("~/Library/Application Support/Glyphs 3")
-STATE_PATH = os.path.join(STATE_DIR, "GlyphsGPTwithChat_state.json")
+STATE_PATH = os.path.join(STATE_DIR, "GlyphsGPTCodex_state.json")
 SCRIPT_BUILD = "2026-03-15.responses_api_appletls2"
 DEFAULT_LMSTUDIO_PLUGIN = "mcp/glyphs-mcp"
 DEFAULT_GLYPHS_MCP_URL = "http://127.0.0.1:9680/mcp/"
@@ -245,7 +245,7 @@ HTML = r'''<!doctype html>
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>GlyphsGPT with Chat</title>
+<title>GlyphsGPTCodex</title>
 <style>
   :root {
     --bg:#0f1115; --panel:#171a21; --panel2:#121722; --muted:#9ba6c4; --text:#e8ecff;
@@ -376,7 +376,7 @@ HTML = r'''<!doctype html>
 <div class="wrap">
   <div class="top">
     <div class="titleRow">
-      <div class="title" title="Direct = Codex + Glyphs MCP / Code = return editable Glyphs Python">GlyphsGPT with Chat</div>
+      <div class="title" title="Direct = Codex + Glyphs MCP / Code = return editable Glyphs Python">GlyphsGPTCodex</div>
       <div class="muted subtitle">Direct = Codex + Glyphs MCP / Code = return editable Glyphs Python</div>
     </div>
     <div class="spacer"></div>
@@ -876,13 +876,13 @@ def extract_code_block(text):
     return text.strip()
 
 
-BRIDGE_CLASS_NAME = "GlyphsGPTwithChatBridge"
+BRIDGE_CLASS_NAME = "GlyphsGPTCodexBridge"
 try:
-    GlyphsGPTwithChatBridge = objc.lookUpClass(BRIDGE_CLASS_NAME)
+    GlyphsGPTCodexBridge = objc.lookUpClass(BRIDGE_CLASS_NAME)
 except objc.nosuchclass_error:
-    class GlyphsGPTwithChatBridge(NSObject):
+    class GlyphsGPTCodexBridge(NSObject):
         def initWithOwner_(self, owner):
-            self = objc.super(GlyphsGPTwithChatBridge, self).init()
+            self = objc.super(GlyphsGPTCodexBridge, self).init()
             if self is None:
                 return None
             self.owner = owner
@@ -931,7 +931,7 @@ except objc.nosuchclass_error:
                     print(traceback.format_exc())
 
 
-class GlyphsGPTwithChat(object):
+class GlyphsGPTCodex(object):
 
     def __init__(self):
         self._script_build = SCRIPT_BUILD
@@ -1173,12 +1173,12 @@ class GlyphsGPTwithChat(object):
         self._pendingMessages = []
         cfg = WKWebViewConfiguration.alloc().init()
         ucc = WKUserContentController.alloc().init()
-        self.bridge = GlyphsGPTwithChatBridge.alloc().initWithOwner_(self)
+        self.bridge = GlyphsGPTCodexBridge.alloc().initWithOwner_(self)
         ucc.addScriptMessageHandler_name_(self.bridge, "bridge")
         cfg.setUserContentController_(ucc)
 
         self.window = NSWindow.alloc().initWithContentRect_styleMask_backing_defer_(((80, 80), (1100, 820)), 15, 2, False)
-        self.window.setTitle_("GlyphsGPT with Chat")
+        self.window.setTitle_("GlyphsGPTCodex")
         try:
             self.window.setReleasedWhenClosed_(False)
         except Exception:
@@ -1945,7 +1945,7 @@ class GlyphsGPTwithChat(object):
         env = {
             "__builtins__": __builtins__,
             "__name__": "__main__",
-            "__file__": "<GlyphsGPT with Chat>",
+            "__file__": "<GlyphsGPTCodex>",
             "Glyphs": GA.Glyphs,
             "objc": objc,
             "AppKit": AK,
@@ -2005,7 +2005,7 @@ class GlyphsGPTwithChat(object):
         buf = io.StringIO()
         try:
             env = self._build_exec_env()
-            compiled = compile(code, "<GlyphsGPT with Chat>", "exec")
+            compiled = compile(code, "<GlyphsGPTCodex>", "exec")
             with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
                 exec(compiled, env, env)
             out = buf.getvalue().strip()
@@ -2218,16 +2218,16 @@ class GlyphsGPTwithChat(object):
 
 def _get_app_singleton():
     app = getattr(builtins, APP_SINGLETON_KEY, None)
-    if app is None or not isinstance(app, GlyphsGPTwithChat) or getattr(app, '_script_build', None) != SCRIPT_BUILD:
+    if app is None or not isinstance(app, GlyphsGPTCodex) or getattr(app, '_script_build', None) != SCRIPT_BUILD:
         try:
             if app is not None and getattr(app, 'window', None) is not None:
                 app.window.close()
         except Exception:
             pass
-        app = GlyphsGPTwithChat()
+        app = GlyphsGPTCodex()
         setattr(builtins, APP_SINGLETON_KEY, app)
     return app
 
 
-__GlyphsGPTwithChat__ = _get_app_singleton()
-__GlyphsGPTwithChat__.show()
+__GlyphsGPTCodex__ = _get_app_singleton()
+__GlyphsGPTCodex__.show()
