@@ -3,12 +3,12 @@
 from __future__ import division, print_function, unicode_literals
 
 __doc__ = """
-GlyphsGPTCodex
+GlyphsGPT with Chat
 A standalone Glyphs script with an HTML chat UI that uses Codex.
 - Direct mode: Codex + Glyphs MCP
 - Code mode: Codex returns Glyphs Python code, displayed/editable/executable in-app
 - Multi-tab sessions with persistent history
-- Fixed Codex agent workspace at ~/GlyphsGPTCodexAgent for shared AGENTS.md and skills
+- Fixed Codex agent workspace at ~/GlyphsGPTwithChatAgent for shared AGENTS.md and skills
 - Compact top chrome merged with the safe close-box version; prompt/response/console kept from the safe version
 """
 
@@ -53,7 +53,7 @@ except Exception:
 
 REQUEST_TIMEOUT_S = 20.0
 RESOURCE_TIMEOUT_S = 45.0
-CODEX_AGENT_DIR_NAME = "GlyphsGPTCodexAgent"
+CODEX_AGENT_DIR_NAME = "GlyphsGPTwithChatAgent"
 _PRIVATE_HOST = re.compile(
     r"^(localhost|127(?:\.\d{1,3}){3}|10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})$"
 )
@@ -72,7 +72,7 @@ def _ns_request_json(method, url, body, headers, timeout=None):
     req.setCachePolicy_(1)
 
     headers = dict(headers or {})
-    headers.setdefault("User-Agent", "GlyphsGPTCodex/AppleTLS")
+    headers.setdefault("User-Agent", "GlyphsGPTwithChat/AppleTLS")
     headers.setdefault("Connection", "close")
     for k, v in headers.items():
         req.setValue_forHTTPHeaderField_(str(v), str(k))
@@ -216,8 +216,8 @@ def http_get(url, headers=None, timeout=2.0):
     except Exception:
         return None
 
-WINDOW_AUTOSAVE = "com.shotaronakano.GlyphsGPTCodex.window"
-APP_SINGLETON_KEY = "__GlyphsGPTCodex_singleton__"
+WINDOW_AUTOSAVE = "com.shotaronakano.GlyphsGPTwithChat.window"
+APP_SINGLETON_KEY = "__GlyphsGPTwithChat_singleton__"
 DEFAULT_SERVER = "glyphs-mcp-server"
 DEFAULT_MODE = "direct"
 DEFAULT_MODEL = ""
@@ -225,8 +225,8 @@ DEFAULT_PROVIDER = "codex"
 DEFAULT_THEME = "dark"
 DEFAULT_REASONING = "auto"
 STATE_DIR = os.path.expanduser("~/Library/Application Support/Glyphs 3")
-STATE_PATH = os.path.join(STATE_DIR, "GlyphsGPTCodex_state.json")
-SCRIPT_BUILD = "2026-03-18.reasoning_controls"
+STATE_PATH = os.path.join(STATE_DIR, "GlyphsGPTwithChat_state.json")
+SCRIPT_BUILD = "2026-05-23.glyphsgpt_with_chat_codex_mcp_bypass"
 DEFAULT_LMSTUDIO_PLUGIN = "mcp/glyphs-mcp"
 DEFAULT_GLYPHS_MCP_URL = "http://127.0.0.1:9680/mcp/"
 
@@ -263,7 +263,7 @@ HTML = r'''<!doctype html>
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>GlyphsGPTCodex</title>
+<title>GlyphsGPT with Chat</title>
 <style>
   :root {
     --bg:#0f1115; --panel:#171a21; --panel2:#121722; --muted:#9ba6c4; --text:#e8ecff;
@@ -394,7 +394,7 @@ HTML = r'''<!doctype html>
 <div class="wrap">
   <div class="top">
     <div class="titleRow">
-      <div class="title" title="Direct = Codex + Glyphs MCP / Code = return editable Glyphs Python">GlyphsGPTCodex</div>
+      <div class="title" title="Direct = Codex + Glyphs MCP / Code = return editable Glyphs Python">GlyphsGPT with Chat</div>
       <div class="muted subtitle">Direct = Codex + Glyphs MCP / Code = return editable Glyphs Python</div>
     </div>
     <div class="spacer"></div>
@@ -951,13 +951,13 @@ def extract_code_block(text):
     return text.strip()
 
 
-BRIDGE_CLASS_NAME = "GlyphsGPTCodexBridge"
+BRIDGE_CLASS_NAME = "GlyphsGPTwithChatBridge"
 try:
-    GlyphsGPTCodexBridge = objc.lookUpClass(BRIDGE_CLASS_NAME)
+    GlyphsGPTwithChatBridge = objc.lookUpClass(BRIDGE_CLASS_NAME)
 except objc.nosuchclass_error:
-    class GlyphsGPTCodexBridge(NSObject):
+    class GlyphsGPTwithChatBridge(NSObject):
         def initWithOwner_(self, owner):
-            self = objc.super(GlyphsGPTCodexBridge, self).init()
+            self = objc.super(GlyphsGPTwithChatBridge, self).init()
             if self is None:
                 return None
             self.owner = owner
@@ -1006,7 +1006,7 @@ except objc.nosuchclass_error:
                     print(traceback.format_exc())
 
 
-class GlyphsGPTCodex(object):
+class GlyphsGPTwithChat(object):
 
     def __init__(self):
         self._script_build = SCRIPT_BUILD
@@ -1251,12 +1251,12 @@ class GlyphsGPTCodex(object):
         self._pendingMessages = []
         cfg = WKWebViewConfiguration.alloc().init()
         ucc = WKUserContentController.alloc().init()
-        self.bridge = GlyphsGPTCodexBridge.alloc().initWithOwner_(self)
+        self.bridge = GlyphsGPTwithChatBridge.alloc().initWithOwner_(self)
         ucc.addScriptMessageHandler_name_(self.bridge, "bridge")
         cfg.setUserContentController_(ucc)
 
         self.window = NSWindow.alloc().initWithContentRect_styleMask_backing_defer_(((80, 80), (1100, 820)), 15, 2, False)
-        self.window.setTitle_("GlyphsGPTCodex")
+        self.window.setTitle_("GlyphsGPT with Chat")
         try:
             self.window.setReleasedWhenClosed_(False)
         except Exception:
@@ -1339,7 +1339,7 @@ class GlyphsGPTCodex(object):
             if not os.path.exists(agents_path):
                 with open(agents_path, "w", encoding="utf-8") as f:
                     f.write(
-                        "# GlyphsGPTCodex Agent Workspace\n\n"
+                        "# GlyphsGPT with Chat Agent Workspace\n\n"
                         "Put shared Codex instructions here.\n"
                         "- This folder is always used as the Codex working directory.\n"
                         "- Add reusable skills under .agents/skills/.\n"
@@ -1348,7 +1348,7 @@ class GlyphsGPTCodex(object):
             if not os.path.exists(readme_path):
                 with open(readme_path, "w", encoding="utf-8") as f:
                     f.write(
-                        "GlyphsGPTCodex Agent Workspace\n\n"
+                        "GlyphsGPT with Chat Agent Workspace\n\n"
                         "Edit AGENTS.md for shared instructions.\n"
                         "Create skills inside .agents/skills/<skill-name>/SKILL.md\n"
                     )
@@ -1464,7 +1464,7 @@ class GlyphsGPTCodex(object):
         cmd.extend([
             "exec",
             "--skip-git-repo-check",
-            "--full-auto",
+            "--dangerously-bypass-approvals-and-sandbox",
             "--output-last-message", outputPath,
         ])
         if model:
@@ -2098,7 +2098,7 @@ class GlyphsGPTCodex(object):
         env = {
             "__builtins__": __builtins__,
             "__name__": "__main__",
-            "__file__": "<GlyphsGPTCodex>",
+            "__file__": "<GlyphsGPT with Chat>",
             "Glyphs": GA.Glyphs,
             "objc": objc,
             "AppKit": AK,
@@ -2158,7 +2158,7 @@ class GlyphsGPTCodex(object):
         buf = io.StringIO()
         try:
             env = self._build_exec_env()
-            compiled = compile(code, "<GlyphsGPTCodex>", "exec")
+            compiled = compile(code, "<GlyphsGPT with Chat>", "exec")
             with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
                 exec(compiled, env, env)
             out = buf.getvalue().strip()
@@ -2371,16 +2371,16 @@ class GlyphsGPTCodex(object):
 
 def _get_app_singleton():
     app = getattr(builtins, APP_SINGLETON_KEY, None)
-    if app is None or not isinstance(app, GlyphsGPTCodex) or getattr(app, '_script_build', None) != SCRIPT_BUILD:
+    if app is None or not isinstance(app, GlyphsGPTwithChat) or getattr(app, '_script_build', None) != SCRIPT_BUILD:
         try:
             if app is not None and getattr(app, 'window', None) is not None:
                 app.window.close()
         except Exception:
             pass
-        app = GlyphsGPTCodex()
+        app = GlyphsGPTwithChat()
         setattr(builtins, APP_SINGLETON_KEY, app)
     return app
 
 
-__GlyphsGPTCodex__ = _get_app_singleton()
-__GlyphsGPTCodex__.show()
+__GlyphsGPTwithChat__ = _get_app_singleton()
+__GlyphsGPTwithChat__.show()
